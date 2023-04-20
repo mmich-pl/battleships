@@ -10,7 +10,7 @@ type ClientBuilder interface {
 	SetConnectionTimeout(timeout time.Duration) ClientBuilder
 	SetResponseTime(timeout time.Duration) ClientBuilder
 	SetHttpClient(c *http.Client) ClientBuilder
-
+	SetBaseURL(URL string) ClientBuilder
 	Build() Client
 }
 
@@ -20,6 +20,11 @@ type clientBuilder struct {
 	responseTimeout   time.Duration
 	baseUrl           string
 	client            *http.Client
+}
+
+func (c *clientBuilder) SetBaseURL(URL string) ClientBuilder {
+	c.baseUrl = URL
+	return c
 }
 
 func (c *clientBuilder) SetHttpClient(client *http.Client) ClientBuilder {
@@ -33,12 +38,12 @@ func (c *clientBuilder) SetHeaders(headers http.Header) ClientBuilder {
 }
 
 func (c *clientBuilder) SetConnectionTimeout(timeout time.Duration) ClientBuilder {
-	c.connectionTimeout = timeout
+	c.connectionTimeout = timeout * time.Second
 	return c
 }
 
 func (c *clientBuilder) SetResponseTime(timeout time.Duration) ClientBuilder {
-	c.responseTimeout = timeout
+	c.responseTimeout = timeout * time.Second
 	return c
 }
 

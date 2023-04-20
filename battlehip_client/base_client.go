@@ -26,9 +26,8 @@ func (c *Client) Get(endpoint string, headers ...http.Header) (*Response, error)
 	return c.do(http.MethodGet, endpoint, getHeaders(headers...), nil)
 }
 
-func (c Client) Post(endpoint string, payload interface{}, headers ...http.Header) (*Response, error) {
-	//TODO implement me
-	panic("implement me")
+func (c *Client) Post(endpoint string, payload interface{}, headers ...http.Header) (*Response, error) {
+	return c.do(http.MethodPost, endpoint, getHeaders(headers...), payload)
 }
 
 func (c *Client) do(method, endpoint string, headers http.Header, body interface{}) (*Response, error) {
@@ -54,7 +53,7 @@ func (c *Client) do(method, endpoint string, headers http.Header, body interface
 
 	resp, err := c.getHttpClient().Do(request)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to do request: %w", err)
 	}
 
 	defer resp.Body.Close()
