@@ -11,6 +11,7 @@ import (
 
 type BattleshipClient interface {
 	InitGame(endpoint, nick, desc, targetNick, string, wpbot bool) error
+	GameStatus()
 }
 
 type BattleshipHTTPClient struct {
