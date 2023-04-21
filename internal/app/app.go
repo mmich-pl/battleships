@@ -4,6 +4,7 @@ import (
 	"battleships/internal/battlehip_client"
 	"battleships/internal/models"
 	"fmt"
+	gui "github.com/grupawp/warships-gui"
 	"log"
 	"time"
 )
@@ -15,7 +16,9 @@ const (
 )
 
 type App struct {
-	client *battlehip_client.BattleshipHTTPClient
+	client             *battlehip_client.BattleshipHTTPClient
+	PlayerBoardState   [10][10]gui.State
+	OpponentBoardState [10][10]gui.State
 }
 
 func New(c *battlehip_client.BattleshipHTTPClient) *App {
@@ -39,6 +42,13 @@ func (a *App) Run() error {
 	board, err := a.client.Board(BoardEndpoint)
 	if err != nil {
 		return fmt.Errorf("failed to get board: %w", err)
+	}
+
+	if p, o, err := setUpBoardsState(board); err != nil {
+		return err
+	} else {
+		a.OpponentBoardState = *o
+		a.PlayerBoardState = *p
 	}
 
 	log.Print(board)
