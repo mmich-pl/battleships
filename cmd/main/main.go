@@ -1,7 +1,7 @@
 package main
 
 import (
-	"battleships/battlehip_client"
+	"battleships/internal/battlehip_client"
 	"log"
 )
 

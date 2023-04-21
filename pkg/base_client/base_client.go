@@ -1,4 +1,4 @@
-package battlehip_client
+package base_client
 
 import (
 	"bytes"
@@ -11,26 +11,26 @@ import (
 	"sync"
 )
 
-type Client struct {
-	builder    *clientBuilder
-	clientOnce sync.Once // make sure that Client will be created only once
+type BaseHTTPClient struct {
+	Builder    *clientBuilder
+	clientOnce sync.Once // make sure that BaseHTTPClient will be created only once
 	client     *http.Client
 }
 
-type HTTPClient interface {
+type BaseClient interface {
 	Get(endpoint string, headers ...http.Header) (*Response, error)
 	Post(endpoint string, payload interface{}, headers ...http.Header) (*Response, error)
 }
 
-func (c *Client) Get(endpoint string, headers ...http.Header) (*Response, error) {
+func (c *BaseHTTPClient) Get(endpoint string, headers ...http.Header) (*Response, error) {
 	return c.do(http.MethodGet, endpoint, getHeaders(headers...), nil)
 }
 
-func (c *Client) Post(endpoint string, payload interface{}, headers ...http.Header) (*Response, error) {
+func (c *BaseHTTPClient) Post(endpoint string, payload interface{}, headers ...http.Header) (*Response, error) {
 	return c.do(http.MethodPost, endpoint, getHeaders(headers...), payload)
 }
 
-func (c *Client) do(method, endpoint string, headers http.Header, body interface{}) (*Response, error) {
+func (c *BaseHTTPClient) do(method, endpoint string, headers http.Header, body interface{}) (*Response, error) {
 	fullHeaders := c.getRequestHeaders(headers)
 
 	requestBody, err := c.marshalRequestBody(body)
@@ -38,7 +38,7 @@ func (c *Client) do(method, endpoint string, headers http.Header, body interface
 		return nil, fmt.Errorf("failed to create resp body: %w", err)
 	}
 
-	fullURL, err := url.JoinPath(c.builder.baseUrl, endpoint)
+	fullURL, err := url.JoinPath(c.Builder.baseUrl, endpoint)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create full URL: %w", err)
 	}
@@ -72,24 +72,24 @@ func (c *Client) do(method, endpoint string, headers http.Header, body interface
 	return &response, nil
 }
 
-func (c *Client) getHttpClient() *http.Client {
+func (c *BaseHTTPClient) getHttpClient() *http.Client {
 	c.clientOnce.Do(func() {
-		if c.builder.client != nil {
-			c.client = c.builder.client
+		if c.Builder.client != nil {
+			c.client = c.Builder.client
 			return
 		}
 		c.client = &http.Client{
 			Transport: &http.Transport{
-				ResponseHeaderTimeout: c.builder.responseTimeout,
-				DialContext:           (&net.Dialer{Timeout: c.builder.connectionTimeout}).DialContext,
+				ResponseHeaderTimeout: c.Builder.responseTimeout,
+				DialContext:           (&net.Dialer{Timeout: c.Builder.connectionTimeout}).DialContext,
 			},
-			Timeout: c.builder.connectionTimeout + c.builder.responseTimeout,
+			Timeout: c.Builder.connectionTimeout + c.Builder.responseTimeout,
 		}
 	})
 	return c.client
 }
 
-func (c *Client) marshalRequestBody(body interface{}) ([]byte, error) {
+func (c *BaseHTTPClient) marshalRequestBody(body interface{}) ([]byte, error) {
 	if body == nil {
 		return nil, nil
 	}

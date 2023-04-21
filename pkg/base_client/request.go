@@ -1,4 +1,4 @@
-package battlehip_client
+package base_client
 
 import (
 	"encoding/json"

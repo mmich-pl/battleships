@@ -1,4 +1,4 @@
-package battlehip_client
+package base_client
 
 import (
 	"net/http"
@@ -11,11 +11,11 @@ type ClientBuilder interface {
 	SetResponseTime(timeout time.Duration) ClientBuilder
 	SetHttpClient(c *http.Client) ClientBuilder
 	SetBaseURL(URL string) ClientBuilder
-	Build() Client
+	Build() BaseHTTPClient
 }
 
 type clientBuilder struct {
-	headers           http.Header
+	Headers           http.Header
 	connectionTimeout time.Duration
 	responseTimeout   time.Duration
 	baseUrl           string
@@ -33,7 +33,7 @@ func (c *clientBuilder) SetHttpClient(client *http.Client) ClientBuilder {
 }
 
 func (c *clientBuilder) SetHeaders(headers http.Header) ClientBuilder {
-	c.headers = headers
+	c.Headers = headers
 	return c
 }
 
@@ -47,9 +47,9 @@ func (c *clientBuilder) SetResponseTime(timeout time.Duration) ClientBuilder {
 	return c
 }
 
-func (c *clientBuilder) Build() Client {
-	client := Client{
-		builder: c,
+func (c *clientBuilder) Build() BaseHTTPClient {
+	client := BaseHTTPClient{
+		Builder: c,
 	}
 	return client
 }

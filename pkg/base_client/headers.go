@@ -1,4 +1,4 @@
-package battlehip_client
+package base_client
 
 import "net/http"
 
@@ -9,11 +9,11 @@ func getHeaders(headers ...http.Header) http.Header {
 	return http.Header{}
 }
 
-func (c *Client) getRequestHeaders(requestHeaders http.Header) http.Header {
+func (c *BaseHTTPClient) getRequestHeaders(requestHeaders http.Header) http.Header {
 	result := make(http.Header)
 
 	// Add headers from the HTTP client instance
-	for header, value := range c.builder.headers {
+	for header, value := range c.Builder.Headers {
 		if len(value) > 0 {
 			result.Set(header, value[0])
 		}
