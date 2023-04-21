@@ -64,12 +64,17 @@ func RenderBoards(status *models.FullStatusResponse, playerState, opponentState 
 		return fmt.Errorf("failed to render player board: %w", err)
 	}
 
+	playerMove, err := drawer.NewText(2, 26, nil)
+	if err != nil {
+		return fmt.Errorf("failed to render player move: %w", err)
+	}
+
 	opponentNick, err := drawer.NewText(2, 1, nil)
 	if err != nil {
 		return fmt.Errorf("failed to render player nick: %w", err)
 	}
 
-	opponentDescription, err := drawer.NewText(2, 3, nil)
+	opponentDescription, err := drawer.NewText(2, 2, nil)
 	if err != nil {
 		return fmt.Errorf("failed to render player description: %w", err)
 	}
@@ -80,18 +85,22 @@ func RenderBoards(status *models.FullStatusResponse, playerState, opponentState 
 	}
 
 	defer drawer.RemoveBoard(ctx, playerBoard)
+	defer drawer.RemoveText(ctx, playerMove)
 	defer drawer.RemoveBoard(ctx, opponentBoard)
 	defer drawer.RemoveText(ctx, opponentNick)
 	defer drawer.RemoveText(ctx, opponentDescription)
-
-	drawer.DrawBoard(ctx, playerBoard, *playerState)
-	drawer.DrawBoard(ctx, opponentBoard, *opponentState)
 
 	opponentNick.SetText(status.Opponent)
 	opponentDescription.SetText(status.OpponentDescription)
 
 	drawer.DrawText(ctx, opponentNick)
 	drawer.DrawText(ctx, opponentDescription)
+
+	drawer.DrawBoard(ctx, playerBoard, *playerState)
+	coords := drawer.DrawBoardAndCatchCoords(ctx, opponentBoard, *opponentState)
+
+	playerMove.SetText(fmt.Sprintf("Ready! Aim at %v! FIRE!", coords))
+	drawer.DrawText(ctx, playerMove)
 
 	for {
 		if !drawer.IsGameRunning() {

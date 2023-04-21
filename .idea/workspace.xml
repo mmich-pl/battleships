@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="create mocks for Battleship Client">
+    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="add opponent description to board">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/app/board.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/board_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/battlehip_client/battleship_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/battlehip_client/battleship_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/models/battleship_models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/models/battleship_models.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +53,7 @@
       <recent name="$PROJECT_DIR$/cmd/main" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Test.TestRenderBoards in battleships/internal/app">
+  <component name="RunManager" selected="Go Build.go build battleships/cmd/main">
     <configuration name="go build battleships/cmd/main" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="battleships" />
       <working_directory value="$PROJECT_DIR$" />
@@ -105,9 +101,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build battleships/cmd/main" />
         <item itemvalue="Go Test.TestRenderBoards in battleships/internal/app" />
         <item itemvalue="Go Test.TestSetUpBoard in battleships/internal/app" />
-        <item itemvalue="Go Build.go build battleships/cmd/main" />
         <item itemvalue="Go Test.TestMapCoords in battleships/internal/app" />
       </list>
     </recent_temporary>
@@ -137,7 +133,8 @@
     <MESSAGE value="add board creation functions" />
     <MESSAGE value="render boards" />
     <MESSAGE value="create mocks for Battleship Client" />
-    <option name="LAST_COMMIT_MESSAGE" value="create mocks for Battleship Client" />
+    <MESSAGE value="add opponent description to board" />
+    <option name="LAST_COMMIT_MESSAGE" value="add opponent description to board" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
