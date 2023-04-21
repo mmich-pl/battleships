@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="change project structure">
-      <change afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
+    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="create App struct">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/main/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/battlehip_client/battleship_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/battlehip_client/battleship_client.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/models/battleship_models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/models/battleship_models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/base_client/base_client_builder.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/base_client/base_client_builder.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +44,9 @@
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
     "last_opened_file_path": "/home/mmich/Documents/dev/battleships",
-    "settings.editor.selected.configurable": "preferences.keymap"
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "settings.editor.selected.configurable": "editing.templates"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -77,7 +79,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="change project layout" />
     <MESSAGE value="change project structure" />
-    <option name="LAST_COMMIT_MESSAGE" value="change project structure" />
+    <MESSAGE value="create App struct" />
+    <option name="LAST_COMMIT_MESSAGE" value="create App struct" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

@@ -3,15 +3,15 @@ package battlehip_client
 import (
 	"battleships/internal/models"
 	"battleships/pkg/base_client"
+	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"time"
 )
 
 type BattleshipClient interface {
 	InitGame(endpoint, nick, desc, targetNick, string, wpbot bool) error
-	GameStatus()
+	GameStatus(endpoint string) (*models.StatusData, error)
 }
 
 type BattleshipHTTPClient struct {
@@ -20,16 +20,16 @@ type BattleshipHTTPClient struct {
 }
 
 func NewBattleshipClient(baseURL string, responseTimeout, connectionTimeout time.Duration) *BattleshipHTTPClient {
-	headers := make(http.Header)
-	headers.Set("Content-Type", "application/json")
-	headers.Set("User-Agent", "go")
+	headers := map[string]string{
+		"Content-Type": "application/json",
+	}
 	client := base_client.NewBuilder().
-		SetHeaders(headers).
+		SetHeaderFromMap(headers).
 		SetConnectionTimeout(connectionTimeout).
 		SetResponseTime(responseTimeout).
 		SetBaseURL(baseURL).
 		Build()
-	return &BattleshipHTTPClient{client: &client}
+	return &BattleshipHTTPClient{client: client}
 }
 
 func (b *BattleshipHTTPClient) InitGame(endpoint, nick, desc, targetNick string, wpbot bool) error {
@@ -49,4 +49,18 @@ func (b *BattleshipHTTPClient) InitGame(endpoint, nick, desc, targetNick string,
 	b.token = resp.Headers.Get("X-Auth-Token")
 	log.Printf("BaseHTTPClient's token: %s", b.token)
 	return nil
+}
+
+func (b *BattleshipHTTPClient) GameStatus(endpoint string) (*models.StatusData, error) {
+	b.client.Builder.AddHeader("X-Auth-Token", b.token)
+	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform GET request: %w", err)
+	}
+	var status *models.StatusData
+	if err := json.Unmarshal(resp.Body, &status); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+	}
+
+	return status, nil
 }

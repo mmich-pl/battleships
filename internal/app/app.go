@@ -3,10 +3,12 @@ package app
 import (
 	"battleships/internal/battlehip_client"
 	"fmt"
+	"log"
 )
 
 const (
-	InitEndpoint = "/game"
+	InitEndpoint       = "/game"
+	GameStatusEndpoint = "/game"
 )
 
 type App struct {
@@ -23,5 +25,12 @@ func (a *App) Run() error {
 	if err != nil {
 		return fmt.Errorf("failed to init game: %w", err)
 	}
+
+	status, err := a.client.GameStatus(GameStatusEndpoint)
+	if err != nil {
+		return fmt.Errorf("failed to get game status: %w", err)
+	}
+
+	log.Print(status)
 	return nil
 }
