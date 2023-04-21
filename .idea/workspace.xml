@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="add waiting for game start mechanic to main app loop">
-      <change afterPath="$PROJECT_DIR$/internal/app/board.go" afterDir="false" />
+    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="add board creation functions">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/battlehip_client/battleship_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/battlehip_client/battleship_client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/board.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +54,7 @@
       <recent name="$PROJECT_DIR$/cmd/main" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Go Build.go build battleships/cmd/main">
     <configuration name="go build battleships/cmd/main" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="battleships" />
       <working_directory value="$PROJECT_DIR$" />
@@ -66,9 +64,22 @@
       <filePath value="$PROJECT_DIR$/cmd/main/main.go" />
       <method v="2" />
     </configuration>
+    <configuration name="TestMapCoords in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="battleships" />
+      <working_directory value="$PROJECT_DIR$/internal/app" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="battleships/internal/app" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestMapCoords\E$" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build battleships/cmd/main" />
+        <item itemvalue="Go Test.TestMapCoords in battleships/internal/app" />
       </list>
     </recent_temporary>
   </component>
@@ -82,7 +93,9 @@
     <MESSAGE value="create App struct" />
     <MESSAGE value="implement GameStatus function in BattleshipHTTPClient" />
     <MESSAGE value="add waiting for game start mechanic to main app loop" />
-    <option name="LAST_COMMIT_MESSAGE" value="add waiting for game start mechanic to main app loop" />
+    <MESSAGE value="implement board request" />
+    <MESSAGE value="add board creation functions" />
+    <option name="LAST_COMMIT_MESSAGE" value="add board creation functions" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
@@ -91,9 +104,9 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/battlehip_client/battleship_client.go</url>
-          <line>76</line>
-          <option name="timeStamp" value="1" />
+          <url>file://$PROJECT_DIR$/internal/app/board.go</url>
+          <line>52</line>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

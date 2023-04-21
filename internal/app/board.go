@@ -1,9 +1,11 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	gui "github.com/grupawp/warships-gui"
 	"golang.org/x/sync/errgroup"
+	"log"
 	"strconv"
 )
 
@@ -32,10 +34,12 @@ func setUpBoardsState(board []string) (*[10][10]gui.State, *[10][10]gui.State, e
 
 	g := new(errgroup.Group)
 	for _, coords := range board {
+		c := coords
 		g.Go(func() error {
-			if x, y, err := mapCoords(coords); err != nil {
+			if x, y, err := mapCoords(c); err != nil {
 				return err
 			} else {
+				log.Printf("set ship om position: [%d, %d]", x, y)
 				playerBoardState[x][y] = gui.Ship
 				return nil
 			}
@@ -47,4 +51,31 @@ func setUpBoardsState(board []string) (*[10][10]gui.State, *[10][10]gui.State, e
 	}
 
 	return &playerBoardState, &opponentBoardState, nil
+}
+
+func RenderBoards(playerState, opponentState *[10][10]gui.State) error {
+	ctx := context.TODO()
+
+	drawer := gui.NewDrawer(&gui.Config{})
+
+	playerBoard, err := drawer.NewBoard(2, 4, &gui.BoardConfig{})
+	if err != nil {
+		return fmt.Errorf("failed to render player board: %w", err)
+	}
+
+	opponentBoard, err := drawer.NewBoard(50, 4, &gui.BoardConfig{})
+	if err != nil {
+		return fmt.Errorf("failed to render opponent board: %w", err)
+	}
+
+	defer drawer.RemoveBoard(ctx, playerBoard)
+
+	drawer.DrawBoard(ctx, playerBoard, *playerState)
+	drawer.DrawBoard(ctx, opponentBoard, *opponentState)
+
+	for {
+		if !drawer.IsGameRunning() {
+			return nil
+		}
+	}
 }

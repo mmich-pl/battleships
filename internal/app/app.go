@@ -51,7 +51,12 @@ func (a *App) Run() error {
 		a.PlayerBoardState = *p
 	}
 
-	log.Print(board)
+	log.Println(a.PlayerBoardState)
+
+	err = RenderBoards(&a.PlayerBoardState, &a.OpponentBoardState)
+	if err != nil {
+		return fmt.Errorf("failed to render board: %w", err)
+	}
 	return nil
 }
 
