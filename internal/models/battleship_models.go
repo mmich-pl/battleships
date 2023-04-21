@@ -8,7 +8,7 @@ type InitialPayload struct {
 	Wpbot      bool     `json:"wpbot"`
 }
 
-type StatusData struct {
+type StatusResponse struct {
 	Desc                string   `json:"desc"`
 	GameStatus          string   `json:"game_status"`
 	LastGameStatus      string   `json:"last_game_status"`

@@ -3,7 +3,6 @@ package battlehip_client
 import (
 	"battleships/internal/models"
 	"battleships/pkg/base_client"
-	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -11,7 +10,7 @@ import (
 
 type BattleshipClient interface {
 	InitGame(endpoint, nick, desc, targetNick, string, wpbot bool) error
-	GameStatus(endpoint string) (*models.StatusData, error)
+	GameStatus(endpoint string) (*models.StatusResponse, error)
 }
 
 type BattleshipHTTPClient struct {
@@ -51,16 +50,16 @@ func (b *BattleshipHTTPClient) InitGame(endpoint, nick, desc, targetNick string,
 	return nil
 }
 
-func (b *BattleshipHTTPClient) GameStatus(endpoint string) (*models.StatusData, error) {
+func (b *BattleshipHTTPClient) GameStatus(endpoint string) (*models.StatusResponse, error) {
 	b.client.Builder.AddHeader("X-Auth-Token", b.token)
 	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform GET request: %w", err)
 	}
-	var status *models.StatusData
-	if err := json.Unmarshal(resp.Body, &status); err != nil {
+	var status models.StatusResponse
+	if err := resp.UnmarshalJson(&status); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 
-	return status, nil
+	return &status, nil
 }
