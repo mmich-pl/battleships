@@ -10,9 +10,10 @@ import (
 )
 
 const (
-	InitEndpoint       = "/game"
-	GameStatusEndpoint = "/game"
-	BoardEndpoint      = "/game/board"
+	InitEndpoint        = "/game"
+	GameStatusEndpoint  = "/game"
+	BoardEndpoint       = "/game/board"
+	OpponentDescription = "/game/desc"
 )
 
 type App struct {
@@ -37,6 +38,7 @@ func (a *App) Run() error {
 	if err != nil {
 		return fmt.Errorf("failed to get game status: %w", err)
 	}
+
 	log.Print(status)
 
 	board, err := a.client.Board(BoardEndpoint)
@@ -51,24 +53,22 @@ func (a *App) Run() error {
 		a.PlayerBoardState = *p
 	}
 
-	log.Println(a.PlayerBoardState)
-
-	err = RenderBoards(&a.PlayerBoardState, &a.OpponentBoardState)
+	err = RenderBoards(status, &a.PlayerBoardState, &a.OpponentBoardState)
 	if err != nil {
 		return fmt.Errorf("failed to render board: %w", err)
 	}
 	return nil
 }
 
-func (a *App) waitForGameStart(err error) (*models.StatusResponse, error) {
-	status, err := a.client.GameStatus(GameStatusEndpoint)
+func (a *App) waitForGameStart(err error) (*models.FullStatusResponse, error) {
+	status, err := a.client.FullGameStatus(OpponentDescription)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get game status: %w", err)
 	}
 
 	for status.GameStatus != "game_in_progress" {
 		time.Sleep(time.Second)
-		status, err = a.client.GameStatus(GameStatusEndpoint)
+		status, err = a.client.FullGameStatus(OpponentDescription)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get game status: %w", err)
 		}

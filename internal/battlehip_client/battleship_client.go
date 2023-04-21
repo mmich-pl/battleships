@@ -8,9 +8,10 @@ import (
 	"time"
 )
 
+//go:generate mockery --name BattleshipClient
 type BattleshipClient interface {
 	InitGame(endpoint, nick, desc, targetNick string, wpbot bool) error
-	GameStatus(endpoint string) (*models.StatusResponse, error)
+	FullGameStatus(endpoint string) (*models.FullStatusResponse, error)
 	Board(endpoint string) ([]string, error)
 }
 
@@ -52,16 +53,15 @@ func (b *BattleshipHTTPClient) InitGame(endpoint, nick, desc, targetNick string,
 	return nil
 }
 
-func (b *BattleshipHTTPClient) GameStatus(endpoint string) (*models.StatusResponse, error) {
+func (b *BattleshipHTTPClient) FullGameStatus(endpoint string) (*models.FullStatusResponse, error) {
 	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform GET request: %w", err)
 	}
-	var status models.StatusResponse
+	var status models.FullStatusResponse
 	if err := resp.UnmarshalJson(&status); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
-
 	return &status, nil
 }
 
@@ -77,6 +77,6 @@ func (b *BattleshipHTTPClient) Board(endpoint string) ([]string, error) {
 	if err := resp.UnmarshalJson(&board); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal board: %w", err)
 	}
-
+	log.Println(board)
 	return board.Board, nil
 }
