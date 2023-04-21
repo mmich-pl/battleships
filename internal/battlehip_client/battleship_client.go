@@ -9,8 +9,9 @@ import (
 )
 
 type BattleshipClient interface {
-	InitGame(endpoint, nick, desc, targetNick, string, wpbot bool) error
+	InitGame(endpoint, nick, desc, targetNick string, wpbot bool) error
 	GameStatus(endpoint string) (*models.StatusResponse, error)
+	Board(endpoint string) ([]string, error)
 }
 
 type BattleshipHTTPClient struct {
@@ -46,12 +47,12 @@ func (b *BattleshipHTTPClient) InitGame(endpoint, nick, desc, targetNick string,
 	}
 
 	b.token = resp.Headers.Get("X-Auth-Token")
+	b.client.Builder.AddHeader("X-Auth-Token", b.token)
 	log.Printf("BaseHTTPClient's token: %s", b.token)
 	return nil
 }
 
 func (b *BattleshipHTTPClient) GameStatus(endpoint string) (*models.StatusResponse, error) {
-	b.client.Builder.AddHeader("X-Auth-Token", b.token)
 	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform GET request: %w", err)
@@ -62,4 +63,20 @@ func (b *BattleshipHTTPClient) GameStatus(endpoint string) (*models.StatusRespon
 	}
 
 	return &status, nil
+}
+
+func (b *BattleshipHTTPClient) Board(endpoint string) ([]string, error) {
+	type Board struct {
+		Board []string `json:"board"`
+	}
+	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform GET request: %w", err)
+	}
+	board := Board{Board: make([]string, 20)}
+	if err := resp.UnmarshalJson(&board); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal board: %w", err)
+	}
+
+	return board.Board, nil
 }

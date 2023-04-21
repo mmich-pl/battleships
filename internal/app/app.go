@@ -11,6 +11,7 @@ import (
 const (
 	InitEndpoint       = "/game"
 	GameStatusEndpoint = "/game"
+	BoardEndpoint      = "/game/board"
 )
 
 type App struct {
@@ -31,10 +32,16 @@ func (a *App) Run() error {
 
 	status, err := a.waitForGameStart(err)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to get game status: %w", err)
+	}
+	log.Print(status)
+
+	board, err := a.client.Board(BoardEndpoint)
+	if err != nil {
+		return fmt.Errorf("failed to get board: %w", err)
 	}
 
-	log.Print(status)
+	log.Print(board)
 	return nil
 }
 
