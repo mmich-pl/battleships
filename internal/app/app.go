@@ -4,7 +4,7 @@ import (
 	"battleships/internal/battlehip_client"
 	"battleships/internal/models"
 	"fmt"
-	gui "github.com/grupawp/warships-gui"
+	gui "github.com/grupawp/warships-gui/v2"
 	"log"
 	"time"
 )
@@ -53,10 +53,7 @@ func (a *App) Run() error {
 		a.PlayerBoardState = *p
 	}
 
-	err = RenderBoards(status, &a.PlayerBoardState, &a.OpponentBoardState)
-	if err != nil {
-		return fmt.Errorf("failed to render board: %w", err)
-	}
+	RenderBoards(status, a.PlayerBoardState, a.OpponentBoardState)
 	return nil
 }
 

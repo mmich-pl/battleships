@@ -4,7 +4,7 @@ import (
 	"battleships/internal/models"
 	"context"
 	"fmt"
-	gui "github.com/grupawp/warships-gui"
+	gui "github.com/grupawp/warships-gui/v2"
 	"golang.org/x/sync/errgroup"
 	"log"
 	"strconv"
@@ -54,57 +54,32 @@ func setUpBoardsState(board []string) (*[10][10]gui.State, *[10][10]gui.State, e
 	return &playerBoardState, &opponentBoardState, nil
 }
 
-func RenderBoards(status *models.FullStatusResponse, playerState, opponentState *[10][10]gui.State) error {
-	ctx := context.TODO()
+func RenderBoards(status *models.FullStatusResponse, playerState, opponentState [10][10]gui.State) {
+	ui := gui.NewGUI(true)
+	playerBoard := gui.NewBoard(2, 6, nil)
+	playerBoard.SetStates(playerState)
+	opponentBoard := gui.NewBoard(50, 6, nil)
+	opponentBoard.SetStates(opponentState)
 
-	drawer := gui.NewDrawer(&gui.Config{})
+	ui.Draw(gui.NewText(2, 28, status.Nick, nil))               // player nick
+	ui.Draw(gui.NewText(2, 29, status.Desc, nil))               // player description
+	ui.Draw(gui.NewText(2, 3, status.Opponent, nil))            // opponent nick
+	ui.Draw(gui.NewText(2, 4, status.OpponentDescription, nil)) // opponent description
 
-	playerBoard, err := drawer.NewBoard(2, 4, &gui.BoardConfig{})
-	if err != nil {
-		return fmt.Errorf("failed to render player board: %w", err)
-	}
+	ui.Draw(playerBoard)
+	ui.Draw(opponentBoard)
 
-	playerMove, err := drawer.NewText(2, 26, nil)
-	if err != nil {
-		return fmt.Errorf("failed to render player move: %w", err)
-	}
+	playerMove := gui.NewText(2, 30, "Press on any coordinate to log it.", nil)
+	ui.Draw(playerMove)
 
-	opponentNick, err := drawer.NewText(2, 1, nil)
-	if err != nil {
-		return fmt.Errorf("failed to render player nick: %w", err)
-	}
-
-	opponentDescription, err := drawer.NewText(2, 2, nil)
-	if err != nil {
-		return fmt.Errorf("failed to render player description: %w", err)
-	}
-
-	opponentBoard, err := drawer.NewBoard(50, 4, &gui.BoardConfig{})
-	if err != nil {
-		return fmt.Errorf("failed to render opponent board: %w", err)
-	}
-
-	defer drawer.RemoveBoard(ctx, playerBoard)
-	defer drawer.RemoveText(ctx, playerMove)
-	defer drawer.RemoveBoard(ctx, opponentBoard)
-	defer drawer.RemoveText(ctx, opponentNick)
-	defer drawer.RemoveText(ctx, opponentDescription)
-
-	opponentNick.SetText(status.Opponent)
-	opponentDescription.SetText(status.OpponentDescription)
-
-	drawer.DrawText(ctx, opponentNick)
-	drawer.DrawText(ctx, opponentDescription)
-
-	drawer.DrawBoard(ctx, playerBoard, *playerState)
-	coords := drawer.DrawBoardAndCatchCoords(ctx, opponentBoard, *opponentState)
-
-	playerMove.SetText(fmt.Sprintf("Ready! Aim at %v! FIRE!", coords))
-	drawer.DrawText(ctx, playerMove)
-
-	for {
-		if !drawer.IsGameRunning() {
-			return nil
+	go func() {
+		for {
+			char := opponentBoard.Listen(context.TODO())
+			playerMove.SetText(fmt.Sprintf("Ready! Aim at %v! FIRE!", char))
+			ui.Log("Coordinate: %s", char) // logs are displayed after the game exits
 		}
-	}
+	}()
+
+	ui.Start(nil)
+
 }

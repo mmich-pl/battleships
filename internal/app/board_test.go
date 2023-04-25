@@ -3,7 +3,7 @@ package app
 import (
 	"battleships/internal/battlehip_client"
 	"battleships/internal/models"
-	gui "github.com/grupawp/warships-gui"
+	gui "github.com/grupawp/warships-gui/v2"
 	"github.com/stretchr/testify/assert"
 	"log"
 	"testing"
@@ -124,7 +124,7 @@ func TestRenderBoards(t *testing.T) {
 			log.Fatal(err)
 		}
 
-		_ = RenderBoards(status, player, opponent)
+		RenderBoards(status, *player, *opponent)
 	})
 
 }
