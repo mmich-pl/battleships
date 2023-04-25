@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="add opponent description to board">
+    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="update ui library to new version">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/app/board.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/board_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -155,7 +153,8 @@
     <MESSAGE value="render boards" />
     <MESSAGE value="create mocks for Battleship Client" />
     <MESSAGE value="add opponent description to board" />
-    <option name="LAST_COMMIT_MESSAGE" value="add opponent description to board" />
+    <MESSAGE value="update ui library to new version" />
+    <option name="LAST_COMMIT_MESSAGE" value="update ui library to new version" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

@@ -5,9 +5,11 @@ import (
 	"context"
 	"fmt"
 	gui "github.com/grupawp/warships-gui/v2"
+	"github.com/mitchellh/go-wordwrap"
 	"golang.org/x/sync/errgroup"
 	"log"
 	"strconv"
+	"strings"
 )
 
 func mapCoords(coordinate string) (int, int, error) {
@@ -54,22 +56,41 @@ func setUpBoardsState(board []string) (*[10][10]gui.State, *[10][10]gui.State, e
 	return &playerBoardState, &opponentBoardState, nil
 }
 
+func RenderDescription(g gui.GUI, playerDescription, opponentDescription string) {
+	ypos := 25
+
+	fragments := [2]struct {
+		desc []string
+		xpos int
+	}{
+		{strings.Split(wordwrap.WrapString(playerDescription, 40), "\n"), 2},
+		{strings.Split(wordwrap.WrapString(opponentDescription, 40), "\n"), 50},
+	}
+	for _, frag := range fragments {
+		for i, f := range frag.desc {
+			g.Draw(gui.NewText(frag.xpos, ypos+i, f, &gui.TextConfig{
+				FgColor: gui.White,
+				BgColor: gui.Grey,
+			}))
+		}
+	}
+
+}
+
 func RenderBoards(status *models.FullStatusResponse, playerState, opponentState [10][10]gui.State) {
 	ui := gui.NewGUI(true)
-	playerBoard := gui.NewBoard(2, 6, nil)
+	playerBoard := gui.NewBoard(2, 3, nil)
 	playerBoard.SetStates(playerState)
-	opponentBoard := gui.NewBoard(50, 6, nil)
+	opponentBoard := gui.NewBoard(50, 3, nil)
 	opponentBoard.SetStates(opponentState)
 
-	ui.Draw(gui.NewText(2, 28, status.Nick, nil))               // player nick
-	ui.Draw(gui.NewText(2, 29, status.Desc, nil))               // player description
-	ui.Draw(gui.NewText(2, 3, status.Opponent, nil))            // opponent nick
-	ui.Draw(gui.NewText(2, 4, status.OpponentDescription, nil)) // opponent description
+	ui.Draw(gui.NewText(2, 1, fmt.Sprintf("%s vs %s", status.Nick, status.Opponent), nil))
+	RenderDescription(*ui, status.Desc, status.OpponentDescription)
 
 	ui.Draw(playerBoard)
 	ui.Draw(opponentBoard)
 
-	playerMove := gui.NewText(2, 30, "Press on any coordinate to log it.", nil)
+	playerMove := gui.NewText(2, 29, "Press on any coordinate to log it.", nil)
 	ui.Draw(playerMove)
 
 	go func() {
