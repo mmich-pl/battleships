@@ -67,12 +67,28 @@ func (a *App) waitForGameStart(err error) (*models.StatusResponse, error) {
 		return nil, fmt.Errorf("failed to get game status: %w", err)
 	}
 
-	for status.GameStatus != "game_in_progress" {
-		time.Sleep(time.Second)
-		status, err = a.client.GameStatus(GameStatusEndpoint)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get game status: %w", err)
-		}
+	type channelResponse struct {
+		*models.StatusResponse
+		error
 	}
-	return status, nil
+
+	ticker := time.NewTicker(time.Second)
+	channel := make(chan channelResponse, 1)
+
+	go func() {
+		for range ticker.C {
+			if status.GameStatus == "game_in_progress" {
+				channel <- channelResponse{status, nil}
+				break
+			}
+
+			status, err = a.client.GameStatus(GameStatusEndpoint)
+			if err != nil {
+				channel <- channelResponse{nil, err}
+			}
+		}
+	}()
+
+	resp := <-channel
+	return resp.StatusResponse, resp.error
 }
