@@ -46,7 +46,7 @@ func (a *App) Run() error {
 		return fmt.Errorf("failed to get board: %w", err)
 	}
 
-	if p, o, err := setUpBoardsState(board); err != nil {
+	if p, o, err := a.setUpBoardsState(board); err != nil {
 		return err
 	} else {
 		a.OpponentBoardState = *o

@@ -80,3 +80,19 @@ func (b *BattleshipHTTPClient) Board(endpoint string) ([]string, error) {
 	log.Println(board)
 	return board.Board, nil
 }
+
+func (b *BattleshipHTTPClient) Fire(endpoint, coords string) (string, error) {
+	resp, err := b.client.Post(endpoint, coords, b.client.Builder.Headers)
+	if err != nil {
+		return "", fmt.Errorf("failed to perform POST rquest: %w", err)
+	}
+
+	result := struct {
+		Result string `json:"result"`
+	}{}
+	if err := resp.UnmarshalJson(&resp); err != nil {
+		return "", fmt.Errorf("failed to unmarshal hit result: %w", err)
+	}
+	log.Print(result.Result)
+	return result.Result, nil
+}
