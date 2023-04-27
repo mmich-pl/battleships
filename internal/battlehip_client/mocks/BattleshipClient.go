@@ -39,20 +39,46 @@ func (_m *BattleshipClient) Board(endpoint string) ([]string, error) {
 	return r0, r1
 }
 
-// FullGameStatus provides a mock function with given fields: endpoint
-func (_m *BattleshipClient) FullGameStatus(endpoint string) (*models.FullStatusResponse, error) {
+// Description provides a mock function with given fields: endpoint
+func (_m *BattleshipClient) Description(endpoint string) (*models.DescriptionResponse, error) {
 	ret := _m.Called(endpoint)
 
-	var r0 *models.FullStatusResponse
+	var r0 *models.DescriptionResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*models.FullStatusResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (*models.DescriptionResponse, error)); ok {
 		return rf(endpoint)
 	}
-	if rf, ok := ret.Get(0).(func(string) *models.FullStatusResponse); ok {
+	if rf, ok := ret.Get(0).(func(string) *models.DescriptionResponse); ok {
 		r0 = rf(endpoint)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.FullStatusResponse)
+			r0 = ret.Get(0).(*models.DescriptionResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(endpoint)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FullGameStatus provides a mock function with given fields: endpoint
+func (_m *BattleshipClient) FullGameStatus(endpoint string) (*models.StatusResponse, error) {
+	ret := _m.Called(endpoint)
+
+	var r0 *models.StatusResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) (*models.StatusResponse, error)); ok {
+		return rf(endpoint)
+	}
+	if rf, ok := ret.Get(0).(func(string) *models.StatusResponse); ok {
+		r0 = rf(endpoint)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.StatusResponse)
 		}
 	}
 
