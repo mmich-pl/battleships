@@ -39,6 +39,10 @@ func (a *App) Run() error {
 		return fmt.Errorf("failed to get game status: %w", err)
 	}
 
+	desc, err := a.client.Descriptions(OpponentDescription)
+	if err != nil {
+		return fmt.Errorf("failed to get game status: %w", err)
+	}
 	log.Print(status)
 
 	board, err := a.client.Board(BoardEndpoint)
@@ -53,19 +57,19 @@ func (a *App) Run() error {
 		a.PlayerBoardState = *p
 	}
 
-	RenderBoards(status, a.PlayerBoardState, a.OpponentBoardState)
+	RenderBoards(status, desc, a.PlayerBoardState, a.OpponentBoardState)
 	return nil
 }
 
-func (a *App) waitForGameStart(err error) (*models.FullStatusResponse, error) {
-	status, err := a.client.FullGameStatus(OpponentDescription)
+func (a *App) waitForGameStart(err error) (*models.StatusResponse, error) {
+	status, err := a.client.GameStatus(GameStatusEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get game status: %w", err)
 	}
 
 	for status.GameStatus != "game_in_progress" {
 		time.Sleep(time.Second)
-		status, err = a.client.FullGameStatus(OpponentDescription)
+		status, err = a.client.GameStatus(GameStatusEndpoint)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get game status: %w", err)
 		}

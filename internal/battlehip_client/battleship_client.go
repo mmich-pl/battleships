@@ -11,7 +11,8 @@ import (
 //go:generate mockery --name BattleshipClient
 type BattleshipClient interface {
 	InitGame(endpoint, nick, desc, targetNick string, wpbot bool) error
-	FullGameStatus(endpoint string) (*models.FullStatusResponse, error)
+	Description(endpoint string) (*models.DescriptionResponse, error)
+	FullGameStatus(endpoint string) (*models.StatusResponse, error)
 	Board(endpoint string) ([]string, error)
 }
 
@@ -53,12 +54,24 @@ func (b *BattleshipHTTPClient) InitGame(endpoint, nick, desc, targetNick string,
 	return nil
 }
 
-func (b *BattleshipHTTPClient) FullGameStatus(endpoint string) (*models.FullStatusResponse, error) {
+func (b *BattleshipHTTPClient) Descriptions(endpoint string) (*models.DescriptionResponse, error) {
 	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform GET request: %w", err)
 	}
-	var status models.FullStatusResponse
+	var descriptions models.DescriptionResponse
+	if err := resp.UnmarshalJson(&descriptions); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+	}
+	return &descriptions, nil
+}
+
+func (b *BattleshipHTTPClient) GameStatus(endpoint string) (*models.StatusResponse, error) {
+	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform GET request: %w", err)
+	}
+	var status models.StatusResponse
 	if err := resp.UnmarshalJson(&status); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}

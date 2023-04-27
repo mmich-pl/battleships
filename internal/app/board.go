@@ -2,7 +2,6 @@ package app
 
 import (
 	"battleships/internal/models"
-	"context"
 	"fmt"
 	gui "github.com/grupawp/warships-gui/v2"
 	"github.com/mitchellh/go-wordwrap"
@@ -10,6 +9,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 func mapCoords(coordinate string) (int, int, error) {
@@ -28,7 +28,7 @@ func mapCoords(coordinate string) (int, int, error) {
 	return x, y - 1, nil
 }
 
-func setUpBoardsState(board []string) (*[10][10]gui.State, *[10][10]gui.State, error) {
+func (a *App) setUpBoardsState(board []string) (*[10][10]gui.State, *[10][10]gui.State, error) {
 	var playerBoardState, opponentBoardState [10][10]gui.State
 	for i := 0; i < len(playerBoardState); i++ {
 		playerBoardState[i] = [10]gui.State{}
@@ -57,50 +57,50 @@ func setUpBoardsState(board []string) (*[10][10]gui.State, *[10][10]gui.State, e
 }
 
 func RenderDescription(g gui.GUI, playerDescription, opponentDescription string) {
-	ypos := 25
 
 	fragments := [2]struct {
 		desc []string
-		xpos int
+		x    int
+		y    int
 	}{
-		{strings.Split(wordwrap.WrapString(playerDescription, 40), "\n"), 2},
-		{strings.Split(wordwrap.WrapString(opponentDescription, 40), "\n"), 50},
+		{strings.Split(wordwrap.WrapString(playerDescription, 40), "\n"), 2, 27},
+		{strings.Split(wordwrap.WrapString(opponentDescription, 40), "\n"), 50, 27},
 	}
 	for _, frag := range fragments {
 		for i, f := range frag.desc {
-			g.Draw(gui.NewText(frag.xpos, ypos+i, f, &gui.TextConfig{
+			g.Draw(gui.NewText(frag.x, frag.y+i, f, &gui.TextConfig{
 				FgColor: gui.White,
 				BgColor: gui.Grey,
 			}))
 		}
 	}
-
 }
 
-func RenderBoards(status *models.FullStatusResponse, playerState, opponentState [10][10]gui.State) {
+func RenderBoards(status *models.StatusResponse, description *models.DescriptionResponse, playerState, opponentState [10][10]gui.State) {
 	ui := gui.NewGUI(true)
-	playerBoard := gui.NewBoard(2, 3, nil)
+	playerBoard := gui.NewBoard(2, 5, nil)
 	playerBoard.SetStates(playerState)
-	opponentBoard := gui.NewBoard(50, 3, nil)
+	opponentBoard := gui.NewBoard(50, 5, nil)
 	opponentBoard.SetStates(opponentState)
 
-	ui.Draw(gui.NewText(2, 1, fmt.Sprintf("%s vs %s", status.Nick, status.Opponent), nil))
-	RenderDescription(*ui, status.Desc, status.OpponentDescription)
+	ui.Draw(gui.NewText(2, 1, fmt.Sprintf("%s vs %s", description.Nick, description.Opponent), nil))
+	RenderDescription(*ui, description.Desc, description.OpponentDescription)
 
 	ui.Draw(playerBoard)
 	ui.Draw(opponentBoard)
 
-	playerMove := gui.NewText(2, 29, "Press on any coordinate to log it.", nil)
+	playerMove := gui.NewText(2, 3, "Press on any coordinate to log it.", nil)
 	ui.Draw(playerMove)
 
+	//ctx, cancel := context.WithTimeout(context.Background(), time.Duration(status.Timer)*time.Second)
+	//defer cancel()
+
+	gr := sync.WaitGroup{}
+	gr.Add(1)
+
 	go func() {
-		for {
-			char := opponentBoard.Listen(context.TODO())
-			playerMove.SetText(fmt.Sprintf("Ready! Aim at %v! FIRE!", char))
-			ui.Log("Coordinate: %s", char) // logs are displayed after the game exits
-		}
+		ui.Start(nil)
 	}()
 
-	ui.Start(nil)
-
+	gr.Wait()
 }

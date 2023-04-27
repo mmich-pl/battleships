@@ -4,11 +4,15 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="update ui library to new version">
+    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="add function that generate post request with fire coordinate">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/app/board.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/board_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/battlehip_client/battleship_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/battlehip_client/battleship_client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/battlehip_client/mock_BattleshipClient.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/battlehip_client/mocks/BattleshipClient.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/models/battleship_models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/models/battleship_models.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +59,7 @@
       <recent name="$PROJECT_DIR$/cmd/main" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Test.TestRenderBoards in battleships/internal/app">
+  <component name="RunManager" selected="Go Build.go build battleships/cmd/main">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="battleships" />
       <working_directory value="$PROJECT_DIR$" />
@@ -120,8 +124,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Test.TestRenderBoards in battleships/internal/app" />
         <item itemvalue="Go Build.go build battleships/cmd/main" />
+        <item itemvalue="Go Test.TestRenderBoards in battleships/internal/app" />
         <item itemvalue="Go Test.TestSetUpBoard in battleships/internal/app" />
         <item itemvalue="Go Test.TestMapCoords in battleships/internal/app" />
       </list>
@@ -154,7 +158,9 @@
     <MESSAGE value="create mocks for Battleship Client" />
     <MESSAGE value="add opponent description to board" />
     <MESSAGE value="update ui library to new version" />
-    <option name="LAST_COMMIT_MESSAGE" value="update ui library to new version" />
+    <MESSAGE value="reformat ui" />
+    <MESSAGE value="add function that generate post request with fire coordinate" />
+    <option name="LAST_COMMIT_MESSAGE" value="add function that generate post request with fire coordinate" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
@@ -164,7 +170,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/app/board_test.go</url>
-          <line>117</line>
+          <line>32</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
