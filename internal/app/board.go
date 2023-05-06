@@ -2,6 +2,7 @@ package app
 
 import (
 	"battleships/internal/models"
+	"context"
 	"fmt"
 	gui "github.com/grupawp/warships-gui/v2"
 	"github.com/mitchellh/go-wordwrap"
@@ -10,8 +11,10 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
+// Parses coordinates to two integers that represents board square in matrix
 func mapCoords(coordinate string) (int, int, error) {
 	column := coordinate[0]
 	if 'A' > column || column > 'J' {
@@ -28,11 +31,11 @@ func mapCoords(coordinate string) (int, int, error) {
 	return x, y - 1, nil
 }
 
-func (a *App) setUpBoardsState(board []string) (*[10][10]gui.State, *[10][10]gui.State, error) {
-	var playerBoardState, opponentBoardState [10][10]gui.State
-	for i := 0; i < len(playerBoardState); i++ {
-		playerBoardState[i] = [10]gui.State{}
-		opponentBoardState[i] = [10]gui.State{}
+// Parses API response to [10][10] matrix format used by client
+func (a *App) setUpBoardsState(board []string) error {
+	for i := 0; i < len(a.PlayerBoardState); i++ {
+		a.PlayerBoardState[i] = [10]gui.State{}
+		a.OpponentBoardState[i] = [10]gui.State{}
 	}
 
 	g := new(errgroup.Group)
@@ -42,22 +45,20 @@ func (a *App) setUpBoardsState(board []string) (*[10][10]gui.State, *[10][10]gui
 			if x, y, err := mapCoords(c); err != nil {
 				return err
 			} else {
-				log.Printf("set ship om position: [%d, %d]", x, y)
-				playerBoardState[x][y] = gui.Ship
+				a.PlayerBoardState[x][y] = gui.Ship
 				return nil
 			}
 		})
 	}
 
 	if err := g.Wait(); err != nil {
-		return nil, nil, fmt.Errorf("failed to fill boards: %w", err)
+		return fmt.Errorf("failed to fill boards: %w", err)
 	}
 
-	return &playerBoardState, &opponentBoardState, nil
+	return nil
 }
 
-func RenderDescription(g gui.GUI, playerDescription, opponentDescription string) {
-
+func renderDescription(g gui.GUI, playerDescription, opponentDescription string) {
 	fragments := [2]struct {
 		desc []string
 		x    int
@@ -76,27 +77,69 @@ func RenderDescription(g gui.GUI, playerDescription, opponentDescription string)
 	}
 }
 
-func RenderBoards(status *models.StatusResponse, description *models.DescriptionResponse, playerState, opponentState [10][10]gui.State) {
-	ui := gui.NewGUI(true)
-	playerBoard := gui.NewBoard(2, 5, nil)
-	playerBoard.SetStates(playerState)
-	opponentBoard := gui.NewBoard(50, 5, nil)
-	opponentBoard.SetStates(opponentState)
+func (a *App) drawBoard(ui gui.GUI, playerBoard, opponentBoard *gui.Board) {
 
-	ui.Draw(gui.NewText(2, 1, fmt.Sprintf("%s vs %s", description.Nick, description.Opponent), nil))
-	RenderDescription(*ui, description.Desc, description.OpponentDescription)
+	playerBoard.SetStates(a.PlayerBoardState)
+	opponentBoard.SetStates(a.OpponentBoardState)
+
+	ui.Draw(gui.NewText(2, 1, fmt.Sprintf("%s vs %s", a.Description.Nick, a.Description.Opponent), nil))
+	renderDescription(ui, a.Description.Desc, a.Description.OpponentDescription)
 
 	ui.Draw(playerBoard)
 	ui.Draw(opponentBoard)
 
+}
+
+func hitOrMiss(board gui.Board, playerBoardState *[10][10]gui.State, row, col int) {
+	switch playerBoardState[row][col] {
+	case gui.Ship:
+		playerBoardState[row][col] = gui.Hit
+		board.SetStates(*playerBoardState)
+		return
+	case gui.Hit:
+		return
+	default:
+		playerBoardState[row][col] = gui.Miss
+		board.SetStates(*playerBoardState)
+		return
+	}
+}
+
+func updatePlayerBoard(board gui.Board, playerBoardState *[10][10]gui.State, shots []string) {
+	for _, shot := range shots {
+		x, y, _ := mapCoords(shot)
+		hitOrMiss(board, playerBoardState, x, y)
+	}
+}
+
+func (a *App) RenderBoards(status *models.StatusResponse) {
+	ui := gui.NewGUI(true)
+	playerBoard := gui.NewBoard(2, 5, nil)
+	opponentBoard := gui.NewBoard(50, 5, nil)
+
+	a.drawBoard(*ui, playerBoard, opponentBoard)
 	playerMove := gui.NewText(2, 3, "Press on any coordinate to log it.", nil)
 	ui.Draw(playerMove)
 
-	//ctx, cancel := context.WithTimeout(context.Background(), time.Duration(status.Timer)*time.Second)
-	//defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(status.Timer)*time.Second)
+	defer cancel()
 
 	gr := sync.WaitGroup{}
-	gr.Add(1)
+	gr.Add(2)
+
+	go func() {
+		for {
+			//updatePlayerBoard(*playerBoard, &playerState, status.OpponentShots)
+			//ui.Draw(playerBoard)
+			if status.ShouldFire {
+				log.Println(status.ShouldFire)
+				char := opponentBoard.Listen(ctx)
+				playerMove.SetText(fmt.Sprintf("Ready! Aim at %s! FIRE!", char))
+				ui.Log("Coordinate: %s", char) // logs are displayed after the game exits
+			}
+
+		}
+	}()
 
 	go func() {
 		ui.Start(nil)

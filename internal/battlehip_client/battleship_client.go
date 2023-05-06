@@ -12,7 +12,7 @@ import (
 type BattleshipClient interface {
 	InitGame(endpoint, nick, desc, targetNick string, wpbot bool) error
 	Description(endpoint string) (*models.DescriptionResponse, error)
-	FullGameStatus(endpoint string) (*models.StatusResponse, error)
+	GameStatus(endpoint string) (*models.StatusResponse, error)
 	Board(endpoint string) ([]string, error)
 }
 
@@ -54,7 +54,7 @@ func (b *BattleshipHTTPClient) InitGame(endpoint, nick, desc, targetNick string,
 	return nil
 }
 
-func (b *BattleshipHTTPClient) Descriptions(endpoint string) (*models.DescriptionResponse, error) {
+func (b *BattleshipHTTPClient) Description(endpoint string) (*models.DescriptionResponse, error) {
 	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform GET request: %w", err)

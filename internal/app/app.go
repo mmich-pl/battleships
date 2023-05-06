@@ -17,12 +17,13 @@ const (
 )
 
 type App struct {
-	client             *battlehip_client.BattleshipHTTPClient
+	client             battlehip_client.BattleshipClient
 	PlayerBoardState   [10][10]gui.State
 	OpponentBoardState [10][10]gui.State
+	Description        *models.DescriptionResponse
 }
 
-func New(c *battlehip_client.BattleshipHTTPClient) *App {
+func New(c battlehip_client.BattleshipClient) *App {
 	return &App{
 		client: c,
 	}
@@ -39,7 +40,7 @@ func (a *App) Run() error {
 		return fmt.Errorf("failed to get game status: %w", err)
 	}
 
-	desc, err := a.client.Descriptions(OpponentDescription)
+	a.Description, err = a.client.Description(OpponentDescription)
 	if err != nil {
 		return fmt.Errorf("failed to get game status: %w", err)
 	}
@@ -50,14 +51,11 @@ func (a *App) Run() error {
 		return fmt.Errorf("failed to get board: %w", err)
 	}
 
-	if p, o, err := a.setUpBoardsState(board); err != nil {
+	if err = a.setUpBoardsState(board); err != nil {
 		return err
-	} else {
-		a.OpponentBoardState = *o
-		a.PlayerBoardState = *p
 	}
 
-	RenderBoards(status, desc, a.PlayerBoardState, a.OpponentBoardState)
+	a.RenderBoards(status)
 	return nil
 }
 

@@ -65,8 +65,8 @@ func (_m *BattleshipClient) Description(endpoint string) (*models.DescriptionRes
 	return r0, r1
 }
 
-// FullGameStatus provides a mock function with given fields: endpoint
-func (_m *BattleshipClient) FullGameStatus(endpoint string) (*models.StatusResponse, error) {
+// GameStatus provides a mock function with given fields: endpoint
+func (_m *BattleshipClient) GameStatus(endpoint string) (*models.StatusResponse, error) {
 	ret := _m.Called(endpoint)
 
 	var r0 *models.StatusResponse

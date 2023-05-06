@@ -22,3 +22,11 @@ type StatusResponse struct {
 	ShouldFire     bool     `json:"should_fire,omitempty"`
 	Timer          int32    `json:"timer,omitempty"`
 }
+
+type Shoot struct {
+	Coordinate string `json:"coord"`
+}
+
+type ShootResult struct {
+	Result string `json:"result"`
+}
