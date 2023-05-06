@@ -28,7 +28,7 @@ func NewBattleshipClient(baseURL string, responseTimeout, connectionTimeout time
 	client := base_client.NewBuilder().
 		SetHeaderFromMap(headers).
 		SetConnectionTimeout(connectionTimeout).
-		SetResponseTime(responseTimeout).
+		SetResponseTimeout(responseTimeout).
 		SetBaseURL(baseURL).
 		Build()
 	return &BattleshipHTTPClient{client: client}

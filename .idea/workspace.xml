@@ -4,13 +4,13 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="add timer to board &amp; fire function to BattleshipClient interface">
+    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="implement display of opponent's shot, player's shot and current game status">
+      <change afterPath="$PROJECT_DIR$/internal/utils/ternary_operator.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/app/board.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/board_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/battlehip_client/battleship_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/battlehip_client/battleship_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/models/battleship_models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/models/battleship_models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/base_client/base_client_builder.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/base_client/base_client_builder.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/base_client/request.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/base_client/response.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,7 +164,8 @@
     <MESSAGE value="separate draw board to new function" />
     <MESSAGE value="separate draw board to new function and regenerate mocks" />
     <MESSAGE value="add timer to board &amp; fire function to BattleshipClient interface" />
-    <option name="LAST_COMMIT_MESSAGE" value="add timer to board &amp; fire function to BattleshipClient interface" />
+    <MESSAGE value="implement display of opponent's shot, player's shot and current game status" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement display of opponent's shot, player's shot and current game status" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
@@ -176,11 +177,6 @@
           <url>file://$PROJECT_DIR$/internal/app/app.go</url>
           <line>91</line>
           <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/app/board.go</url>
-          <line>162</line>
-          <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/battlehip_client/battleship_client.go</url>

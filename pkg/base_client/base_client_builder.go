@@ -9,7 +9,7 @@ type ClientBuilder interface {
 	SetHeaderFromMap(headers map[string]string) ClientBuilder
 	AddHeader(headerName, headerValue string) ClientBuilder
 	SetConnectionTimeout(timeout time.Duration) ClientBuilder
-	SetResponseTime(timeout time.Duration) ClientBuilder
+	SetResponseTimeout(timeout time.Duration) ClientBuilder
 	SetHttpClient(c *http.Client) ClientBuilder
 	SetBaseURL(URL string) ClientBuilder
 	Build() *BaseHTTPClient
@@ -52,7 +52,7 @@ func (c *clientBuilder) SetConnectionTimeout(timeout time.Duration) ClientBuilde
 	return c
 }
 
-func (c *clientBuilder) SetResponseTime(timeout time.Duration) ClientBuilder {
+func (c *clientBuilder) SetResponseTimeout(timeout time.Duration) ClientBuilder {
 	c.responseTimeout = timeout * time.Second
 	return c
 }
