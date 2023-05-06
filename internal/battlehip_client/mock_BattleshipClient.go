@@ -129,6 +129,61 @@ func (_c *MockBattleshipClient_Description_Call) RunAndReturn(run func(string) (
 	return _c
 }
 
+// Fire provides a mock function with given fields: endpoint, coords
+func (_m *MockBattleshipClient) Fire(endpoint string, coords string) (*models.ShootResult, error) {
+	ret := _m.Called(endpoint, coords)
+
+	var r0 *models.ShootResult
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string, string) (*models.ShootResult, error)); ok {
+		return rf(endpoint, coords)
+	}
+	if rf, ok := ret.Get(0).(func(string, string) *models.ShootResult); ok {
+		r0 = rf(endpoint, coords)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.ShootResult)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(string, string) error); ok {
+		r1 = rf(endpoint, coords)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockBattleshipClient_Fire_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Fire'
+type MockBattleshipClient_Fire_Call struct {
+	*mock.Call
+}
+
+// Fire is a helper method to define mock.On call
+//   - endpoint string
+//   - coords string
+func (_e *MockBattleshipClient_Expecter) Fire(endpoint interface{}, coords interface{}) *MockBattleshipClient_Fire_Call {
+	return &MockBattleshipClient_Fire_Call{Call: _e.mock.On("Fire", endpoint, coords)}
+}
+
+func (_c *MockBattleshipClient_Fire_Call) Run(run func(endpoint string, coords string)) *MockBattleshipClient_Fire_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(string), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockBattleshipClient_Fire_Call) Return(_a0 *models.ShootResult, _a1 error) *MockBattleshipClient_Fire_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockBattleshipClient_Fire_Call) RunAndReturn(run func(string, string) (*models.ShootResult, error)) *MockBattleshipClient_Fire_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GameStatus provides a mock function with given fields: endpoint
 func (_m *MockBattleshipClient) GameStatus(endpoint string) (*models.StatusResponse, error) {
 	ret := _m.Called(endpoint)

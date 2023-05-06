@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="separate draw board to new function">
-      <change afterPath="$PROJECT_DIR$/.mockery.yaml" afterDir="false" />
+    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="separate draw board to new function and regenerate mocks">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/main/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/board_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/board.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/battlehip_client/battleship_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/battlehip_client/battleship_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/models/battleship_models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/models/battleship_models.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +54,7 @@
       <recent name="$PROJECT_DIR$/cmd/main" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build battleships/cmd/main">
+  <component name="RunManager" selected="Go Test.TestRenderBoards in battleships/internal/app">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="battleships" />
       <working_directory value="$PROJECT_DIR$" />
@@ -123,8 +119,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build battleships/cmd/main" />
         <item itemvalue="Go Test.TestRenderBoards in battleships/internal/app" />
+        <item itemvalue="Go Build.go build battleships/cmd/main" />
         <item itemvalue="Go Test.TestSetUpBoard in battleships/internal/app" />
         <item itemvalue="Go Test.TestMapCoords in battleships/internal/app" />
       </list>
@@ -163,7 +159,8 @@
     <MESSAGE value="update BattleshipClient to match new endpoints response" />
     <MESSAGE value="replace for loop with ticker" />
     <MESSAGE value="separate draw board to new function" />
-    <option name="LAST_COMMIT_MESSAGE" value="separate draw board to new function" />
+    <MESSAGE value="separate draw board to new function and regenerate mocks" />
+    <option name="LAST_COMMIT_MESSAGE" value="separate draw board to new function and regenerate mocks" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

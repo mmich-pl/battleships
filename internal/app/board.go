@@ -2,15 +2,12 @@ package app
 
 import (
 	"battleships/internal/models"
-	"context"
 	"fmt"
 	gui "github.com/grupawp/warships-gui/v2"
 	"github.com/mitchellh/go-wordwrap"
 	"golang.org/x/sync/errgroup"
-	"log"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -78,7 +75,6 @@ func renderDescription(g gui.GUI, playerDescription, opponentDescription string)
 }
 
 func (a *App) drawBoard(ui gui.GUI, playerBoard, opponentBoard *gui.Board) {
-
 	playerBoard.SetStates(a.PlayerBoardState)
 	opponentBoard.SetStates(a.OpponentBoardState)
 
@@ -87,29 +83,6 @@ func (a *App) drawBoard(ui gui.GUI, playerBoard, opponentBoard *gui.Board) {
 
 	ui.Draw(playerBoard)
 	ui.Draw(opponentBoard)
-
-}
-
-func hitOrMiss(board gui.Board, playerBoardState *[10][10]gui.State, row, col int) {
-	switch playerBoardState[row][col] {
-	case gui.Ship:
-		playerBoardState[row][col] = gui.Hit
-		board.SetStates(*playerBoardState)
-		return
-	case gui.Hit:
-		return
-	default:
-		playerBoardState[row][col] = gui.Miss
-		board.SetStates(*playerBoardState)
-		return
-	}
-}
-
-func updatePlayerBoard(board gui.Board, playerBoardState *[10][10]gui.State, shots []string) {
-	for _, shot := range shots {
-		x, y, _ := mapCoords(shot)
-		hitOrMiss(board, playerBoardState, x, y)
-	}
 }
 
 func (a *App) RenderBoards(status *models.StatusResponse) {
@@ -118,32 +91,40 @@ func (a *App) RenderBoards(status *models.StatusResponse) {
 	opponentBoard := gui.NewBoard(50, 5, nil)
 
 	a.drawBoard(*ui, playerBoard, opponentBoard)
-	playerMove := gui.NewText(2, 3, "Press on any coordinate to log it.", nil)
+	playerMove := gui.NewText(2, 4, "Press on any coordinate to log it.", nil)
 	ui.Draw(playerMove)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(status.Timer)*time.Second)
-	defer cancel()
-
-	gr := sync.WaitGroup{}
-	gr.Add(2)
+	//ctx, cancel := context.WithTimeout(context.Background(), time.Duration(status.Timer)*time.Second)
+	//defer cancel()
+	playerTurn := gui.NewText(2, 2, fmt.Sprintf("Should I fire: %t", status.ShouldFire), nil)
+	timer := gui.NewText(2, 3, fmt.Sprintf("Timer: %d", status.Timer), nil)
+	ui.Draw(playerTurn)
+	ui.Draw(timer)
 
 	go func() {
+		for {
+			status, _ = a.client.GameStatus(GameStatusEndpoint)
+			time.Sleep(time.Second)
+			timer.SetText(fmt.Sprintf("Timer: %d", int(status.Timer)))
+			playerTurn.SetText(fmt.Sprintf("Should I fire: %t", status.ShouldFire))
+			//gA.statusBoard.SetText(status.GameStatus)
+			//_ = a.MarkOpponentMoves(playerBoard, status)
+		}
+	}()
+
+	/*	go func() {
 		for {
 			//updatePlayerBoard(*playerBoard, &playerState, status.OpponentShots)
 			//ui.Draw(playerBoard)
 			if status.ShouldFire {
-				log.Println(status.ShouldFire)
+				//log.Println(status.ShouldFire)
 				char := opponentBoard.Listen(ctx)
 				playerMove.SetText(fmt.Sprintf("Ready! Aim at %s! FIRE!", char))
 				ui.Log("Coordinate: %s", char) // logs are displayed after the game exits
 			}
 
 		}
-	}()
+	}()*/
 
-	go func() {
-		ui.Start(nil)
-	}()
-
-	gr.Wait()
+	ui.Start(nil)
 }

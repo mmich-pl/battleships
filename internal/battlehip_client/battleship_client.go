@@ -14,6 +14,7 @@ type BattleshipClient interface {
 	Description(endpoint string) (*models.DescriptionResponse, error)
 	GameStatus(endpoint string) (*models.StatusResponse, error)
 	Board(endpoint string) ([]string, error)
+	Fire(endpoint, coords string) (*models.ShootResult, error)
 }
 
 type BattleshipHTTPClient struct {
@@ -94,18 +95,15 @@ func (b *BattleshipHTTPClient) Board(endpoint string) ([]string, error) {
 	return board.Board, nil
 }
 
-func (b *BattleshipHTTPClient) Fire(endpoint, coords string) (string, error) {
+func (b *BattleshipHTTPClient) Fire(endpoint, coords string) (*models.ShootResult, error) {
 	resp, err := b.client.Post(endpoint, coords, b.client.Builder.Headers)
 	if err != nil {
-		return "", fmt.Errorf("failed to perform POST rquest: %w", err)
+		return nil, fmt.Errorf("failed to perform POST rquest: %w", err)
 	}
-
-	result := struct {
-		Result string `json:"result"`
-	}{}
-	if err := resp.UnmarshalJson(&resp); err != nil {
-		return "", fmt.Errorf("failed to unmarshal hit result: %w", err)
+	var result models.ShootResult
+	if err = resp.UnmarshalJson(&resp); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal hit result: %w", err)
 	}
 	log.Print(result.Result)
-	return result.Result, nil
+	return &result, nil
 }
