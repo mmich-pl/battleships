@@ -53,13 +53,16 @@ func TestRenderBoards(t *testing.T) {
 			client.EXPECT().GameStatus(GameStatusEndpoint).Return(&models.StatusResponse{
 				GameStatus:     "game_in_porgress",
 				LastGameStatus: "no_game",
-				OpponentShots:  []string{"F4"},
+				OpponentShots:  []string{"A6", "A8", "F5"},
 				ShouldFire:     true,
 				Timer:          36,
 			}, nil)
 			client.EXPECT().Board(BoardEndpoint).Return([]string{
 				"A6", "A8", "A9", "C3", "D6", "D9", "D10", "E3", "F3", "F6",
 				"G1", "G3", "G9", "G10", "H1", "H5", "I1", "J1", "J4", "J5"}, nil)
+			client.EXPECT().Fire(FireEndpoint, "A4").Return(&models.ShootResult{Result: "miss"}, nil)
+			client.EXPECT().Fire(FireEndpoint, "A5").Return(&models.ShootResult{Result: "hit"}, nil)
+			client.EXPECT().Fire(FireEndpoint, "A6").Return(&models.ShootResult{Result: "sunk"}, nil)
 			return client
 		},
 	}

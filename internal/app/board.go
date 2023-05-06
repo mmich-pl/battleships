@@ -2,10 +2,12 @@ package app
 
 import (
 	"battleships/internal/models"
+	"context"
 	"fmt"
 	gui "github.com/grupawp/warships-gui/v2"
 	"github.com/mitchellh/go-wordwrap"
 	"golang.org/x/sync/errgroup"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -85,6 +87,37 @@ func (a *App) drawBoard(ui gui.GUI, playerBoard, opponentBoard *gui.Board) {
 	ui.Draw(opponentBoard)
 }
 
+func (a *App) markHitOrMiss(opponentBoard *gui.Board, state gui.State, coord string) error {
+	x, y, err := mapCoords(coord)
+	if err != nil {
+		return fmt.Errorf("failed to parse coord: %w", err)
+	}
+
+	a.OpponentBoardState[x][y] = state
+	opponentBoard.SetStates(a.OpponentBoardState)
+	return nil
+}
+
+func (a *App) markOpponentMoves(playerBoard *gui.Board, status *models.StatusResponse) error {
+
+	for _, cords := range status.OpponentShots {
+		x, y, err := mapCoords(cords)
+		if err != nil {
+			return fmt.Errorf("failed to parse coords: %w", err)
+		}
+
+		if a.PlayerBoardState[x][y] == gui.Ship || a.PlayerBoardState[x][y] == gui.Hit {
+			a.PlayerBoardState[x][y] = gui.Hit
+		} else {
+			a.PlayerBoardState[x][y] = gui.Miss
+		}
+
+	}
+	playerBoard.SetStates(a.PlayerBoardState)
+
+	return nil
+}
+
 func (a *App) RenderBoards(status *models.StatusResponse) {
 	ui := gui.NewGUI(true)
 	playerBoard := gui.NewBoard(2, 5, nil)
@@ -96,35 +129,60 @@ func (a *App) RenderBoards(status *models.StatusResponse) {
 
 	//ctx, cancel := context.WithTimeout(context.Background(), time.Duration(status.Timer)*time.Second)
 	//defer cancel()
+
 	playerTurn := gui.NewText(2, 2, fmt.Sprintf("Should I fire: %t", status.ShouldFire), nil)
 	timer := gui.NewText(2, 3, fmt.Sprintf("Timer: %d", status.Timer), nil)
+	gameResult := gui.NewText(2, 32, fmt.Sprintf("Game has started!"), nil)
 	ui.Draw(playerTurn)
 	ui.Draw(timer)
+	ui.Draw(gameResult)
 
+	//update timer
 	go func() {
 		for {
 			status, _ = a.client.GameStatus(GameStatusEndpoint)
-			time.Sleep(time.Second)
-			timer.SetText(fmt.Sprintf("Timer: %d", int(status.Timer)))
+			time.Sleep(time.Second / 4)
+			timer.SetText(fmt.Sprintf("Timer: %d", status.Timer))
 			playerTurn.SetText(fmt.Sprintf("Should I fire: %t", status.ShouldFire))
-			//gA.statusBoard.SetText(status.GameStatus)
-			//_ = a.MarkOpponentMoves(playerBoard, status)
+			_ = a.markOpponentMoves(playerBoard, status)
 		}
 	}()
 
-	/*	go func() {
+	//get input coords
+	go func() {
 		for {
-			//updatePlayerBoard(*playerBoard, &playerState, status.OpponentShots)
-			//ui.Draw(playerBoard)
-			if status.ShouldFire {
-				//log.Println(status.ShouldFire)
-				char := opponentBoard.Listen(ctx)
-				playerMove.SetText(fmt.Sprintf("Ready! Aim at %s! FIRE!", char))
-				ui.Log("Coordinate: %s", char) // logs are displayed after the game exits
-			}
+			for status.ShouldFire == true {
+				char := opponentBoard.Listen(context.TODO())
+				shoot, err := a.client.Fire(FireEndpoint, char)
 
+				if err != nil {
+					log.Fatalf("failed to perform fire request:%s", err)
+				}
+
+				var state gui.State
+				if shoot.Result == "hit" || shoot.Result == "sunk" {
+					state = gui.Hit
+				} else if shoot.Result == "miss" {
+					state = gui.Miss
+				}
+				_ = a.markHitOrMiss(opponentBoard, state, char)
+				playerMove.SetText(fmt.Sprintf("Fired at: %s", char))
+			}
 		}
-	}()*/
+	}()
+
+	// handle end game
+	go func() {
+		for {
+			if status.GameStatus == "ended" {
+				if status.LastGameStatus == "win" {
+					gameResult.SetText("Game ended, You win")
+				} else {
+					gameResult.SetText("Game ended, You lost")
+				}
+			}
+		}
+	}()
 
 	ui.Start(nil)
 }

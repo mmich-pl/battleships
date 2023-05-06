@@ -14,6 +14,7 @@ const (
 	GameStatusEndpoint  = "/game"
 	BoardEndpoint       = "/game/board"
 	OpponentDescription = "/game/desc"
+	FireEndpoint        = "/game/fire"
 )
 
 type App struct {
@@ -40,11 +41,11 @@ func (a *App) Run() error {
 		return fmt.Errorf("failed to get game status: %w", err)
 	}
 
+	log.Print(status)
 	a.Description, err = a.client.Description(OpponentDescription)
 	if err != nil {
 		return fmt.Errorf("failed to get game status: %w", err)
 	}
-	log.Print(status)
 
 	board, err := a.client.Board(BoardEndpoint)
 	if err != nil {

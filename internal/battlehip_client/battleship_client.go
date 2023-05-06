@@ -4,7 +4,6 @@ import (
 	"battleships/internal/models"
 	"battleships/pkg/base_client"
 	"fmt"
-	"log"
 	"time"
 )
 
@@ -51,7 +50,6 @@ func (b *BattleshipHTTPClient) InitGame(endpoint, nick, desc, targetNick string,
 
 	b.token = resp.Headers.Get("X-Auth-Token")
 	b.client.Builder.AddHeader("X-Auth-Token", b.token)
-	log.Printf("BaseHTTPClient's token: %s", b.token)
 	return nil
 }
 
@@ -91,19 +89,19 @@ func (b *BattleshipHTTPClient) Board(endpoint string) ([]string, error) {
 	if err := resp.UnmarshalJson(&board); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal board: %w", err)
 	}
-	log.Println(board)
 	return board.Board, nil
 }
 
 func (b *BattleshipHTTPClient) Fire(endpoint, coords string) (*models.ShootResult, error) {
-	resp, err := b.client.Post(endpoint, coords, b.client.Builder.Headers)
+	payload := models.Shoot{Coord: coords}
+	resp, err := b.client.Post(endpoint, payload, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform POST rquest: %w", err)
 	}
+
 	var result models.ShootResult
-	if err = resp.UnmarshalJson(&resp); err != nil {
+	if err = resp.UnmarshalJson(&result); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal hit result: %w", err)
 	}
-	log.Print(result.Result)
 	return &result, nil
 }
