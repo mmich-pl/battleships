@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="implement display of opponent's shot, player's shot and current game status">
-      <change afterPath="$PROJECT_DIR$/internal/utils/ternary_operator.go" afterDir="false" />
+    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="add possibility to join multiplayer game">
+      <change afterPath="$PROJECT_DIR$/internal/app/menu_functions.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/main/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/app/board.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/battlehip_client/battleship_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/battlehip_client/battleship_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/base_client/base_client_builder.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/base_client/base_client_builder.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/base_client/request.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/base_client/response.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,15 +57,7 @@
     </key>
   </component>
   <component name="RunManager" selected="Go Build.go build battleships/cmd/main">
-    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
-      <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="FILE" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <method v="2" />
-    </configuration>
-    <configuration name="go build battleships/cmd/main" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build battleships/cmd/main" type="GoApplicationRunConfiguration" factoryName="Go Application" singleton="false" temporary="true" nameIsGenerated="true">
       <module name="battleships" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
@@ -75,16 +66,28 @@
       <filePath value="$PROJECT_DIR$/cmd/main/main.go" />
       <method v="2" />
     </configuration>
-    <configuration name="TestMapCoords in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestBST in battleships/internal/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$/internal/app" />
+      <working_directory value="$PROJECT_DIR$/internal/utils" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="battleships/internal/app" />
+      <package value="battleships/internal/utils" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestMapCoords\E$" />
+      <pattern value="^\QTestBST\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestGetNodeTextByID in battleships/internal/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="battleships" />
+      <working_directory value="$PROJECT_DIR$/internal/utils" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="battleships/internal/utils" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestGetNodeTextByID\E$" />
       <method v="2" />
     </configuration>
     <configuration name="TestRenderBoards in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -111,21 +114,20 @@
       <pattern value="^\QTestSetUpBoard\E$" />
       <method v="2" />
     </configuration>
-    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
-      <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="DIRECTORY" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <method v="2" />
-    </configuration>
+    <list>
+      <item itemvalue="Go Build.go build battleships/cmd/main" />
+      <item itemvalue="Go Test.TestBST in battleships/internal/utils" />
+      <item itemvalue="Go Test.TestGetNodeTextByID in battleships/internal/utils" />
+      <item itemvalue="Go Test.TestRenderBoards in battleships/internal/app" />
+      <item itemvalue="Go Test.TestSetUpBoard in battleships/internal/app" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build battleships/cmd/main" />
+        <item itemvalue="Go Test.TestGetNodeTextByID in battleships/internal/utils" />
+        <item itemvalue="Go Test.TestBST in battleships/internal/utils" />
         <item itemvalue="Go Test.TestRenderBoards in battleships/internal/app" />
         <item itemvalue="Go Test.TestSetUpBoard in battleships/internal/app" />
-        <item itemvalue="Go Test.TestMapCoords in battleships/internal/app" />
       </list>
     </recent_temporary>
   </component>
@@ -145,9 +147,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="change project layout" />
-    <MESSAGE value="change project structure" />
-    <MESSAGE value="create App struct" />
     <MESSAGE value="implement GameStatus function in BattleshipHTTPClient" />
     <MESSAGE value="add waiting for game start mechanic to main app loop" />
     <MESSAGE value="implement board request" />
@@ -165,7 +164,15 @@
     <MESSAGE value="separate draw board to new function and regenerate mocks" />
     <MESSAGE value="add timer to board &amp; fire function to BattleshipClient interface" />
     <MESSAGE value="implement display of opponent's shot, player's shot and current game status" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement display of opponent's shot, player's shot and current game status" />
+    <MESSAGE value="reorganization of the game board and addition of a function that imitates ternary operator behavior" />
+    <MESSAGE value="rewrite board render logic - creation of BoardData struct" />
+    <MESSAGE value="rewrite shoot logic" />
+    <MESSAGE value="add new endpoint handlers for get lis of players and their stats" />
+    <MESSAGE value="add interactive menu" />
+    <MESSAGE value="add simple bst" />
+    <MESSAGE value="add main menu which now become entrypoint to app" />
+    <MESSAGE value="add possibility to join multiplayer game" />
+    <option name="LAST_COMMIT_MESSAGE" value="add possibility to join multiplayer game" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
@@ -175,13 +182,28 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/app/app.go</url>
-          <line>91</line>
+          <line>161</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/battlehip_client/battleship_client.go</url>
-          <line>95</line>
+          <url>file://$PROJECT_DIR$/internal/battleship_client/battleship_client.go</url>
+          <line>99</line>
           <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/battleship_client/battleship_client.go</url>
+          <line>113</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/battleship_client/battleship_client.go</url>
+          <line>160</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cmd/main/main.go</url>
+          <line>60</line>
+          <option name="timeStamp" value="26" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

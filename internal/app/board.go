@@ -16,8 +16,6 @@ import (
 var (
 	playerDescPos   = [2]int{2, 28}
 	opponentDescPos = [2]int{50, 28}
-
-	errorLog = gui.NewText(2, 35, "", nil)
 )
 
 type BoardData struct {
@@ -32,6 +30,7 @@ type BoardData struct {
 	gameResult      *gui.Text
 	statusAfterFire *gui.Text
 	playerMove      *gui.Text
+	accuracy        *gui.Text
 }
 
 func InitBoardData(a *App) *BoardData {
@@ -47,6 +46,7 @@ func InitBoardData(a *App) *BoardData {
 		gameResult:      gui.NewText(2, 32, fmt.Sprintf("Game is running!"), nil),
 		statusAfterFire: gui.NewText(2, 31, "", nil),
 		playerMove:      gui.NewText(2, 3, "Press on any coordinate to take a shot.", nil),
+		accuracy:        gui.NewText(2, 33, "", nil),
 	}
 }
 
@@ -144,7 +144,7 @@ func (bd *BoardData) drawBoard() {
 	bd.ui.Draw(bd.gameResult)
 	bd.ui.Draw(bd.statusAfterFire)
 	bd.ui.Draw(bd.playerMove)
-	bd.ui.Draw(errorLog)
+	bd.ui.Draw(bd.accuracy)
 }
 
 func (bd *BoardData) renderDescription() {
@@ -182,15 +182,17 @@ func (bd *BoardData) handleShot() string {
 
 func (bd *BoardData) RenderBoards(status *models.StatusResponse) {
 
+	hit := 0
+	miss := 0
+
 	bd.playerTurn.SetText(fmt.Sprintf("Should I fire: %t", status.ShouldFire))
 	bd.timer.SetText(fmt.Sprintf("Timer: %d", status.Timer))
 
 	bd.drawBoard()
-	timer := 60
 	go func() {
 		for status.GameStatus == "game_in_progress" {
-			bd.timer.SetText(fmt.Sprintf("Timer: %d", timer))
-			timer -= 1
+			status, _ = bd.app.client.GameStatus(GameStatusEndpoint)
+			bd.timer.SetText(fmt.Sprintf("Timer: %d", status.Timer))
 			time.Sleep(time.Second)
 		}
 	}()
@@ -198,16 +200,15 @@ func (bd *BoardData) RenderBoards(status *models.StatusResponse) {
 	//game logic
 	go func() {
 		for status.GameStatus == "game_in_progress" {
-			status, _ = bd.app.client.GameStatus(GameStatusEndpoint)
+
 			time.Sleep(time.Second)
-			timer = status.Timer
 			_ = bd.markOpponentMoves(status)
 			bd.playerTurn.SetText(fmt.Sprintf(If(status.ShouldFire,
 				"It's your turn, fire at will", "It's your opponent turn, be patient")))
 
 			shouldContinue := true
 
-			for shouldContinue && status.ShouldFire {
+			for shouldContinue && status.ShouldFire && status.GameStatus != "ended" {
 				coords := bd.handleShot()
 				if len(coords) != 0 {
 					shoot, _ := bd.app.client.Fire(FireEndpoint, coords)
@@ -217,10 +218,12 @@ func (bd *BoardData) RenderBoards(status *models.StatusResponse) {
 					if shoot.Result == "hit" || shoot.Result == "sunk" {
 						bd.statusAfterFire.SetText(If(shoot.Result == "sunk", "Ship sunk", "Ship hit"))
 						state = gui.Hit
+						hit++
 					} else {
 						bd.statusAfterFire.SetText("")
 						state = gui.Miss
 						shouldContinue = false
+						miss++
 					}
 
 					_ = bd.markPlayerMove(state, coords)
@@ -230,15 +233,14 @@ func (bd *BoardData) RenderBoards(status *models.StatusResponse) {
 		}
 	}()
 
-	// handle end game
 	go func() {
 		for {
 			if status.GameStatus == "ended" {
 				bd.gameResult.SetText(If(status.LastGameStatus == "win",
 					"Game ended, You win", "Game ended, You lost"))
 			}
-			time.Sleep(time.Second)
 		}
+
 	}()
 
 	bd.ui.Start(nil)
