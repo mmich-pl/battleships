@@ -1,7 +1,5 @@
 package models
 
-import gui "github.com/grupawp/warships-gui/v2"
-
 type InitialPayload struct {
 	Coords     []string `json:"coords,omitempty"`
 	Desc       string   `json:"desc"`
@@ -35,11 +33,17 @@ type ShootResult struct {
 	Result string `json:"result"`
 }
 
-func (r *ShootResult) CastToState() gui.State {
-	switch r.Result {
-	case "hit", "sunk":
-		return gui.Hit
-	default:
-		return gui.Miss
-	}
+type WaitingPlayerData struct {
+	GameStatus string `json:"game_status"`
+	Nick       string `json:"nick"`
+}
+
+type PlayerStatistics struct {
+	Stats struct {
+		Games  int    `json:"games"`
+		Nick   string `json:"nick"`
+		Points int    `json:"points"`
+		Rank   int    `json:"rank"`
+		Wins   int    `json:"wins"`
+	} `json:"stats"`
 }

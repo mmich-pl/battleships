@@ -4,6 +4,7 @@ import (
 	"battleships/internal/models"
 	"battleships/pkg/base_client"
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -14,6 +15,10 @@ type BattleshipClient interface {
 	GameStatus(endpoint string) (*models.StatusResponse, error)
 	Board(endpoint string) ([]string, error)
 	Fire(endpoint, coords string) (*models.ShootResult, error)
+	GetPlayersList(endpoint string) (*[]models.WaitingPlayerData, error)
+	RefreshSession(endpoint string) error
+	GetStatistic(endpoint string) (*[]models.PlayerStatistics, error)
+	GetPlayerStatistic(endpoint, nick string) (*models.PlayerStatistics, error)
 }
 
 type BattleshipHTTPClient struct {
@@ -59,7 +64,7 @@ func (b *BattleshipHTTPClient) Description(endpoint string) (*models.Description
 		return nil, fmt.Errorf("failed to perform GET request: %w", err)
 	}
 	var descriptions models.DescriptionResponse
-	if err := resp.UnmarshalJson(&descriptions); err != nil {
+	if err = resp.UnmarshalJson(&descriptions); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 	return &descriptions, nil
@@ -102,6 +107,56 @@ func (b *BattleshipHTTPClient) Fire(endpoint, coords string) (*models.ShootResul
 	var result models.ShootResult
 	if err = resp.UnmarshalJson(&result); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal hit result: %w", err)
+	}
+	return &result, nil
+}
+
+func (b *BattleshipHTTPClient) GetPlayersList(endpoint string) (*[]models.WaitingPlayerData, error) {
+	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform get response: %w", err)
+	}
+
+	var result []models.WaitingPlayerData
+	if err = resp.UnmarshalJson(&result); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal waiting players request: %w", err)
+	}
+	return &result, nil
+}
+
+func (b *BattleshipHTTPClient) RefreshSession(endpoint string) error {
+	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
+	if err != nil {
+		return fmt.Errorf("failed to refresh session: %w", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	return nil
+}
+
+func (b *BattleshipHTTPClient) GetStatistic(endpoint string) (*[]models.PlayerStatistics, error) {
+	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform get response: %w", err)
+	}
+	var result []models.PlayerStatistics
+	if err = resp.UnmarshalJson(&result); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal waiting players request: %w", err)
+	}
+	return &result, nil
+}
+
+func (b *BattleshipHTTPClient) GetPlayerStatistic(endpoint, nick string) (*models.PlayerStatistics, error) {
+	resp, err := b.client.Get(endpoint+"/"+nick, b.client.Builder.Headers)
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform get response: %w", err)
+	}
+	var result models.PlayerStatistics
+	if err = resp.UnmarshalJson(&result); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal waiting players request: %w", err)
 	}
 	return &result, nil
 }
