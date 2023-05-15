@@ -31,7 +31,6 @@ type BoardData struct {
 	timer           *gui.Text
 	gameResult      *gui.Text
 	statusAfterFire *gui.Text
-	acc             *gui.Text
 	playerMove      *gui.Text
 }
 
@@ -47,7 +46,6 @@ func InitBoardData(a *App) *BoardData {
 		timer:           gui.NewText(50, 3, "", nil),
 		gameResult:      gui.NewText(2, 32, fmt.Sprintf("Game is running!"), nil),
 		statusAfterFire: gui.NewText(2, 31, "", nil),
-		acc:             gui.NewText(2, 33, "", nil),
 		playerMove:      gui.NewText(2, 3, "Press on any coordinate to take a shot.", nil),
 	}
 }
@@ -168,67 +166,64 @@ func (bd *BoardData) renderDescription() {
 	}
 }
 
-func (bd *BoardData) validateHitCoordinates(coord string) bool {
-	x, y, err := mapCoords(coord)
-	if err != nil || bd.app.OpponentBoardState[x][y] != gui.Empty {
-		errorLog.SetText(fmt.Sprintf("%s", err))
-		bd.statusAfterFire.SetText("Invalid coordinates, try again!")
-		return false
+func (bd *BoardData) handleShot() string {
+	for {
+		coords := bd.opponentBoard.Listen(context.TODO())
+		x, y, _ := mapCoords(coords)
+		if bd.app.OpponentBoardState[x][y] == gui.Hit || bd.app.OpponentBoardState[x][y] == gui.Miss {
+			bd.statusAfterFire.SetText("Invalid coordinates, try again!")
+		} else {
+			bd.statusAfterFire.SetText("Valid coordinates.")
+			bd.playerMove.SetText(fmt.Sprintf("Last player move: %s", coords))
+			return coords
+		}
 	}
-	bd.statusAfterFire.SetText("Valid coordinates.")
-	return true
 }
 
-//func (a *App) handleShot() string {
-//
-//}
-
 func (bd *BoardData) RenderBoards(status *models.StatusResponse) {
-	hit := 0
-	miss := 0
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(status.Timer)*time.Second)
-	defer cancel()
 
 	bd.playerTurn.SetText(fmt.Sprintf("Should I fire: %t", status.ShouldFire))
 	bd.timer.SetText(fmt.Sprintf("Timer: %d", status.Timer))
 
 	bd.drawBoard()
-
-	//update timer
+	timer := 60
 	go func() {
-		for {
-			status, _ = bd.app.client.GameStatus(GameStatusEndpoint)
-			time.Sleep(time.Second / 2)
-			bd.timer.SetText(fmt.Sprintf("Timer: %d", status.Timer))
-			bd.playerTurn.SetText(fmt.Sprintf(If(status.ShouldFire,
-				"It's your turn, fire at will", "It's your opponent turn, be patient")))
-			_ = bd.markOpponentMoves(status)
+		for status.GameStatus == "game_in_progress" {
+			bd.timer.SetText(fmt.Sprintf("Timer: %d", timer))
+			timer -= 1
+			time.Sleep(time.Second)
 		}
 	}()
 
-	//get input coords
+	//game logic
 	go func() {
-		for {
-			for status.ShouldFire {
-				char := bd.opponentBoard.Listen(ctx)
-				if bd.validateHitCoordinates(char) {
+		for status.GameStatus == "game_in_progress" {
+			status, _ = bd.app.client.GameStatus(GameStatusEndpoint)
+			time.Sleep(time.Second)
+			timer = status.Timer
+			_ = bd.markOpponentMoves(status)
+			bd.playerTurn.SetText(fmt.Sprintf(If(status.ShouldFire,
+				"It's your turn, fire at will", "It's your opponent turn, be patient")))
 
-					shoot, _ := bd.app.client.Fire(FireEndpoint, char)
+			shouldContinue := true
+
+			for shouldContinue && status.ShouldFire {
+				coords := bd.handleShot()
+				if len(coords) != 0 {
+					shoot, _ := bd.app.client.Fire(FireEndpoint, coords)
+
 					var state gui.State
 
 					if shoot.Result == "hit" || shoot.Result == "sunk" {
 						bd.statusAfterFire.SetText(If(shoot.Result == "sunk", "Ship sunk", "Ship hit"))
-						hit += 1
 						state = gui.Hit
 					} else {
 						bd.statusAfterFire.SetText("")
-						miss += 1
 						state = gui.Miss
+						shouldContinue = false
 					}
 
-					_ = bd.markPlayerMove(state, char)
-					bd.playerMove.SetText(fmt.Sprintf("Last player move: %s", char))
+					_ = bd.markPlayerMove(state, coords)
 				}
 			}
 
@@ -241,8 +236,8 @@ func (bd *BoardData) RenderBoards(status *models.StatusResponse) {
 			if status.GameStatus == "ended" {
 				bd.gameResult.SetText(If(status.LastGameStatus == "win",
 					"Game ended, You win", "Game ended, You lost"))
-				bd.acc.SetText(fmt.Sprintf("Your accuracy: %.2f", float64(hit)/float64(miss)))
 			}
+			time.Sleep(time.Second)
 		}
 	}()
 
