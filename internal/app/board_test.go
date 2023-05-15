@@ -1,7 +1,7 @@
 package app
 
 import (
-	"battleships/internal/battlehip_client"
+	"battleships/internal/battleship_client"
 	"battleships/internal/models"
 	_ "github.com/grupawp/warships-gui/v2"
 	"github.com/stretchr/testify/assert"
@@ -38,11 +38,11 @@ func TestMapCoords(t *testing.T) {
 func TestRenderBoards(t *testing.T) {
 	testScenario := struct {
 		testName string
-		client   func(t *testing.T) *battlehip_client.MockBattleshipClient
+		client   func(t *testing.T) *battleship_client.MockBattleshipClient
 	}{
 		testName: "Board Render",
-		client: func(t *testing.T) *battlehip_client.MockBattleshipClient {
-			client := battlehip_client.NewMockBattleshipClient(t)
+		client: func(t *testing.T) *battleship_client.MockBattleshipClient {
+			client := battleship_client.NewMockBattleshipClient(t)
 			client.EXPECT().Description(OpponentDescription).Return(&models.DescriptionResponse{
 				Desc:                "brytyjski admirał, urodzony w 1740 roku, zmarł w 1808 roku, dowódca sił morskich podczas wojen napoleońskich",
 				Nick:                "Robert_Menzies",
@@ -78,8 +78,8 @@ func TestRenderBoards(t *testing.T) {
 		if err := app.setUpBoardsState(board); err != nil {
 			log.Fatal(err)
 		}
-
-		app.RenderBoards(status)
+		bd := InitBoardData(app)
+		bd.RenderBoards(status)
 	})
 
 }

@@ -1,4 +1,4 @@
-package battlehip_client
+package battleship_client
 
 import (
 	"battleships/internal/models"
@@ -17,8 +17,8 @@ type BattleshipClient interface {
 	Fire(endpoint, coords string) (*models.ShootResult, error)
 	GetPlayersList(endpoint string) (*[]models.WaitingPlayerData, error)
 	RefreshSession(endpoint string) error
-	GetStatistic(endpoint string) (*[]models.PlayerStatistics, error)
-	GetPlayerStatistic(endpoint, nick string) (*models.PlayerStatistics, error)
+	GetStatistic(endpoint string) (*models.StatsResponse, error)
+	GetPlayerStatistic(endpoint, nick string) (*models.PlayerStatsResponse, error)
 }
 
 type BattleshipHTTPClient struct {
@@ -137,24 +137,24 @@ func (b *BattleshipHTTPClient) RefreshSession(endpoint string) error {
 	return nil
 }
 
-func (b *BattleshipHTTPClient) GetStatistic(endpoint string) (*[]models.PlayerStatistics, error) {
+func (b *BattleshipHTTPClient) GetStatistic(endpoint string) (*models.StatsResponse, error) {
 	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform get response: %w", err)
 	}
-	var result []models.PlayerStatistics
+	var result models.StatsResponse
 	if err = resp.UnmarshalJson(&result); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal waiting players request: %w", err)
 	}
 	return &result, nil
 }
 
-func (b *BattleshipHTTPClient) GetPlayerStatistic(endpoint, nick string) (*models.PlayerStatistics, error) {
+func (b *BattleshipHTTPClient) GetPlayerStatistic(endpoint, nick string) (*models.PlayerStatsResponse, error) {
 	resp, err := b.client.Get(endpoint+"/"+nick, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform get response: %w", err)
 	}
-	var result models.PlayerStatistics
+	var result models.PlayerStatsResponse
 	if err = resp.UnmarshalJson(&result); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal waiting players request: %w", err)
 	}

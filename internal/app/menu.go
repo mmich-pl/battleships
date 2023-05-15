@@ -23,26 +23,18 @@ var keys = map[byte]bool{
 type Menu struct {
 	prompt    string
 	cursor    int
-	menuItems []*struct {
-		Text string
-		Id   string
-	}
+	menuItems []string
 }
 
 func NewMenu(prompt string) *Menu {
 	return &Menu{
 		prompt:    prompt,
-		menuItems: make([]*struct{ Text, Id string }, 0),
+		menuItems: make([]string, 0),
 	}
 }
 
-func (m *Menu) AddItem(option string, id string) *Menu {
-	menuItem := &struct {
-		Text string
-		Id   string
-	}{option, id}
-
-	m.menuItems = append(m.menuItems, menuItem)
+func (m *Menu) AddItem(nick string) *Menu {
+	m.menuItems = append(m.menuItems, nick)
 	return m
 }
 
@@ -52,9 +44,9 @@ func (m *Menu) renderMenuItems(redraw bool) {
 	}
 
 	for index, menuItem := range m.menuItems {
-		var newline = If(index == len(m.menuItems)-1, "", "\n")
+		newline := If(index == len(m.menuItems)-1, "", "\n")
 
-		menuItemText := menuItem.Text
+		menuItemText := menuItem
 		cursor := "  "
 		if index == m.cursor {
 			cursor = goterm.Color("> ", goterm.YELLOW)
@@ -72,24 +64,24 @@ func (m *Menu) Display() string {
 
 	fmt.Printf("%s\n", goterm.Color(goterm.Bold(m.prompt)+":", goterm.CYAN))
 	m.renderMenuItems(false)
-
 	fmt.Printf("\033[?25l")
 
 	for {
-		keyCode := getInput()
-		switch keyCode {
+		switch getInput() {
+		case escape:
+			return ""
+		case enter:
+			menuItem := m.menuItems[m.cursor]
+			fmt.Println("\r")
+			return menuItem
 		case up:
 			m.cursor = (m.cursor + len(m.menuItems) - 1) % len(m.menuItems)
 			m.renderMenuItems(true)
 		case down:
 			m.cursor = (m.cursor + 1) % len(m.menuItems)
 			m.renderMenuItems(true)
-		case enter:
-			menuItem := m.menuItems[m.cursor]
-			fmt.Println("\r")
-			return menuItem.Id
-		case escape:
-			return ""
+		default:
+
 		}
 	}
 }
