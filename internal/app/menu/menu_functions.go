@@ -1,6 +1,7 @@
-package app
+package menu
 
 import (
+	. "battleships/internal/app"
 	"battleships/internal/battleship_client"
 	"fmt"
 	"log"

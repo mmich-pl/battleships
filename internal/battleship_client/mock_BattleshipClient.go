@@ -21,6 +21,48 @@ func (_m *MockBattleshipClient) EXPECT() *MockBattleshipClient_Expecter {
 	return &MockBattleshipClient_Expecter{mock: &_m.Mock}
 }
 
+// AbandonGame provides a mock function with given fields: endpoint
+func (_m *MockBattleshipClient) AbandonGame(endpoint string) error {
+	ret := _m.Called(endpoint)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string) error); ok {
+		r0 = rf(endpoint)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockBattleshipClient_AbandonGame_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AbandonGame'
+type MockBattleshipClient_AbandonGame_Call struct {
+	*mock.Call
+}
+
+// AbandonGame is a helper method to define mock.On call
+//   - endpoint string
+func (_e *MockBattleshipClient_Expecter) AbandonGame(endpoint interface{}) *MockBattleshipClient_AbandonGame_Call {
+	return &MockBattleshipClient_AbandonGame_Call{Call: _e.mock.On("AbandonGame", endpoint)}
+}
+
+func (_c *MockBattleshipClient_AbandonGame_Call) Run(run func(endpoint string)) *MockBattleshipClient_AbandonGame_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(string))
+	})
+	return _c
+}
+
+func (_c *MockBattleshipClient_AbandonGame_Call) Return(_a0 error) *MockBattleshipClient_AbandonGame_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockBattleshipClient_AbandonGame_Call) RunAndReturn(run func(string) error) *MockBattleshipClient_AbandonGame_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Board provides a mock function with given fields: endpoint
 func (_m *MockBattleshipClient) Board(endpoint string) ([]string, error) {
 	ret := _m.Called(endpoint)
@@ -401,13 +443,13 @@ func (_c *MockBattleshipClient_GetStatistic_Call) RunAndReturn(run func(string) 
 	return _c
 }
 
-// InitGame provides a mock function with given fields: endpoint, nick, desc, targetNick, wpbot
-func (_m *MockBattleshipClient) InitGame(endpoint string, nick string, desc string, targetNick string, wpbot bool) error {
-	ret := _m.Called(endpoint, nick, desc, targetNick, wpbot)
+// InitGame provides a mock function with given fields: endpoint, nick, desc, targetNick, coords, wpbot
+func (_m *MockBattleshipClient) InitGame(endpoint string, nick string, desc string, targetNick string, coords []string, wpbot bool) error {
+	ret := _m.Called(endpoint, nick, desc, targetNick, coords, wpbot)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, string, string, string, bool) error); ok {
-		r0 = rf(endpoint, nick, desc, targetNick, wpbot)
+	if rf, ok := ret.Get(0).(func(string, string, string, string, []string, bool) error); ok {
+		r0 = rf(endpoint, nick, desc, targetNick, coords, wpbot)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -425,14 +467,15 @@ type MockBattleshipClient_InitGame_Call struct {
 //   - nick string
 //   - desc string
 //   - targetNick string
+//   - coords []string
 //   - wpbot bool
-func (_e *MockBattleshipClient_Expecter) InitGame(endpoint interface{}, nick interface{}, desc interface{}, targetNick interface{}, wpbot interface{}) *MockBattleshipClient_InitGame_Call {
-	return &MockBattleshipClient_InitGame_Call{Call: _e.mock.On("InitGame", endpoint, nick, desc, targetNick, wpbot)}
+func (_e *MockBattleshipClient_Expecter) InitGame(endpoint interface{}, nick interface{}, desc interface{}, targetNick interface{}, coords interface{}, wpbot interface{}) *MockBattleshipClient_InitGame_Call {
+	return &MockBattleshipClient_InitGame_Call{Call: _e.mock.On("InitGame", endpoint, nick, desc, targetNick, coords, wpbot)}
 }
 
-func (_c *MockBattleshipClient_InitGame_Call) Run(run func(endpoint string, nick string, desc string, targetNick string, wpbot bool)) *MockBattleshipClient_InitGame_Call {
+func (_c *MockBattleshipClient_InitGame_Call) Run(run func(endpoint string, nick string, desc string, targetNick string, coords []string, wpbot bool)) *MockBattleshipClient_InitGame_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string), args[1].(string), args[2].(string), args[3].(string), args[4].(bool))
+		run(args[0].(string), args[1].(string), args[2].(string), args[3].(string), args[4].([]string), args[5].(bool))
 	})
 	return _c
 }
@@ -442,7 +485,7 @@ func (_c *MockBattleshipClient_InitGame_Call) Return(_a0 error) *MockBattleshipC
 	return _c
 }
 
-func (_c *MockBattleshipClient_InitGame_Call) RunAndReturn(run func(string, string, string, string, bool) error) *MockBattleshipClient_InitGame_Call {
+func (_c *MockBattleshipClient_InitGame_Call) RunAndReturn(run func(string, string, string, string, []string, bool) error) *MockBattleshipClient_InitGame_Call {
 	_c.Call.Return(run)
 	return _c
 }

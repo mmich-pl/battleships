@@ -189,7 +189,7 @@ func (bd *BoardData) RenderBoards(status *models.StatusResponse) error {
 	bd.drawBoard()
 	go func() {
 		for status.GameStatus == "game_in_progress" {
-			status, _ = bd.app.client.GameStatus(GameStatusEndpoint)
+			status, _ = bd.app.Client.GameStatus(GameStatusEndpoint)
 			bd.timer.SetText(fmt.Sprintf("Timer: %d", status.Timer))
 			time.Sleep(time.Second)
 		}
@@ -209,7 +209,7 @@ func (bd *BoardData) RenderBoards(status *models.StatusResponse) error {
 			for shouldContinue && status.ShouldFire && status.GameStatus != "ended" {
 				coords := bd.handleShot()
 				if len(coords) != 0 {
-					shoot, _ := bd.app.client.Fire(FireEndpoint, coords)
+					shoot, _ := bd.app.Client.Fire(FireEndpoint, coords)
 
 					var state gui.State
 					if shoot.Result == "hit" || shoot.Result == "sunk" {
@@ -235,7 +235,7 @@ func (bd *BoardData) RenderBoards(status *models.StatusResponse) error {
 			if status.GameStatus == "ended" {
 				bd.gameResult.SetText(If(status.LastGameStatus == "win",
 					"Game ended, You win", "Game ended, You lost"))
-				_ = bd.app.client.AbandonGame(AbandonEndpoint)
+				_ = bd.app.Client.AbandonGame(AbandonEndpoint)
 			}
 		}
 

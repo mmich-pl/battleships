@@ -2,7 +2,7 @@ package main
 
 import (
 	. "battleships/internal/app"
-	mainApp "battleships/internal/app"
+	mainApp "battleships/internal/app/menu"
 	"battleships/internal/battleship_client"
 
 	"log"
@@ -21,22 +21,22 @@ func main() {
 		playerChoide := menu.Display()
 		switch playerChoide {
 		case "Start game":
-			if err := StartNewGame(c); err != nil {
+			if err := mainApp.StartNewGame(c); err != nil {
 				log.Print(err)
 				return
 			}
 		case "List players":
-			if err := ListPlayer(c); err != nil {
+			if err := mainApp.ListPlayer(c); err != nil {
 				log.Println(err)
 				continue
 			}
 		case "Print stats":
-			if err := PrintTopTenPlayerStatistics(c); err != nil {
+			if err := mainApp.PrintTopTenPlayerStatistics(c); err != nil {
 				log.Println(err)
 				continue
 			}
 		case "Print stats of specific player":
-			if err := PrintPlayerStatistics(c); err != nil {
+			if err := mainApp.PrintPlayerStatistics(c); err != nil {
 				log.Println(err)
 				continue
 			}
@@ -48,7 +48,7 @@ func main() {
 		if gameInitiated {
 			input, _ := GetPlayerInput("play again? [yes]/[no]")
 			if input == "yes" {
-				if err := StartNewGame(c); err != nil {
+				if err := mainApp.StartNewGame(c); err != nil {
 					log.Print(err)
 					return
 				}

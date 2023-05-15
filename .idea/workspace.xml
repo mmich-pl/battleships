@@ -4,12 +4,15 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="add possibility to join multiplayer game">
+    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="add abandon endpoint">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/main/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/app/board.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/menu.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/menu/menu.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/menu_functions.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/menu/menu_functions.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/battleship_client/battleship_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/battleship_client/battleship_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/base_client/base_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/base_client/base_client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/battleship_client/mock_BattleshipClient.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/battleship_client/mock_BattleshipClient.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,46 +54,15 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/internal/app" />
+      <recent name="$PROJECT_DIR$/internal/app/board" />
+      <recent name="$PROJECT_DIR$/internal/app/menu" />
       <recent name="$PROJECT_DIR$/internal" />
       <recent name="$PROJECT_DIR$/pkg/base_client" />
-      <recent name="$PROJECT_DIR$/cmd/main" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build battleships/cmd/main">
-    <configuration name="go build battleships/cmd/main" type="GoApplicationRunConfiguration" factoryName="Go Application" singleton="false" temporary="true" nameIsGenerated="true">
-      <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="battleships/cmd/main" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/cmd/main/main.go" />
-      <method v="2" />
-    </configuration>
-    <configuration name="TestBST in battleships/internal/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$/internal/utils" />
-      <root_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="battleships/internal/utils" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <pattern value="^\QTestBST\E$" />
-      <method v="2" />
-    </configuration>
-    <configuration name="TestGetNodeTextByID in battleships/internal/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$/internal/utils" />
-      <root_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="battleships/internal/utils" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <pattern value="^\QTestGetNodeTextByID\E$" />
-      <method v="2" />
-    </configuration>
-    <configuration name="TestRenderBoards in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Go Test.TestValidateShipPlacement/ValidPlacement in battleships/internal/app">
+    <configuration name="TestValidateShipPlacement in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="battleships" />
       <working_directory value="$PROJECT_DIR$/internal/app" />
       <root_directory value="$PROJECT_DIR$" />
@@ -99,10 +71,10 @@
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestRenderBoards\E$" />
+      <pattern value="^\QTestValidateShipPlacement\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestSetUpBoard in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestValidateShipPlacement/InvalidRow in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="battleships" />
       <working_directory value="$PROJECT_DIR$/internal/app" />
       <root_directory value="$PROJECT_DIR$" />
@@ -111,23 +83,59 @@
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestSetUpBoard\E$" />
+      <pattern value="^\QTestValidateShipPlacement\E$/^\QInvalidRow\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestValidateShipPlacement/MissingShip in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="battleships" />
+      <working_directory value="$PROJECT_DIR$/internal/app" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="battleships/internal/app" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestValidateShipPlacement\E$/^\QMissingShip\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestValidateShipPlacement/ValidPlacement in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="battleships" />
+      <working_directory value="$PROJECT_DIR$/internal/app" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="battleships/internal/app" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestValidateShipPlacement\E$/^\QValidPlacement\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestValidateShipPlacement/ValidShipPlacement in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="battleships" />
+      <working_directory value="$PROJECT_DIR$/internal/app" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="battleships/internal/app" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestValidateShipPlacement\E$/^\QValidShipPlacement\E$" />
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Go Build.go build battleships/cmd/main" />
-      <item itemvalue="Go Test.TestBST in battleships/internal/utils" />
-      <item itemvalue="Go Test.TestGetNodeTextByID in battleships/internal/utils" />
-      <item itemvalue="Go Test.TestRenderBoards in battleships/internal/app" />
-      <item itemvalue="Go Test.TestSetUpBoard in battleships/internal/app" />
+      <item itemvalue="Go Test.TestValidateShipPlacement in battleships/internal/app" />
+      <item itemvalue="Go Test.TestValidateShipPlacement/InvalidRow in battleships/internal/app" />
+      <item itemvalue="Go Test.TestValidateShipPlacement/MissingShip in battleships/internal/app" />
+      <item itemvalue="Go Test.TestValidateShipPlacement/ValidPlacement in battleships/internal/app" />
+      <item itemvalue="Go Test.TestValidateShipPlacement/ValidShipPlacement in battleships/internal/app" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build battleships/cmd/main" />
-        <item itemvalue="Go Test.TestGetNodeTextByID in battleships/internal/utils" />
-        <item itemvalue="Go Test.TestBST in battleships/internal/utils" />
-        <item itemvalue="Go Test.TestRenderBoards in battleships/internal/app" />
-        <item itemvalue="Go Test.TestSetUpBoard in battleships/internal/app" />
+        <item itemvalue="Go Test.TestValidateShipPlacement/ValidPlacement in battleships/internal/app" />
+        <item itemvalue="Go Test.TestValidateShipPlacement/InvalidRow in battleships/internal/app" />
+        <item itemvalue="Go Test.TestValidateShipPlacement in battleships/internal/app" />
+        <item itemvalue="Go Test.TestValidateShipPlacement/MissingShip in battleships/internal/app" />
+        <item itemvalue="Go Test.TestValidateShipPlacement/ValidShipPlacement in battleships/internal/app" />
       </list>
     </recent_temporary>
   </component>
@@ -147,7 +155,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implement GameStatus function in BattleshipHTTPClient" />
     <MESSAGE value="add waiting for game start mechanic to main app loop" />
     <MESSAGE value="implement board request" />
     <MESSAGE value="add board creation functions" />
@@ -172,7 +179,8 @@
     <MESSAGE value="add simple bst" />
     <MESSAGE value="add main menu which now become entrypoint to app" />
     <MESSAGE value="add possibility to join multiplayer game" />
-    <option name="LAST_COMMIT_MESSAGE" value="add possibility to join multiplayer game" />
+    <MESSAGE value="add abandon endpoint" />
+    <option name="LAST_COMMIT_MESSAGE" value="add abandon endpoint" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
@@ -182,7 +190,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/app/app.go</url>
-          <line>162</line>
+          <line>166</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">

@@ -10,7 +10,7 @@ import (
 
 //go:generate mockery --name BattleshipClient
 type BattleshipClient interface {
-	InitGame(endpoint, nick, desc, targetNick string, wpbot bool) error
+	InitGame(endpoint, nick, desc, targetNick string, coords []string, wpbot bool) error
 	Description(endpoint string) (*models.DescriptionResponse, error)
 	GameStatus(endpoint string) (*models.StatusResponse, error)
 	Board(endpoint string) ([]string, error)
@@ -40,9 +40,9 @@ func NewBattleshipClient(baseURL string, responseTimeout, connectionTimeout time
 	return &BattleshipHTTPClient{client: client}
 }
 
-func (b *BattleshipHTTPClient) InitGame(endpoint, nick, desc, targetNick string, wpbot bool) error {
+func (b *BattleshipHTTPClient) InitGame(endpoint, nick, desc, targetNick string, coords []string, wpbot bool) error {
 	payload := models.InitialPayload{
-		Coords:     nil,
+		Coords:     coords,
 		Desc:       desc,
 		Nick:       nick,
 		TargetNick: targetNick,
