@@ -23,6 +23,7 @@ const (
 	WaitingPlayersEndpoint = "/game/list"
 	RefreshEndpoint        = "/game/refresh"
 	StatsEndpoint          = "/game/stats"
+	AbandonEndpoint        = "/game/abandon"
 )
 
 type App struct {

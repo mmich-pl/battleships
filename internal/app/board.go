@@ -148,7 +148,6 @@ func (bd *BoardData) drawBoard() {
 }
 
 func (bd *BoardData) renderDescription() {
-
 	fragments := [2]struct {
 		desc []string
 		pos  [2]int
@@ -180,8 +179,7 @@ func (bd *BoardData) handleShot() string {
 	}
 }
 
-func (bd *BoardData) RenderBoards(status *models.StatusResponse) {
-
+func (bd *BoardData) RenderBoards(status *models.StatusResponse) error {
 	hit := 0
 	miss := 0
 
@@ -214,7 +212,6 @@ func (bd *BoardData) RenderBoards(status *models.StatusResponse) {
 					shoot, _ := bd.app.client.Fire(FireEndpoint, coords)
 
 					var state gui.State
-
 					if shoot.Result == "hit" || shoot.Result == "sunk" {
 						bd.statusAfterFire.SetText(If(shoot.Result == "sunk", "Ship sunk", "Ship hit"))
 						state = gui.Hit
@@ -238,10 +235,12 @@ func (bd *BoardData) RenderBoards(status *models.StatusResponse) {
 			if status.GameStatus == "ended" {
 				bd.gameResult.SetText(If(status.LastGameStatus == "win",
 					"Game ended, You win", "Game ended, You lost"))
+				_ = bd.app.client.AbandonGame(AbandonEndpoint)
 			}
 		}
 
 	}()
 
 	bd.ui.Start(nil)
+	return nil
 }

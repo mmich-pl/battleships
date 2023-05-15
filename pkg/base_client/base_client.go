@@ -20,6 +20,7 @@ type BaseHTTPClient struct {
 type BaseClient interface {
 	Get(endpoint string, headers ...http.Header) (*Response, error)
 	Post(endpoint string, payload interface{}, headers ...http.Header) (*Response, error)
+	Delete(url string, headers ...http.Header) (*Response, error)
 }
 
 func (c *BaseHTTPClient) Get(endpoint string, headers ...http.Header) (*Response, error) {
@@ -28,6 +29,10 @@ func (c *BaseHTTPClient) Get(endpoint string, headers ...http.Header) (*Response
 
 func (c *BaseHTTPClient) Post(endpoint string, payload interface{}, headers ...http.Header) (*Response, error) {
 	return c.do(http.MethodPost, endpoint, getHeaders(headers...), payload)
+}
+
+func (c *BaseHTTPClient) Delete(url string, headers ...http.Header) (*Response, error) {
+	return c.do(http.MethodDelete, url, getHeaders(headers...), nil)
 }
 
 func (c *BaseHTTPClient) do(method, endpoint string, headers http.Header, body interface{}) (*Response, error) {

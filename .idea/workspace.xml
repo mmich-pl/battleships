@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="add possibility to join multiplayer game">
-      <change afterPath="$PROJECT_DIR$/internal/app/menu_functions.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/main/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/app/board.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/battleship_client/battleship_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/battleship_client/battleship_client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/base_client/base_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/base_client/base_client.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,7 +182,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/app/app.go</url>
-          <line>161</line>
+          <line>162</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
@@ -197,7 +197,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/battleship_client/battleship_client.go</url>
-          <line>160</line>
+          <line>161</line>
           <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">

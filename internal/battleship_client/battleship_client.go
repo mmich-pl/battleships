@@ -19,6 +19,7 @@ type BattleshipClient interface {
 	RefreshSession(endpoint string) error
 	GetStatistic(endpoint string) (*models.StatsResponse, error)
 	GetPlayerStatistic(endpoint, nick string) (*models.PlayerStatsResponse, error)
+	AbandonGame(endpoint string) error
 }
 
 type BattleshipHTTPClient struct {
@@ -159,4 +160,17 @@ func (b *BattleshipHTTPClient) GetPlayerStatistic(endpoint, nick string) (*model
 		return nil, fmt.Errorf("failed to unmarshal waiting players request: %w", err)
 	}
 	return &result, nil
+}
+
+func (b *BattleshipHTTPClient) AbandonGame(endpoint string) error {
+	resp, err := b.client.Delete(endpoint, b.client.Builder.Headers)
+	if err != nil {
+		return fmt.Errorf("failed to refresh session: %w", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	return nil
 }
