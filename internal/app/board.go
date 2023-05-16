@@ -230,17 +230,21 @@ func (bd *BoardData) RenderBoards(status *models.StatusResponse) error {
 		}
 	}()
 
+	boardCtx, cancel := context.WithCancel(context.TODO())
 	go func() {
 		for {
 			if status.GameStatus == "ended" {
 				bd.gameResult.SetText(If(status.LastGameStatus == "win",
 					"Game ended, You win", "Game ended, You lost"))
+				bd.accuracy.SetText(fmt.Sprintf("%.2f", float64(hit)/float64(miss+hit)))
+				time.Sleep(10 * time.Second)
+				cancel()
 				_ = bd.app.Client.AbandonGame(AbandonEndpoint)
 			}
 		}
 
 	}()
 
-	bd.ui.Start(nil)
+	bd.ui.Start(boardCtx, nil)
 	return nil
 }
