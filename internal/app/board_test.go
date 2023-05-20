@@ -25,7 +25,7 @@ func TestMapCoords(t *testing.T) {
 
 	for _, scenario := range testScenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			_, _, err := mapCoords(scenario.coords)
+			_, _, err := MapCoords(scenario.coords)
 			if scenario.error {
 				assert.Error(t, err)
 			} else {
@@ -79,7 +79,10 @@ func TestRenderBoards(t *testing.T) {
 			log.Fatal(err)
 		}
 		bd := InitBoardData(app)
-		bd.RenderBoards(status)
+		err := bd.RenderBoards(status)
+		if err != nil {
+			return
+		}
 	})
 
 }

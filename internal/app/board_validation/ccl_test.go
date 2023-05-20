@@ -1,4 +1,4 @@
-package app
+package board_validation
 
 import (
 	"reflect"

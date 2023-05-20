@@ -51,7 +51,7 @@ func InitBoardData(a *App) *BoardData {
 }
 
 // Parses coordinates to two integers that represents board square in matrix
-func mapCoords(coordinate string) (int, int, error) {
+func MapCoords(coordinate string) (int, int, error) {
 	if len(coordinate) == 0 {
 		return -1, -1, fmt.Errorf("coordinate is empty")
 	}
@@ -81,7 +81,7 @@ func (a *App) setUpBoardsState(board []string) error {
 	for _, coords := range board {
 		c := coords
 		g.Go(func() error {
-			if x, y, err := mapCoords(c); err != nil {
+			if x, y, err := MapCoords(c); err != nil {
 				return err
 			} else {
 				a.PlayerBoardState[x][y] = gui.Ship
@@ -98,7 +98,7 @@ func (a *App) setUpBoardsState(board []string) error {
 }
 
 func (bd *BoardData) markPlayerMove(state gui.State, coord string) error {
-	x, y, err := mapCoords(coord)
+	x, y, err := MapCoords(coord)
 	if err != nil {
 		return fmt.Errorf("failed to parse coord: %w", err)
 	}
@@ -111,7 +111,7 @@ func (bd *BoardData) markPlayerMove(state gui.State, coord string) error {
 func (bd *BoardData) markOpponentMoves(status *models.StatusResponse) error {
 
 	for _, cords := range status.OpponentShots {
-		x, y, err := mapCoords(cords)
+		x, y, err := MapCoords(cords)
 		if err != nil {
 			return fmt.Errorf("failed to parse coords: %w", err)
 		}
@@ -168,7 +168,7 @@ func (bd *BoardData) renderDescription() {
 func (bd *BoardData) handleShot() string {
 	for {
 		coords := bd.opponentBoard.Listen(context.TODO())
-		x, y, _ := mapCoords(coords)
+		x, y, _ := MapCoords(coords)
 		if bd.app.OpponentBoardState[x][y] == gui.Hit || bd.app.OpponentBoardState[x][y] == gui.Miss {
 			bd.statusAfterFire.SetText("Invalid coordinates, try again!")
 		} else {
