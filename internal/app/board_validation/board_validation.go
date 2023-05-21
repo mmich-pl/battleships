@@ -1,7 +1,7 @@
 package board_validation
 
 import (
-	"battleships/internal/app"
+	"battleships/internal/utils"
 	"fmt"
 	"reflect"
 	"sort"
@@ -15,7 +15,7 @@ const (
 	boardSize  = 10
 )
 
-func CountOccurrences(matrix [][]int) []int {
+func countOccurrences(matrix [][]int) []int {
 	counts := make(map[int]int)
 	for _, row := range matrix {
 		for _, num := range row {
@@ -34,7 +34,7 @@ func CountOccurrences(matrix [][]int) []int {
 	return v
 }
 
-func validateShipPlacement(fleet []string) (bool, string) {
+func ValidateShipPlacement(fleet []string) (bool, string) {
 	if len(fleet) != 20 {
 		return false, "ship overlap or missing"
 	}
@@ -60,7 +60,7 @@ func validateShipPlacement(fleet []string) (bool, string) {
 	}
 
 	for _, coords := range fleet {
-		x, y, err := app.MapCoords(coords)
+		x, y, err := utils.MapCoords(coords)
 		if err != nil {
 			return false, fmt.Sprintf("invalid coordinate: %s", err)
 		}
@@ -68,7 +68,7 @@ func validateShipPlacement(fleet []string) (bool, string) {
 	}
 
 	blobs := ConnectedComponentLabeling(board)
-	occurrences := CountOccurrences(blobs)
+	occurrences := countOccurrences(blobs)
 	if reflect.DeepEqual(shipList, occurrences) {
 		return true, "board valid"
 	}

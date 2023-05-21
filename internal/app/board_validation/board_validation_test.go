@@ -153,7 +153,7 @@ func TestValidateShipPlacement(t *testing.T) {
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			result, message := validateShipPlacement(testCase.ships)
+			result, message := ValidateShipPlacement(testCase.ships)
 			if result != testCase.expected {
 				t.Errorf("Ship placement validation failed for %v. Expected: %v, Got: %v", testCase.ships, testCase.expected, result)
 			}

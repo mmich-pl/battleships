@@ -8,7 +8,6 @@ import (
 	gui "github.com/grupawp/warships-gui/v2"
 	"github.com/mitchellh/go-wordwrap"
 	"golang.org/x/sync/errgroup"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -48,26 +47,6 @@ func InitBoardData(a *App) *BoardData {
 		playerMove:      gui.NewText(2, 3, "Press on any coordinate to take a shot.", nil),
 		accuracy:        gui.NewText(2, 33, "", nil),
 	}
-}
-
-// Parses coordinates to two integers that represents board square in matrix
-func MapCoords(coordinate string) (int, int, error) {
-	if len(coordinate) == 0 {
-		return -1, -1, fmt.Errorf("coordinate is empty")
-	}
-	column := coordinate[0]
-	if 'A' > column || column > 'J' {
-		return -1, -1, fmt.Errorf("coordinate out of bound: expected column in bounds [A-J]")
-	}
-
-	x := int(column - 'A')
-	y, err := strconv.Atoi(coordinate[1:])
-	if err != nil {
-		return -1, -1, fmt.Errorf("wrong coordinates format: %w", err)
-	} else if y < 1 || y > 10 {
-		return -1, -1, fmt.Errorf("coordinate [%s] out of bound: expected row in bounds [1-10]", coordinate)
-	}
-	return x, y - 1, nil
 }
 
 // Parses API response to [10][10] matrix format used by client

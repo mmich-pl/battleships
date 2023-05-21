@@ -3,6 +3,7 @@ package app
 import (
 	"battleships/internal/battleship_client"
 	"battleships/internal/models"
+	"battleships/internal/utils"
 	_ "github.com/grupawp/warships-gui/v2"
 	"github.com/stretchr/testify/assert"
 	"log"
@@ -25,7 +26,7 @@ func TestMapCoords(t *testing.T) {
 
 	for _, scenario := range testScenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			_, _, err := MapCoords(scenario.coords)
+			_, _, err := utils.MapCoords(scenario.coords)
 			if scenario.error {
 				assert.Error(t, err)
 			} else {

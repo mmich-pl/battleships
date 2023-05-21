@@ -1,6 +1,8 @@
 package app
 
 import (
+	. "battleships/internal/app/board_validation"
+	"battleships/internal/utils"
 	"context"
 	"fmt"
 	gui "github.com/grupawp/warships-gui/v2"
@@ -27,7 +29,7 @@ func getPlayerFleet(stop chan struct{}, states [10][10]gui.State, board gui.Boar
 			return
 		default:
 			coords := board.Listen(context.TODO())
-			x, y, _ := MapCoords(coords)
+			x, y, _ := utils.MapCoords(coords)
 			switch s := &states[x][y]; *s {
 			case gui.Ship:
 				*s = gui.Empty
@@ -43,7 +45,7 @@ func getPlayerFleet(stop chan struct{}, states [10][10]gui.State, board gui.Boar
 			if len(playerFleet) >= 20 {
 				board.SetStates(states)
 				txt.SetText("All fleet set!")
-				time.Sleep(time.Second * 3)
+				time.Sleep(time.Second * 2)
 				getPlayerFleet <- playerFleet
 				return
 			}
@@ -54,51 +56,60 @@ func getPlayerFleet(stop chan struct{}, states [10][10]gui.State, board gui.Boar
 func printFleetInstruction(ui gui.GUI) {
 	title := gui.NewText(60, 10, "Your fleet should look like this:", nil)
 
-	battleship := gui.NewText(60, 11, "1x Battleship  (4 tiles)", nil)
-	cruiser := gui.NewText(60, 12, "2x Cruiser     (3 tiles)", nil)
-	destroyer := gui.NewText(60, 13, "3x Destroyer   (2 tiles)", nil)
-	submarine := gui.NewText(60, 14, "4x Submarine   (1 tile)", nil)
+	battleshipInfo := gui.NewText(60, 11, "1x Battleship  (4 tiles)", nil)
+	cruiserInfo := gui.NewText(60, 12, "2x Cruiser     (3 tiles)", nil)
+	destroyerInfo := gui.NewText(60, 13, "3x Destroyer   (2 tiles)", nil)
+	submarineInfo := gui.NewText(60, 14, "4x Submarine   (1 tile)", nil)
 
 	ui.Draw(title)
-	ui.Draw(battleship)
-	ui.Draw(cruiser)
-	ui.Draw(destroyer)
-	ui.Draw(submarine)
+	ui.Draw(battleshipInfo)
+	ui.Draw(cruiserInfo)
+	ui.Draw(destroyerInfo)
+	ui.Draw(submarineInfo)
 
 }
 
-func RenderInputBoard() {
-	var playerFleet []string
-	board := gui.NewBoard(1, 1, nil)
-	ui := gui.NewGUI(true)
-
+func initBaseState() [10][10]gui.State {
 	states := [10][10]gui.State{}
 	for i := range states {
 		states[i] = [10]gui.State{}
 	}
+	return states
+}
+
+func RenderInputBoard() []string {
+	var playerFleet []string
+	board := gui.NewBoard(1, 1, nil)
+	ui := gui.NewGUI(true)
+	states := initBaseState()
 	board.SetStates(states)
 	ui.Draw(board)
 
-	txt := gui.NewText(60, 5, "Press on any coordinate to log it.", nil)
+	txt := gui.NewText(60, 5, "Press on any coordinate to set a ship.", nil)
 	ui.Draw(txt)
 	printFleetInstruction(*ui)
 
 	ctx, cancel := context.WithCancel(context.Background())
-
 	stop := make(chan struct{})
 	fleetChannel := make(chan []string)
-	go getPlayerFleet(stop, states, *board, *txt, fleetChannel)
 
 	go func() {
 		ui.Start(ctx, nil)
 	}()
 
-	playerFleet = <-fleetChannel
+	validBoard := false
+	var cause string
+	for !validBoard {
+		go getPlayerFleet(stop, states, *board, *txt, fleetChannel)
+		playerFleet = <-fleetChannel
+		validBoard, cause = ValidateShipPlacement(playerFleet)
+		txt.SetText(cause)
+		states = initBaseState()
+		board.SetStates(states)
+	}
 
 	close(stop)
-
 	cancel()
-	fmt.Println(playerFleet)
-
-	time.Sleep(2 * time.Second)
+	fmt.Println()
+	return playerFleet
 }
