@@ -7,7 +7,7 @@ require (
 	github.com/grupawp/warships-gui/v2 v2.1.4
 	github.com/mitchellh/go-wordwrap v1.0.1
 	github.com/pkg/term v1.1.0
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	golang.org/x/sync v0.1.0
 )
 

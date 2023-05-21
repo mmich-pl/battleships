@@ -98,8 +98,15 @@ func getInput() byte {
 	readBytes := make([]byte, 3)
 	read, err = t.Read(readBytes)
 
-	t.Restore()
-	t.Close()
+	err = t.Restore()
+	if err != nil {
+		return 0
+	}
+
+	err = t.Close()
+	if err != nil {
+		return 0
+	}
 
 	if read == 3 {
 		if _, ok := keys[readBytes[2]]; ok {

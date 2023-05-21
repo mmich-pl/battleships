@@ -179,7 +179,7 @@ func (bd *BoardData) handleShot() string {
 	}
 }
 
-func (bd *BoardData) RenderBoards(status *models.StatusResponse) error {
+func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
 	hit := 0
 	miss := 0
 
@@ -230,7 +230,7 @@ func (bd *BoardData) RenderBoards(status *models.StatusResponse) error {
 		}
 	}()
 
-	boardCtx, cancel := context.WithCancel(context.TODO())
+	boardCtx, cancel := context.WithCancel(context.Background())
 	go func() {
 		for {
 			if status.GameStatus == "ended" {

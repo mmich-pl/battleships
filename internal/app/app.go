@@ -88,7 +88,10 @@ func (a *App) Run() error {
 
 	bd := InitBoardData(a)
 
-	bd.RenderBoards(status)
+	err = bd.RenderGameBoards(status)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

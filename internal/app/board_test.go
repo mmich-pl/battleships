@@ -79,7 +79,7 @@ func TestRenderBoards(t *testing.T) {
 			log.Fatal(err)
 		}
 		bd := InitBoardData(app)
-		err := bd.RenderBoards(status)
+		err := bd.RenderGameBoards(status)
 		if err != nil {
 			return
 		}
