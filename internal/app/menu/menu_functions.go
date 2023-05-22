@@ -1,8 +1,8 @@
 package menu
 
 import (
-	. "battleships/internal/app"
 	"battleships/internal/battleship_client"
+	. "battleships/internal/utils"
 	"fmt"
 	"log"
 	"os"
@@ -20,10 +20,10 @@ func InitializeMainMenu() *Menu {
 	return menu
 }
 
-func PrintPlayerStatistics(c *battleship_client.BattleshipHTTPClient) error {
+func PrintPlayerStatistics(c battleship_client.BattleshipClient) error {
 	input, _ := GetPlayerInput("get the stats for player:")
 
-	s, err := c.GetPlayerStatistic(StatsEndpoint, strings.TrimSpace(input))
+	s, err := c.GetPlayerStatistic(strings.TrimSpace(input))
 	if err != nil {
 		log.Println(err)
 		return err
@@ -38,9 +38,9 @@ func PrintPlayerStatistics(c *battleship_client.BattleshipHTTPClient) error {
 	return nil
 }
 
-func PrintTopTenPlayerStatistics(c *battleship_client.BattleshipHTTPClient) error {
+func PrintTopTenPlayerStatistics(c battleship_client.BattleshipClient) error {
 	w := tabwriter.NewWriter(os.Stdout, 10, 1, 1, ' ', tabwriter.AlignRight)
-	stats, err := c.GetStatistic(StatsEndpoint)
+	stats, err := c.GetStatistic()
 	if err != nil {
 
 		return err
@@ -54,24 +54,14 @@ func PrintTopTenPlayerStatistics(c *battleship_client.BattleshipHTTPClient) erro
 	return nil
 }
 
-func ListPlayer(c *battleship_client.BattleshipHTTPClient) error {
-	playerList, err := c.GetPlayersList(WaitingPlayersEndpoint)
+func ListPlayer(c battleship_client.BattleshipClient) error {
+	playerList, err := c.GetPlayersList()
 	if err != nil {
 		return err
 	}
 
 	for _, data := range *playerList {
 		fmt.Println(data.GameStatus, " | ", data.Nick)
-	}
-	return nil
-}
-
-func StartNewGame(c *battleship_client.BattleshipHTTPClient) error {
-	app := New(c)
-	err := app.Run()
-	if err != nil {
-		log.Print(err)
-		return err
 	}
 	return nil
 }

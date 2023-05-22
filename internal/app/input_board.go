@@ -80,7 +80,7 @@ func initBaseState() [10][10]gui.State {
 func RenderInputBoard() []string {
 	var playerFleet []string
 	board := gui.NewBoard(1, 1, nil)
-	ui := gui.NewGUI(true)
+	ui := gui.NewGUI(false)
 	states := initBaseState()
 	board.SetStates(states)
 	ui.Draw(board)
@@ -108,8 +108,10 @@ func RenderInputBoard() []string {
 		board.SetStates(states)
 	}
 
+	fmt.Println("Your board: ")
+	fmt.Println(playerFleet)
+
 	close(stop)
 	cancel()
-	fmt.Println()
 	return playerFleet
 }

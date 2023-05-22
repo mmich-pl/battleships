@@ -4,6 +4,7 @@ import (
 	. "battleships/internal/app"
 	mainApp "battleships/internal/app/menu"
 	"battleships/internal/battleship_client"
+	. "battleships/internal/utils"
 
 	"log"
 )
@@ -13,18 +14,29 @@ var (
 	gameInitiated = false
 )
 
+func startNewGame(app *App) error {
+	err := app.Run()
+	if err != nil {
+		log.Print(err)
+		return err
+	}
+	return nil
+}
+
 func main() {
 	c := battleship_client.NewBattleshipClient(baseURL, 5, 5)
+	app := New(c)
 	menu := mainApp.InitializeMainMenu()
 
 	for {
 		playerChoide := menu.Display()
 		switch playerChoide {
 		case "Start game":
-			if err := mainApp.StartNewGame(c); err != nil {
+			if err := startNewGame(app); err != nil {
 				log.Print(err)
 				return
 			}
+			gameInitiated = true
 		case "List players":
 			if err := mainApp.ListPlayer(c); err != nil {
 				log.Println(err)
@@ -46,9 +58,9 @@ func main() {
 			continue
 		}
 		if gameInitiated {
-			input, _ := GetPlayerInput("play again? [yes]/[no]")
-			if input == "yes" {
-				if err := mainApp.StartNewGame(c); err != nil {
+			input, _ := GetPlayerInput("play again? [y/n]")
+			if input == "y" {
+				if err := startNewGame(app); err != nil {
 					log.Print(err)
 					return
 				}

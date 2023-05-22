@@ -8,18 +8,30 @@ import (
 	"time"
 )
 
+const (
+	InitEndpoint           = "/game"
+	GameStatusEndpoint     = "/game"
+	BoardEndpoint          = "/game/board"
+	OpponentDescription    = "/game/desc"
+	FireEndpoint           = "/game/fire"
+	WaitingPlayersEndpoint = "/lobby"
+	RefreshEndpoint        = "/game/refresh"
+	StatsEndpoint          = "/stats"
+	AbandonEndpoint        = "/game/abandon"
+)
+
 //go:generate mockery --name BattleshipClient
 type BattleshipClient interface {
-	InitGame(endpoint, nick, desc, targetNick string, coords []string, wpbot bool) error
-	Description(endpoint string) (*models.DescriptionResponse, error)
-	GameStatus(endpoint string) (*models.StatusResponse, error)
-	Board(endpoint string) ([]string, error)
-	Fire(endpoint, coords string) (*models.ShootResult, error)
-	GetPlayersList(endpoint string) (*[]models.WaitingPlayerData, error)
-	RefreshSession(endpoint string) error
-	GetStatistic(endpoint string) (*models.StatsResponse, error)
-	GetPlayerStatistic(endpoint, nick string) (*models.PlayerStatsResponse, error)
-	AbandonGame(endpoint string) error
+	InitGame(nick, desc, targetNick string, coords []string, wpbot bool) error
+	Description() (*models.DescriptionResponse, error)
+	GameStatus() (*models.StatusResponse, error)
+	Board() ([]string, error)
+	Fire(coords string) (*models.ShootResult, error)
+	GetPlayersList() (*[]models.WaitingPlayerData, error)
+	RefreshSession() error
+	GetStatistic() (*models.StatsResponse, error)
+	GetPlayerStatistic(nick string) (*models.PlayerStatsResponse, error)
+	AbandonGame() error
 }
 
 type BattleshipHTTPClient struct {
@@ -40,7 +52,7 @@ func NewBattleshipClient(baseURL string, responseTimeout, connectionTimeout time
 	return &BattleshipHTTPClient{client: client}
 }
 
-func (b *BattleshipHTTPClient) InitGame(endpoint, nick, desc, targetNick string, coords []string, wpbot bool) error {
+func (b *BattleshipHTTPClient) InitGame(nick, desc, targetNick string, coords []string, wpbot bool) error {
 	payload := models.InitialPayload{
 		Coords:     coords,
 		Desc:       desc,
@@ -49,7 +61,7 @@ func (b *BattleshipHTTPClient) InitGame(endpoint, nick, desc, targetNick string,
 		Wpbot:      wpbot,
 	}
 
-	resp, err := b.client.Post(endpoint, payload, b.client.Builder.Headers)
+	resp, err := b.client.Post(InitEndpoint, payload, b.client.Builder.Headers)
 	if err != nil {
 		return fmt.Errorf("failed to perform POST rquest: %w", err)
 	}
@@ -59,8 +71,8 @@ func (b *BattleshipHTTPClient) InitGame(endpoint, nick, desc, targetNick string,
 	return nil
 }
 
-func (b *BattleshipHTTPClient) Description(endpoint string) (*models.DescriptionResponse, error) {
-	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
+func (b *BattleshipHTTPClient) Description() (*models.DescriptionResponse, error) {
+	resp, err := b.client.Get(OpponentDescription, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform GET request: %w", err)
 	}
@@ -71,8 +83,8 @@ func (b *BattleshipHTTPClient) Description(endpoint string) (*models.Description
 	return &descriptions, nil
 }
 
-func (b *BattleshipHTTPClient) GameStatus(endpoint string) (*models.StatusResponse, error) {
-	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
+func (b *BattleshipHTTPClient) GameStatus() (*models.StatusResponse, error) {
+	resp, err := b.client.Get(GameStatusEndpoint, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform GET request: %w", err)
 	}
@@ -83,11 +95,11 @@ func (b *BattleshipHTTPClient) GameStatus(endpoint string) (*models.StatusRespon
 	return &status, nil
 }
 
-func (b *BattleshipHTTPClient) Board(endpoint string) ([]string, error) {
+func (b *BattleshipHTTPClient) Board() ([]string, error) {
 	type Board struct {
 		Board []string `json:"board"`
 	}
-	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
+	resp, err := b.client.Get(BoardEndpoint, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform GET request: %w", err)
 	}
@@ -98,9 +110,9 @@ func (b *BattleshipHTTPClient) Board(endpoint string) ([]string, error) {
 	return board.Board, nil
 }
 
-func (b *BattleshipHTTPClient) Fire(endpoint, coords string) (*models.ShootResult, error) {
+func (b *BattleshipHTTPClient) Fire(coords string) (*models.ShootResult, error) {
 	payload := models.Shoot{Coord: coords}
-	resp, err := b.client.Post(endpoint, payload, b.client.Builder.Headers)
+	resp, err := b.client.Post(FireEndpoint, payload, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform POST rquest: %w", err)
 	}
@@ -112,8 +124,8 @@ func (b *BattleshipHTTPClient) Fire(endpoint, coords string) (*models.ShootResul
 	return &result, nil
 }
 
-func (b *BattleshipHTTPClient) GetPlayersList(endpoint string) (*[]models.WaitingPlayerData, error) {
-	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
+func (b *BattleshipHTTPClient) GetPlayersList() (*[]models.WaitingPlayerData, error) {
+	resp, err := b.client.Get(WaitingPlayersEndpoint, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform get response: %w", err)
 	}
@@ -125,8 +137,8 @@ func (b *BattleshipHTTPClient) GetPlayersList(endpoint string) (*[]models.Waitin
 	return &result, nil
 }
 
-func (b *BattleshipHTTPClient) RefreshSession(endpoint string) error {
-	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
+func (b *BattleshipHTTPClient) RefreshSession() error {
+	resp, err := b.client.Get(RefreshEndpoint, b.client.Builder.Headers)
 	if err != nil {
 		return fmt.Errorf("failed to refresh session: %w", err)
 	}
@@ -138,8 +150,8 @@ func (b *BattleshipHTTPClient) RefreshSession(endpoint string) error {
 	return nil
 }
 
-func (b *BattleshipHTTPClient) GetStatistic(endpoint string) (*models.StatsResponse, error) {
-	resp, err := b.client.Get(endpoint, b.client.Builder.Headers)
+func (b *BattleshipHTTPClient) GetStatistic() (*models.StatsResponse, error) {
+	resp, err := b.client.Get(StatsEndpoint, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform get response: %w", err)
 	}
@@ -150,8 +162,8 @@ func (b *BattleshipHTTPClient) GetStatistic(endpoint string) (*models.StatsRespo
 	return &result, nil
 }
 
-func (b *BattleshipHTTPClient) GetPlayerStatistic(endpoint, nick string) (*models.PlayerStatsResponse, error) {
-	resp, err := b.client.Get(endpoint+"/"+nick, b.client.Builder.Headers)
+func (b *BattleshipHTTPClient) GetPlayerStatistic(nick string) (*models.PlayerStatsResponse, error) {
+	resp, err := b.client.Get(StatsEndpoint+"/"+nick, b.client.Builder.Headers)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform get response: %w", err)
 	}
@@ -162,8 +174,8 @@ func (b *BattleshipHTTPClient) GetPlayerStatistic(endpoint, nick string) (*model
 	return &result, nil
 }
 
-func (b *BattleshipHTTPClient) AbandonGame(endpoint string) error {
-	resp, err := b.client.Delete(endpoint, b.client.Builder.Headers)
+func (b *BattleshipHTTPClient) AbandonGame() error {
+	resp, err := b.client.Delete(AbandonEndpoint, b.client.Builder.Headers)
 	if err != nil {
 		return fmt.Errorf("failed to refresh session: %w", err)
 	}
