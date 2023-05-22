@@ -94,24 +94,20 @@ func RenderInputBoard() []string {
 	fleetChannel := make(chan []string)
 
 	go func() {
-		ui.Start(ctx, nil)
+		validBoard := false
+		var cause string
+		for !validBoard {
+			go getPlayerFleet(stop, states, *board, *txt, fleetChannel)
+			playerFleet = <-fleetChannel
+			validBoard, cause = ValidateShipPlacement(playerFleet)
+			txt.SetText(cause)
+			states = initBaseState()
+			board.SetStates(states)
+		}
+		close(stop)
+		cancel()
 	}()
+	ui.Start(ctx, nil)
 
-	validBoard := false
-	var cause string
-	for !validBoard {
-		go getPlayerFleet(stop, states, *board, *txt, fleetChannel)
-		playerFleet = <-fleetChannel
-		validBoard, cause = ValidateShipPlacement(playerFleet)
-		txt.SetText(cause)
-		states = initBaseState()
-		board.SetStates(states)
-	}
-
-	fmt.Println("Your board: ")
-	fmt.Println(playerFleet)
-
-	close(stop)
-	cancel()
 	return playerFleet
 }

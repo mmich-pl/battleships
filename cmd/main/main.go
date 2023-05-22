@@ -58,7 +58,7 @@ func main() {
 			continue
 		}
 		if gameInitiated {
-			input, _ := GetPlayerInput("play again? [y/n]")
+			input, _ := GetPlayerInput("play again? [y/n]: ")
 			if input == "y" {
 				if err := startNewGame(app); err != nil {
 					log.Print(err)

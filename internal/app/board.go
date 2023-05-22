@@ -208,7 +208,6 @@ func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
 
 		}
 	}()
-
 	boardCtx, cancel := context.WithCancel(context.Background())
 	go func() {
 		for {
@@ -216,7 +215,7 @@ func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
 				bd.gameResult.SetText(If(status.LastGameStatus == "win",
 					"Game ended, You win", "Game ended, You lost"))
 				bd.accuracy.SetText(fmt.Sprintf("%.2f", float64(hit)/float64(miss+hit)))
-				time.Sleep(10 * time.Second)
+				time.Sleep(5 * time.Second)
 				cancel()
 				_ = bd.app.Client.AbandonGame()
 			}
@@ -225,5 +224,6 @@ func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
 	}()
 
 	bd.ui.Start(boardCtx, nil)
+	_ = bd.app.Client.AbandonGame()
 	return nil
 }

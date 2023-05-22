@@ -32,6 +32,7 @@ type BattleshipClient interface {
 	GetStatistic() (*models.StatsResponse, error)
 	GetPlayerStatistic(nick string) (*models.PlayerStatsResponse, error)
 	AbandonGame() error
+	GetToken() string
 }
 
 type BattleshipHTTPClient struct {
@@ -67,7 +68,7 @@ func (b *BattleshipHTTPClient) InitGame(nick, desc, targetNick string, coords []
 	}
 
 	b.token = resp.Headers.Get("X-Auth-Token")
-	b.client.Builder.AddHeader("X-Auth-Token", b.token)
+	b.client.Builder.AddHeader("X-Auth-token", b.token)
 	return nil
 }
 
@@ -185,4 +186,8 @@ func (b *BattleshipHTTPClient) AbandonGame() error {
 	}
 
 	return nil
+}
+
+func (b *BattleshipHTTPClient) GetToken() string {
+	return b.token
 }
