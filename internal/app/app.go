@@ -27,6 +27,12 @@ func New(c battleship_client.BattleshipClient) *App {
 }
 
 func (a *App) Run() error {
+	if a.Client.GetToken() != "" {
+		log.Println(a.Client.GetToken())
+		a.Client.ResetToken()
+		log.Println(a.Client.GetToken())
+	}
+
 	var playerNick string
 	var playerDescription string
 
@@ -118,6 +124,8 @@ func (a *App) setUpGame(cancel context.CancelFunc) (*models.StatusResponse, erro
 
 func (a *App) waitForGameStart(cancel context.CancelFunc) (*models.StatusResponse, error) {
 	status, err := a.Client.GameStatus()
+	log.Println(status.GameStatus)
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to get game status: %w", err)
 	}
@@ -137,9 +145,13 @@ func (a *App) waitForGameStart(cancel context.CancelFunc) (*models.StatusRespons
 				channel <- channelResponse{status, nil}
 				cancel()
 				break
+			} else {
+				log.Println(status.GameStatus)
 			}
 
 			status, err = a.Client.GameStatus()
+			log.Println(status)
+
 			if err != nil {
 				cancel()
 				channel <- channelResponse{nil, err}

@@ -21,13 +21,13 @@ func (_m *MockBattleshipClient) EXPECT() *MockBattleshipClient_Expecter {
 	return &MockBattleshipClient_Expecter{mock: &_m.Mock}
 }
 
-// AbandonGame provides a mock function with given fields: endpoint
-func (_m *MockBattleshipClient) AbandonGame(endpoint string) error {
-	ret := _m.Called(endpoint)
+// AbandonGame provides a mock function with given fields:
+func (_m *MockBattleshipClient) AbandonGame() error {
+	ret := _m.Called()
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string) error); ok {
-		r0 = rf(endpoint)
+	if rf, ok := ret.Get(0).(func() error); ok {
+		r0 = rf()
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -41,14 +41,13 @@ type MockBattleshipClient_AbandonGame_Call struct {
 }
 
 // AbandonGame is a helper method to define mock.On call
-//   - endpoint string
-func (_e *MockBattleshipClient_Expecter) AbandonGame(endpoint interface{}) *MockBattleshipClient_AbandonGame_Call {
-	return &MockBattleshipClient_AbandonGame_Call{Call: _e.mock.On("AbandonGame", endpoint)}
+func (_e *MockBattleshipClient_Expecter) AbandonGame() *MockBattleshipClient_AbandonGame_Call {
+	return &MockBattleshipClient_AbandonGame_Call{Call: _e.mock.On("AbandonGame")}
 }
 
-func (_c *MockBattleshipClient_AbandonGame_Call) Run(run func(endpoint string)) *MockBattleshipClient_AbandonGame_Call {
+func (_c *MockBattleshipClient_AbandonGame_Call) Run(run func()) *MockBattleshipClient_AbandonGame_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
+		run()
 	})
 	return _c
 }
@@ -58,30 +57,30 @@ func (_c *MockBattleshipClient_AbandonGame_Call) Return(_a0 error) *MockBattlesh
 	return _c
 }
 
-func (_c *MockBattleshipClient_AbandonGame_Call) RunAndReturn(run func(string) error) *MockBattleshipClient_AbandonGame_Call {
+func (_c *MockBattleshipClient_AbandonGame_Call) RunAndReturn(run func() error) *MockBattleshipClient_AbandonGame_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Board provides a mock function with given fields: endpoint
-func (_m *MockBattleshipClient) Board(endpoint string) ([]string, error) {
-	ret := _m.Called(endpoint)
+// Board provides a mock function with given fields:
+func (_m *MockBattleshipClient) Board() ([]string, error) {
+	ret := _m.Called()
 
 	var r0 []string
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) ([]string, error)); ok {
-		return rf(endpoint)
+	if rf, ok := ret.Get(0).(func() ([]string, error)); ok {
+		return rf()
 	}
-	if rf, ok := ret.Get(0).(func(string) []string); ok {
-		r0 = rf(endpoint)
+	if rf, ok := ret.Get(0).(func() []string); ok {
+		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]string)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(endpoint)
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -95,14 +94,13 @@ type MockBattleshipClient_Board_Call struct {
 }
 
 // Board is a helper method to define mock.On call
-//   - endpoint string
-func (_e *MockBattleshipClient_Expecter) Board(endpoint interface{}) *MockBattleshipClient_Board_Call {
-	return &MockBattleshipClient_Board_Call{Call: _e.mock.On("Board", endpoint)}
+func (_e *MockBattleshipClient_Expecter) Board() *MockBattleshipClient_Board_Call {
+	return &MockBattleshipClient_Board_Call{Call: _e.mock.On("Board")}
 }
 
-func (_c *MockBattleshipClient_Board_Call) Run(run func(endpoint string)) *MockBattleshipClient_Board_Call {
+func (_c *MockBattleshipClient_Board_Call) Run(run func()) *MockBattleshipClient_Board_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
+		run()
 	})
 	return _c
 }
@@ -112,30 +110,30 @@ func (_c *MockBattleshipClient_Board_Call) Return(_a0 []string, _a1 error) *Mock
 	return _c
 }
 
-func (_c *MockBattleshipClient_Board_Call) RunAndReturn(run func(string) ([]string, error)) *MockBattleshipClient_Board_Call {
+func (_c *MockBattleshipClient_Board_Call) RunAndReturn(run func() ([]string, error)) *MockBattleshipClient_Board_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Description provides a mock function with given fields: endpoint
-func (_m *MockBattleshipClient) Description(endpoint string) (*models.DescriptionResponse, error) {
-	ret := _m.Called(endpoint)
+// Description provides a mock function with given fields:
+func (_m *MockBattleshipClient) Description() (*models.DescriptionResponse, error) {
+	ret := _m.Called()
 
 	var r0 *models.DescriptionResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*models.DescriptionResponse, error)); ok {
-		return rf(endpoint)
+	if rf, ok := ret.Get(0).(func() (*models.DescriptionResponse, error)); ok {
+		return rf()
 	}
-	if rf, ok := ret.Get(0).(func(string) *models.DescriptionResponse); ok {
-		r0 = rf(endpoint)
+	if rf, ok := ret.Get(0).(func() *models.DescriptionResponse); ok {
+		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*models.DescriptionResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(endpoint)
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -149,14 +147,13 @@ type MockBattleshipClient_Description_Call struct {
 }
 
 // Description is a helper method to define mock.On call
-//   - endpoint string
-func (_e *MockBattleshipClient_Expecter) Description(endpoint interface{}) *MockBattleshipClient_Description_Call {
-	return &MockBattleshipClient_Description_Call{Call: _e.mock.On("Description", endpoint)}
+func (_e *MockBattleshipClient_Expecter) Description() *MockBattleshipClient_Description_Call {
+	return &MockBattleshipClient_Description_Call{Call: _e.mock.On("Description")}
 }
 
-func (_c *MockBattleshipClient_Description_Call) Run(run func(endpoint string)) *MockBattleshipClient_Description_Call {
+func (_c *MockBattleshipClient_Description_Call) Run(run func()) *MockBattleshipClient_Description_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
+		run()
 	})
 	return _c
 }
@@ -166,30 +163,30 @@ func (_c *MockBattleshipClient_Description_Call) Return(_a0 *models.DescriptionR
 	return _c
 }
 
-func (_c *MockBattleshipClient_Description_Call) RunAndReturn(run func(string) (*models.DescriptionResponse, error)) *MockBattleshipClient_Description_Call {
+func (_c *MockBattleshipClient_Description_Call) RunAndReturn(run func() (*models.DescriptionResponse, error)) *MockBattleshipClient_Description_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Fire provides a mock function with given fields: endpoint, coords
-func (_m *MockBattleshipClient) Fire(endpoint string, coords string) (*models.ShootResult, error) {
-	ret := _m.Called(endpoint, coords)
+// Fire provides a mock function with given fields: coords
+func (_m *MockBattleshipClient) Fire(coords string) (*models.ShootResult, error) {
+	ret := _m.Called(coords)
 
 	var r0 *models.ShootResult
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string, string) (*models.ShootResult, error)); ok {
-		return rf(endpoint, coords)
+	if rf, ok := ret.Get(0).(func(string) (*models.ShootResult, error)); ok {
+		return rf(coords)
 	}
-	if rf, ok := ret.Get(0).(func(string, string) *models.ShootResult); ok {
-		r0 = rf(endpoint, coords)
+	if rf, ok := ret.Get(0).(func(string) *models.ShootResult); ok {
+		r0 = rf(coords)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*models.ShootResult)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(string, string) error); ok {
-		r1 = rf(endpoint, coords)
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(coords)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -203,15 +200,14 @@ type MockBattleshipClient_Fire_Call struct {
 }
 
 // Fire is a helper method to define mock.On call
-//   - endpoint string
 //   - coords string
-func (_e *MockBattleshipClient_Expecter) Fire(endpoint interface{}, coords interface{}) *MockBattleshipClient_Fire_Call {
-	return &MockBattleshipClient_Fire_Call{Call: _e.mock.On("Fire", endpoint, coords)}
+func (_e *MockBattleshipClient_Expecter) Fire(coords interface{}) *MockBattleshipClient_Fire_Call {
+	return &MockBattleshipClient_Fire_Call{Call: _e.mock.On("Fire", coords)}
 }
 
-func (_c *MockBattleshipClient_Fire_Call) Run(run func(endpoint string, coords string)) *MockBattleshipClient_Fire_Call {
+func (_c *MockBattleshipClient_Fire_Call) Run(run func(coords string)) *MockBattleshipClient_Fire_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string), args[1].(string))
+		run(args[0].(string))
 	})
 	return _c
 }
@@ -221,30 +217,30 @@ func (_c *MockBattleshipClient_Fire_Call) Return(_a0 *models.ShootResult, _a1 er
 	return _c
 }
 
-func (_c *MockBattleshipClient_Fire_Call) RunAndReturn(run func(string, string) (*models.ShootResult, error)) *MockBattleshipClient_Fire_Call {
+func (_c *MockBattleshipClient_Fire_Call) RunAndReturn(run func(string) (*models.ShootResult, error)) *MockBattleshipClient_Fire_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// GameStatus provides a mock function with given fields: endpoint
-func (_m *MockBattleshipClient) GameStatus(endpoint string) (*models.StatusResponse, error) {
-	ret := _m.Called(endpoint)
+// GameStatus provides a mock function with given fields:
+func (_m *MockBattleshipClient) GameStatus() (*models.StatusResponse, error) {
+	ret := _m.Called()
 
 	var r0 *models.StatusResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*models.StatusResponse, error)); ok {
-		return rf(endpoint)
+	if rf, ok := ret.Get(0).(func() (*models.StatusResponse, error)); ok {
+		return rf()
 	}
-	if rf, ok := ret.Get(0).(func(string) *models.StatusResponse); ok {
-		r0 = rf(endpoint)
+	if rf, ok := ret.Get(0).(func() *models.StatusResponse); ok {
+		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*models.StatusResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(endpoint)
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -258,14 +254,13 @@ type MockBattleshipClient_GameStatus_Call struct {
 }
 
 // GameStatus is a helper method to define mock.On call
-//   - endpoint string
-func (_e *MockBattleshipClient_Expecter) GameStatus(endpoint interface{}) *MockBattleshipClient_GameStatus_Call {
-	return &MockBattleshipClient_GameStatus_Call{Call: _e.mock.On("GameStatus", endpoint)}
+func (_e *MockBattleshipClient_Expecter) GameStatus() *MockBattleshipClient_GameStatus_Call {
+	return &MockBattleshipClient_GameStatus_Call{Call: _e.mock.On("GameStatus")}
 }
 
-func (_c *MockBattleshipClient_GameStatus_Call) Run(run func(endpoint string)) *MockBattleshipClient_GameStatus_Call {
+func (_c *MockBattleshipClient_GameStatus_Call) Run(run func()) *MockBattleshipClient_GameStatus_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
+		run()
 	})
 	return _c
 }
@@ -275,30 +270,30 @@ func (_c *MockBattleshipClient_GameStatus_Call) Return(_a0 *models.StatusRespons
 	return _c
 }
 
-func (_c *MockBattleshipClient_GameStatus_Call) RunAndReturn(run func(string) (*models.StatusResponse, error)) *MockBattleshipClient_GameStatus_Call {
+func (_c *MockBattleshipClient_GameStatus_Call) RunAndReturn(run func() (*models.StatusResponse, error)) *MockBattleshipClient_GameStatus_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// GetPlayerStatistic provides a mock function with given fields: endpoint, nick
-func (_m *MockBattleshipClient) GetPlayerStatistic(endpoint string, nick string) (*models.PlayerStatsResponse, error) {
-	ret := _m.Called(endpoint, nick)
+// GetPlayerStatistic provides a mock function with given fields: nick
+func (_m *MockBattleshipClient) GetPlayerStatistic(nick string) (*models.PlayerStatsResponse, error) {
+	ret := _m.Called(nick)
 
 	var r0 *models.PlayerStatsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string, string) (*models.PlayerStatsResponse, error)); ok {
-		return rf(endpoint, nick)
+	if rf, ok := ret.Get(0).(func(string) (*models.PlayerStatsResponse, error)); ok {
+		return rf(nick)
 	}
-	if rf, ok := ret.Get(0).(func(string, string) *models.PlayerStatsResponse); ok {
-		r0 = rf(endpoint, nick)
+	if rf, ok := ret.Get(0).(func(string) *models.PlayerStatsResponse); ok {
+		r0 = rf(nick)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*models.PlayerStatsResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(string, string) error); ok {
-		r1 = rf(endpoint, nick)
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(nick)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -312,15 +307,14 @@ type MockBattleshipClient_GetPlayerStatistic_Call struct {
 }
 
 // GetPlayerStatistic is a helper method to define mock.On call
-//   - endpoint string
 //   - nick string
-func (_e *MockBattleshipClient_Expecter) GetPlayerStatistic(endpoint interface{}, nick interface{}) *MockBattleshipClient_GetPlayerStatistic_Call {
-	return &MockBattleshipClient_GetPlayerStatistic_Call{Call: _e.mock.On("GetPlayerStatistic", endpoint, nick)}
+func (_e *MockBattleshipClient_Expecter) GetPlayerStatistic(nick interface{}) *MockBattleshipClient_GetPlayerStatistic_Call {
+	return &MockBattleshipClient_GetPlayerStatistic_Call{Call: _e.mock.On("GetPlayerStatistic", nick)}
 }
 
-func (_c *MockBattleshipClient_GetPlayerStatistic_Call) Run(run func(endpoint string, nick string)) *MockBattleshipClient_GetPlayerStatistic_Call {
+func (_c *MockBattleshipClient_GetPlayerStatistic_Call) Run(run func(nick string)) *MockBattleshipClient_GetPlayerStatistic_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string), args[1].(string))
+		run(args[0].(string))
 	})
 	return _c
 }
@@ -330,30 +324,30 @@ func (_c *MockBattleshipClient_GetPlayerStatistic_Call) Return(_a0 *models.Playe
 	return _c
 }
 
-func (_c *MockBattleshipClient_GetPlayerStatistic_Call) RunAndReturn(run func(string, string) (*models.PlayerStatsResponse, error)) *MockBattleshipClient_GetPlayerStatistic_Call {
+func (_c *MockBattleshipClient_GetPlayerStatistic_Call) RunAndReturn(run func(string) (*models.PlayerStatsResponse, error)) *MockBattleshipClient_GetPlayerStatistic_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// GetPlayersList provides a mock function with given fields: endpoint
-func (_m *MockBattleshipClient) GetPlayersList(endpoint string) (*[]models.WaitingPlayerData, error) {
-	ret := _m.Called(endpoint)
+// GetPlayersList provides a mock function with given fields:
+func (_m *MockBattleshipClient) GetPlayersList() (*[]models.WaitingPlayerData, error) {
+	ret := _m.Called()
 
 	var r0 *[]models.WaitingPlayerData
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*[]models.WaitingPlayerData, error)); ok {
-		return rf(endpoint)
+	if rf, ok := ret.Get(0).(func() (*[]models.WaitingPlayerData, error)); ok {
+		return rf()
 	}
-	if rf, ok := ret.Get(0).(func(string) *[]models.WaitingPlayerData); ok {
-		r0 = rf(endpoint)
+	if rf, ok := ret.Get(0).(func() *[]models.WaitingPlayerData); ok {
+		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*[]models.WaitingPlayerData)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(endpoint)
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -367,14 +361,13 @@ type MockBattleshipClient_GetPlayersList_Call struct {
 }
 
 // GetPlayersList is a helper method to define mock.On call
-//   - endpoint string
-func (_e *MockBattleshipClient_Expecter) GetPlayersList(endpoint interface{}) *MockBattleshipClient_GetPlayersList_Call {
-	return &MockBattleshipClient_GetPlayersList_Call{Call: _e.mock.On("GetPlayersList", endpoint)}
+func (_e *MockBattleshipClient_Expecter) GetPlayersList() *MockBattleshipClient_GetPlayersList_Call {
+	return &MockBattleshipClient_GetPlayersList_Call{Call: _e.mock.On("GetPlayersList")}
 }
 
-func (_c *MockBattleshipClient_GetPlayersList_Call) Run(run func(endpoint string)) *MockBattleshipClient_GetPlayersList_Call {
+func (_c *MockBattleshipClient_GetPlayersList_Call) Run(run func()) *MockBattleshipClient_GetPlayersList_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
+		run()
 	})
 	return _c
 }
@@ -384,30 +377,30 @@ func (_c *MockBattleshipClient_GetPlayersList_Call) Return(_a0 *[]models.Waiting
 	return _c
 }
 
-func (_c *MockBattleshipClient_GetPlayersList_Call) RunAndReturn(run func(string) (*[]models.WaitingPlayerData, error)) *MockBattleshipClient_GetPlayersList_Call {
+func (_c *MockBattleshipClient_GetPlayersList_Call) RunAndReturn(run func() (*[]models.WaitingPlayerData, error)) *MockBattleshipClient_GetPlayersList_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// GetStatistic provides a mock function with given fields: endpoint
-func (_m *MockBattleshipClient) GetStatistic(endpoint string) (*models.StatsResponse, error) {
-	ret := _m.Called(endpoint)
+// GetStatistic provides a mock function with given fields:
+func (_m *MockBattleshipClient) GetStatistic() (*models.StatsResponse, error) {
+	ret := _m.Called()
 
 	var r0 *models.StatsResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*models.StatsResponse, error)); ok {
-		return rf(endpoint)
+	if rf, ok := ret.Get(0).(func() (*models.StatsResponse, error)); ok {
+		return rf()
 	}
-	if rf, ok := ret.Get(0).(func(string) *models.StatsResponse); ok {
-		r0 = rf(endpoint)
+	if rf, ok := ret.Get(0).(func() *models.StatsResponse); ok {
+		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*models.StatsResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(endpoint)
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -421,14 +414,13 @@ type MockBattleshipClient_GetStatistic_Call struct {
 }
 
 // GetStatistic is a helper method to define mock.On call
-//   - endpoint string
-func (_e *MockBattleshipClient_Expecter) GetStatistic(endpoint interface{}) *MockBattleshipClient_GetStatistic_Call {
-	return &MockBattleshipClient_GetStatistic_Call{Call: _e.mock.On("GetStatistic", endpoint)}
+func (_e *MockBattleshipClient_Expecter) GetStatistic() *MockBattleshipClient_GetStatistic_Call {
+	return &MockBattleshipClient_GetStatistic_Call{Call: _e.mock.On("GetStatistic")}
 }
 
-func (_c *MockBattleshipClient_GetStatistic_Call) Run(run func(endpoint string)) *MockBattleshipClient_GetStatistic_Call {
+func (_c *MockBattleshipClient_GetStatistic_Call) Run(run func()) *MockBattleshipClient_GetStatistic_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
+		run()
 	})
 	return _c
 }
@@ -438,18 +430,18 @@ func (_c *MockBattleshipClient_GetStatistic_Call) Return(_a0 *models.StatsRespon
 	return _c
 }
 
-func (_c *MockBattleshipClient_GetStatistic_Call) RunAndReturn(run func(string) (*models.StatsResponse, error)) *MockBattleshipClient_GetStatistic_Call {
+func (_c *MockBattleshipClient_GetStatistic_Call) RunAndReturn(run func() (*models.StatsResponse, error)) *MockBattleshipClient_GetStatistic_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// InitGame provides a mock function with given fields: endpoint, nick, desc, targetNick, coords, wpbot
-func (_m *MockBattleshipClient) InitGame(endpoint string, nick string, desc string, targetNick string, coords []string, wpbot bool) error {
-	ret := _m.Called(endpoint, nick, desc, targetNick, coords, wpbot)
+// InitGame provides a mock function with given fields: nick, desc, targetNick, coords, wpbot
+func (_m *MockBattleshipClient) InitGame(nick string, desc string, targetNick string, coords []string, wpbot bool) error {
+	ret := _m.Called(nick, desc, targetNick, coords, wpbot)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, string, string, string, []string, bool) error); ok {
-		r0 = rf(endpoint, nick, desc, targetNick, coords, wpbot)
+	if rf, ok := ret.Get(0).(func(string, string, string, []string, bool) error); ok {
+		r0 = rf(nick, desc, targetNick, coords, wpbot)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -463,19 +455,18 @@ type MockBattleshipClient_InitGame_Call struct {
 }
 
 // InitGame is a helper method to define mock.On call
-//   - endpoint string
 //   - nick string
 //   - desc string
 //   - targetNick string
 //   - coords []string
 //   - wpbot bool
-func (_e *MockBattleshipClient_Expecter) InitGame(endpoint interface{}, nick interface{}, desc interface{}, targetNick interface{}, coords interface{}, wpbot interface{}) *MockBattleshipClient_InitGame_Call {
-	return &MockBattleshipClient_InitGame_Call{Call: _e.mock.On("InitGame", endpoint, nick, desc, targetNick, coords, wpbot)}
+func (_e *MockBattleshipClient_Expecter) InitGame(nick interface{}, desc interface{}, targetNick interface{}, coords interface{}, wpbot interface{}) *MockBattleshipClient_InitGame_Call {
+	return &MockBattleshipClient_InitGame_Call{Call: _e.mock.On("InitGame", nick, desc, targetNick, coords, wpbot)}
 }
 
-func (_c *MockBattleshipClient_InitGame_Call) Run(run func(endpoint string, nick string, desc string, targetNick string, coords []string, wpbot bool)) *MockBattleshipClient_InitGame_Call {
+func (_c *MockBattleshipClient_InitGame_Call) Run(run func(nick string, desc string, targetNick string, coords []string, wpbot bool)) *MockBattleshipClient_InitGame_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string), args[1].(string), args[2].(string), args[3].(string), args[4].([]string), args[5].(bool))
+		run(args[0].(string), args[1].(string), args[2].(string), args[3].([]string), args[4].(bool))
 	})
 	return _c
 }
@@ -485,18 +476,18 @@ func (_c *MockBattleshipClient_InitGame_Call) Return(_a0 error) *MockBattleshipC
 	return _c
 }
 
-func (_c *MockBattleshipClient_InitGame_Call) RunAndReturn(run func(string, string, string, string, []string, bool) error) *MockBattleshipClient_InitGame_Call {
+func (_c *MockBattleshipClient_InitGame_Call) RunAndReturn(run func(string, string, string, []string, bool) error) *MockBattleshipClient_InitGame_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// RefreshSession provides a mock function with given fields: endpoint
-func (_m *MockBattleshipClient) RefreshSession(endpoint string) error {
-	ret := _m.Called(endpoint)
+// RefreshSession provides a mock function with given fields:
+func (_m *MockBattleshipClient) RefreshSession() error {
+	ret := _m.Called()
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string) error); ok {
-		r0 = rf(endpoint)
+	if rf, ok := ret.Get(0).(func() error); ok {
+		r0 = rf()
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -510,14 +501,13 @@ type MockBattleshipClient_RefreshSession_Call struct {
 }
 
 // RefreshSession is a helper method to define mock.On call
-//   - endpoint string
-func (_e *MockBattleshipClient_Expecter) RefreshSession(endpoint interface{}) *MockBattleshipClient_RefreshSession_Call {
-	return &MockBattleshipClient_RefreshSession_Call{Call: _e.mock.On("RefreshSession", endpoint)}
+func (_e *MockBattleshipClient_Expecter) RefreshSession() *MockBattleshipClient_RefreshSession_Call {
+	return &MockBattleshipClient_RefreshSession_Call{Call: _e.mock.On("RefreshSession")}
 }
 
-func (_c *MockBattleshipClient_RefreshSession_Call) Run(run func(endpoint string)) *MockBattleshipClient_RefreshSession_Call {
+func (_c *MockBattleshipClient_RefreshSession_Call) Run(run func()) *MockBattleshipClient_RefreshSession_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
+		run()
 	})
 	return _c
 }
@@ -527,7 +517,7 @@ func (_c *MockBattleshipClient_RefreshSession_Call) Return(_a0 error) *MockBattl
 	return _c
 }
 
-func (_c *MockBattleshipClient_RefreshSession_Call) RunAndReturn(run func(string) error) *MockBattleshipClient_RefreshSession_Call {
+func (_c *MockBattleshipClient_RefreshSession_Call) RunAndReturn(run func() error) *MockBattleshipClient_RefreshSession_Call {
 	_c.Call.Return(run)
 	return _c
 }
