@@ -66,7 +66,6 @@ func printFleetInstruction(ui gui.GUI) {
 	ui.Draw(cruiserInfo)
 	ui.Draw(destroyerInfo)
 	ui.Draw(submarineInfo)
-
 }
 
 func initBaseState() [10][10]gui.State {

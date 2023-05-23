@@ -435,6 +435,47 @@ func (_c *MockBattleshipClient_GetStatistic_Call) RunAndReturn(run func() (*mode
 	return _c
 }
 
+// GetToken provides a mock function with given fields:
+func (_m *MockBattleshipClient) GetToken() string {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// MockBattleshipClient_GetToken_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetToken'
+type MockBattleshipClient_GetToken_Call struct {
+	*mock.Call
+}
+
+// GetToken is a helper method to define mock.On call
+func (_e *MockBattleshipClient_Expecter) GetToken() *MockBattleshipClient_GetToken_Call {
+	return &MockBattleshipClient_GetToken_Call{Call: _e.mock.On("GetToken")}
+}
+
+func (_c *MockBattleshipClient_GetToken_Call) Run(run func()) *MockBattleshipClient_GetToken_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockBattleshipClient_GetToken_Call) Return(_a0 string) *MockBattleshipClient_GetToken_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockBattleshipClient_GetToken_Call) RunAndReturn(run func() string) *MockBattleshipClient_GetToken_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // InitGame provides a mock function with given fields: nick, desc, targetNick, coords, wpbot
 func (_m *MockBattleshipClient) InitGame(nick string, desc string, targetNick string, coords []string, wpbot bool) error {
 	ret := _m.Called(nick, desc, targetNick, coords, wpbot)
@@ -518,6 +559,38 @@ func (_c *MockBattleshipClient_RefreshSession_Call) Return(_a0 error) *MockBattl
 }
 
 func (_c *MockBattleshipClient_RefreshSession_Call) RunAndReturn(run func() error) *MockBattleshipClient_RefreshSession_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ResetToken provides a mock function with given fields:
+func (_m *MockBattleshipClient) ResetToken() {
+	_m.Called()
+}
+
+// MockBattleshipClient_ResetToken_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ResetToken'
+type MockBattleshipClient_ResetToken_Call struct {
+	*mock.Call
+}
+
+// ResetToken is a helper method to define mock.On call
+func (_e *MockBattleshipClient_Expecter) ResetToken() *MockBattleshipClient_ResetToken_Call {
+	return &MockBattleshipClient_ResetToken_Call{Call: _e.mock.On("ResetToken")}
+}
+
+func (_c *MockBattleshipClient_ResetToken_Call) Run(run func()) *MockBattleshipClient_ResetToken_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockBattleshipClient_ResetToken_Call) Return() *MockBattleshipClient_ResetToken_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockBattleshipClient_ResetToken_Call) RunAndReturn(run func()) *MockBattleshipClient_ResetToken_Call {
 	_c.Call.Return(run)
 	return _c
 }
