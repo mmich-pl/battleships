@@ -2,6 +2,7 @@ package base_client
 
 import (
 	"math"
+	"math/rand"
 	"net/http"
 	"time"
 )
@@ -19,13 +20,16 @@ func DefaultRetryPolicy(resp *http.Response, err error) (bool, error) {
 	return false, nil
 }
 
-type Backoff func(min, max time.Duration, attempts int, resp *http.Response) time.Duration
+type Backoff func(min, max int, attempts int) time.Duration
 
-func DefaultBackoff(min, max time.Duration, attempts int, resp *http.Response) time.Duration {
-	multiplication := math.Pow(2, float64(attempts)) * float64(min)
-	sleep := time.Duration(multiplication)
-	if float64(sleep) != multiplication || sleep > max {
+func DefaultBackoff(min, max int, attempts int) time.Duration {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	m := int(math.Pow(2, float64(attempts)) - 1)
+
+	sleep := r.Intn(m-min) + min
+	if sleep > max {
 		sleep = max
 	}
-	return sleep
+
+	return time.Duration(sleep) * time.Second
 }

@@ -22,8 +22,8 @@ const (
 )
 
 var (
-	defaultRetryWaitMin = 1 * time.Second
-	defaultRetryWaitMax = 30 * time.Second
+	defaultRetryWaitMin = 0
+	defaultRetryWaitMax = 10
 	defaultRetryMax     = 4
 )
 
