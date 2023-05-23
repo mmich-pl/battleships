@@ -6,14 +6,32 @@ import (
 	"net/http"
 )
 
-type Response struct {
+type InternalResponse struct {
 	Status     string
 	StatusCode int
 	Headers    http.Header
 	Body       []byte
 }
 
-func (r *Response) UnmarshalJson(target interface{}) error {
+func ConvertToInternal(resp *http.Response) (*InternalResponse, error) {
+	respBody, err := io.ReadAll(resp.Body)
+	defer resp.Body.Close()
+
+	if err != nil {
+		return nil, err
+	}
+
+	response := InternalResponse{
+		Status:     resp.Status,
+		StatusCode: resp.StatusCode,
+		Headers:    resp.Header,
+		Body:       respBody,
+	}
+	return &response, nil
+
+}
+
+func (r *InternalResponse) UnmarshalJson(target interface{}) error {
 	return json.Unmarshal(r.Body, target)
 }
 

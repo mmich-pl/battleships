@@ -14,6 +14,7 @@ import (
 	"net/url"
 	"os"
 	"sync"
+	"time"
 )
 
 type BaseHTTPClient struct {
@@ -23,27 +24,27 @@ type BaseHTTPClient struct {
 }
 
 type BaseClient interface {
-	Get(endpoint string, headers ...http.Header) (*Response, error)
-	Post(endpoint string, payload interface{}, headers ...http.Header) (*Response, error)
-	Delete(url string, headers ...http.Header) (*Response, error)
+	Get(endpoint string, headers ...http.Header) (*InternalResponse, error)
+	Post(endpoint string, payload interface{}, headers ...http.Header) (*InternalResponse, error)
+	Delete(url string, headers ...http.Header) (*InternalResponse, error)
 }
 
-func (c *BaseHTTPClient) Get(endpoint string, headers ...http.Header) (*Response, error) {
+func (c *BaseHTTPClient) Get(endpoint string, headers ...http.Header) (*InternalResponse, error) {
 	return c.do(http.MethodGet, endpoint, getHeaders(headers...), nil)
 }
 
-func (c *BaseHTTPClient) Post(endpoint string, payload interface{}, headers ...http.Header) (*Response, error) {
+func (c *BaseHTTPClient) Post(endpoint string, payload interface{}, headers ...http.Header) (*InternalResponse, error) {
 	return c.do(http.MethodPost, endpoint, getHeaders(headers...), payload)
 }
 
-func (c *BaseHTTPClient) Delete(url string, headers ...http.Header) (*Response, error) {
+func (c *BaseHTTPClient) Delete(url string, headers ...http.Header) (*InternalResponse, error) {
 	return c.do(http.MethodDelete, url, getHeaders(headers...), nil)
 }
 
-func (c *BaseHTTPClient) do(method, endpoint string, headers http.Header, body interface{}) (*Response, error) {
-	fullHeaders := c.getRequestHeaders(headers)
-
-	requestBody, err := c.marshalRequestBody(body)
+func (c *BaseHTTPClient) do(method, endpoint string, headers http.Header, body interface{}) (*InternalResponse, error) {
+	// request setup
+	buffer, err := c.marshalRequestBody(body)
+	requestBody := bytes.NewReader(buffer)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create resp body: %w", err)
 	}
@@ -53,33 +54,69 @@ func (c *BaseHTTPClient) do(method, endpoint string, headers http.Header, body i
 		return nil, fmt.Errorf("failed to create full URL: %w", err)
 	}
 
-	request, err := http.NewRequest(method, fullURL, bytes.NewBuffer(requestBody))
+	request, err := NewRequest(method, fullURL, requestBody)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", request)
-
 	}
 
-	request.Header = fullHeaders
+	request.request.Header = c.getRequestHeaders(headers)
+	var i int
+	for {
+		var responseCode int
 
-	resp, err := c.getHttpClient().Do(request)
+		if request.body != nil {
+			if _, err = request.body.Seek(0, 0); err != nil {
+				return nil, fmt.Errorf("failed to seek body: %w", err)
+			}
+		}
+
+		//	attempt to make request
+		resp, err := c.getHttpClient().Do(request.request)
+		checkOK, checkErr := c.Builder.checkForRetry(resp, err)
+
+		if err != nil {
+			return nil, fmt.Errorf("failed to do request %s %s: %w", method, fullURL, err)
+		}
+
+		if !checkOK {
+			return ConvertToInternal(resp)
+		}
+
+		switch checkErr {
+		case nil:
+			err = c.drainBody(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+		default:
+			return nil, err
+		}
+
+		remain := c.Builder.retryMax - 1
+		i++
+		if remain == 0 {
+			break
+		}
+
+		wait := c.Builder.backoff(c.Builder.retryWaitMin, c.Builder.retryWaitMax, i)
+		desc := fmt.Sprintf("%s %s", method, fullURL)
+		if responseCode > 0 {
+			desc = fmt.Sprintf("%s (status: %d)", desc, responseCode)
+		}
+		log.Printf("%s, retrying in %s, (%d left)\n", desc, wait, remain)
+		time.Sleep(wait)
+	}
+	return nil, fmt.Errorf("%s %s giving up after %d attempts", method, fullURL, c.Builder.retryMax+1)
+
+}
+
+func (c *BaseHTTPClient) drainBody(body io.ReadCloser) error {
+	defer body.Close()
+	_, err := io.Copy(io.Discard, body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to do request: %w", err)
+		return err
 	}
-
-	defer resp.Body.Close()
-
-	respBody, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	response := Response{
-		Status:     resp.Status,
-		StatusCode: resp.StatusCode,
-		Headers:    resp.Header,
-		Body:       respBody,
-	}
-	return &response, nil
+	return nil
 }
 
 func (c *BaseHTTPClient) getHttpClient() *http.Client {
