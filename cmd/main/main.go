@@ -5,7 +5,7 @@ import (
 	mainApp "battleships/internal/app/menu"
 	"battleships/internal/battleship_client"
 	. "battleships/internal/utils"
-
+	"github.com/joho/godotenv"
 	"log"
 )
 
@@ -24,6 +24,10 @@ func startNewGame(app *App) error {
 }
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		return
+	}
 	c := battleship_client.NewBattleshipClient(baseURL, 5, 5)
 	app := New(c)
 	menu := mainApp.InitializeMainMenu()

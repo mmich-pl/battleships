@@ -217,13 +217,15 @@ func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
 				bd.accuracy.SetText(fmt.Sprintf("%.2f", float64(hit)/float64(miss+hit)))
 				time.Sleep(5 * time.Second)
 				cancel()
-				_ = bd.app.Client.AbandonGame()
 			}
 		}
 
 	}()
 
 	bd.ui.Start(boardCtx, nil)
-	_ = bd.app.Client.AbandonGame()
+	err := bd.app.Client.AbandonGame()
+	if err != nil {
+		return err
+	}
 	return nil
 }

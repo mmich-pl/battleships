@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/buger/goterm v1.0.4
 	github.com/grupawp/warships-gui/v2 v2.1.4
+	github.com/joho/godotenv v1.5.1
 	github.com/mitchellh/go-wordwrap v1.0.1
 	github.com/pkg/term v1.1.0
 	github.com/stretchr/testify v1.8.3
