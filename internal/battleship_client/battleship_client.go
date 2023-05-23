@@ -21,6 +21,12 @@ const (
 	AbandonEndpoint        = "/game/abandon"
 )
 
+var (
+	defaultRetryWaitMin = 1 * time.Second
+	defaultRetryWaitMax = 30 * time.Second
+	defaultRetryMax     = 4
+)
+
 //go:generate mockery --name BattleshipClient
 type BattleshipClient interface {
 	InitGame(nick, desc, targetNick string, coords []string, wpbot bool) error
@@ -55,6 +61,11 @@ func NewBattleshipClient(baseURL string, responseTimeout, connectionTimeout time
 		SetResponseTimeout(responseTimeout).
 		SetBaseURL(baseURL).
 		SetHttpClient(proxyClient).
+		SetRetryWaitMinTime(defaultRetryWaitMin).
+		SetRetryWaitMaxTime(defaultRetryWaitMax).
+		SetRetryMaxAttempts(defaultRetryMax).
+		SetRetryCheck(base_client.DefaultRetryPolicy).
+		SetBackoff(base_client.DefaultBackoff).
 		Build()
 	return &BattleshipHTTPClient{client: client}
 }

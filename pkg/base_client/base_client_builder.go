@@ -12,6 +12,11 @@ type ClientBuilder interface {
 	SetResponseTimeout(timeout time.Duration) ClientBuilder
 	SetHttpClient(c *http.Client) ClientBuilder
 	SetBaseURL(URL string) ClientBuilder
+	SetRetryWaitMaxTime(duration time.Duration) ClientBuilder
+	SetRetryWaitMinTime(duration time.Duration) ClientBuilder
+	SetRetryMaxAttempts(attempts int) ClientBuilder
+	SetRetryCheck(check CheckForRetry) ClientBuilder
+	SetBackoff(backoff Backoff) ClientBuilder
 	Build() *BaseHTTPClient
 }
 
@@ -21,6 +26,12 @@ type clientBuilder struct {
 	responseTimeout   time.Duration
 	baseUrl           string
 	client            *http.Client
+	retryWaitMin      time.Duration
+	retryWaitMax      time.Duration
+	retryMax          int
+
+	checkForRetry CheckForRetry
+	backoff       Backoff
 }
 
 func (c *clientBuilder) AddHeader(headerName, headerValue string) ClientBuilder {
@@ -58,6 +69,31 @@ func (c *clientBuilder) SetConnectionTimeout(timeout time.Duration) ClientBuilde
 
 func (c *clientBuilder) SetResponseTimeout(timeout time.Duration) ClientBuilder {
 	c.responseTimeout = timeout * time.Second
+	return c
+}
+
+func (c *clientBuilder) SetRetryWaitMaxTime(duration time.Duration) ClientBuilder {
+	c.retryWaitMax = duration
+	return c
+}
+
+func (c *clientBuilder) SetRetryWaitMinTime(duration time.Duration) ClientBuilder {
+	c.retryWaitMin = duration
+	return c
+}
+
+func (c *clientBuilder) SetRetryMaxAttempts(attempts int) ClientBuilder {
+	c.retryMax = attempts
+	return c
+}
+
+func (c *clientBuilder) SetRetryCheck(check CheckForRetry) ClientBuilder {
+	c.checkForRetry = check
+	return c
+}
+
+func (c *clientBuilder) SetBackoff(backoff Backoff) ClientBuilder {
+	c.backoff = backoff
 	return c
 }
 
