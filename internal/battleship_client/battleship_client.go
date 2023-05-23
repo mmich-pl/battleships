@@ -5,6 +5,7 @@ import (
 	"battleships/pkg/base_client"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -45,11 +46,15 @@ func NewBattleshipClient(baseURL string, responseTimeout, connectionTimeout time
 	headers := map[string]string{
 		"Content-Type": "application/json",
 	}
+
+	proxyUrl, _ := url.Parse("http://127.0.0.1:8900")
+	proxyClient := &http.Client{Transport: &http.Transport{Proxy: http.ProxyURL(proxyUrl), TLSClientConfig: base_client.CreateTLSConfig()}}
 	client := base_client.NewBuilder().
 		SetHeaderFromMap(headers).
 		SetConnectionTimeout(connectionTimeout).
 		SetResponseTimeout(responseTimeout).
 		SetBaseURL(baseURL).
+		SetHttpClient(proxyClient).
 		Build()
 	return &BattleshipHTTPClient{client: client}
 }

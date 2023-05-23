@@ -2,12 +2,17 @@ package base_client
 
 import (
 	"bytes"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"net/url"
+	"os"
 	"sync"
 )
 
@@ -99,4 +104,30 @@ func (c *BaseHTTPClient) marshalRequestBody(body interface{}) ([]byte, error) {
 		return nil, nil
 	}
 	return json.Marshal(body)
+}
+
+func CreateTLSConfig() *tls.Config {
+	insecure := flag.Bool("insecure-ssl", false, "Accept/Ignore all server SSL certificates")
+	flag.Parse()
+
+	rootCAs, _ := x509.SystemCertPool()
+	if rootCAs == nil {
+		rootCAs = x509.NewCertPool()
+	}
+
+	cert := os.Getenv("CERTIFICATE_PATH")
+	certs, err := os.ReadFile(cert)
+	if err != nil {
+		log.Fatalf("Failed to append %q to RootCAs: %v", cert, err)
+	}
+
+	if ok := rootCAs.AppendCertsFromPEM(certs); !ok {
+		log.Println("No certs appended, using system certs only")
+	}
+
+	config := &tls.Config{
+		InsecureSkipVerify: *insecure,
+		RootCAs:            rootCAs,
+	}
+	return config
 }
