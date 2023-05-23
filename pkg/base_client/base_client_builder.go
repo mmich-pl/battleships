@@ -24,6 +24,10 @@ type clientBuilder struct {
 }
 
 func (c *clientBuilder) AddHeader(headerName, headerValue string) ClientBuilder {
+	if old := c.Headers.Get(headerName); old != "" {
+		c.Headers.Del(headerName)
+	}
+
 	c.Headers.Add(headerName, headerValue)
 	return c
 }
