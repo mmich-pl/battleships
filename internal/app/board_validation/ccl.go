@@ -68,6 +68,12 @@ func ConnectedComponentLabeling(board [][]int) [][]int {
 				if j > 0 && board[i][j-1] == 1 {
 					u.Union(i*cols+j, i*cols+j-1)
 				}
+				if i > 0 && j > 0 && board[i-1][j-1] == 1 {
+					u.Union(i*cols+j, (i-1)*cols+j-1)
+				}
+				if i > 0 && j < cols-1 && board[i-1][j+1] == 1 {
+					u.Union(i*cols+j, (i-1)*cols+j+1)
+				}
 			}
 		}
 	}

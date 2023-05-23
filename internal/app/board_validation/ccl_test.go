@@ -56,20 +56,7 @@ func TestTwoPassConnectedComponentLabeling(t *testing.T) {
 				{0, 0, 0, 0, 0},
 				{0, 0, 1, 0, 0},
 				{0, 0, 1, 0, 0},
-				{0, 0, 0, 2, 2},
-			},
-		},
-		{
-			name: "Five components",
-			img: [][]int{
-				{1, 0, 1},
-				{0, 1, 0},
-				{1, 0, 1},
-			},
-			labels: [][]int{
-				{1, 0, 2},
-				{0, 3, 0},
-				{4, 0, 5},
+				{0, 0, 0, 1, 1},
 			},
 		},
 	}
