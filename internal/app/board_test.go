@@ -44,26 +44,26 @@ func TestRenderBoards(t *testing.T) {
 		testName: "Board Render",
 		client: func(t *testing.T) *battleship_client.MockBattleshipClient {
 			client := battleship_client.NewMockBattleshipClient(t)
-			client.EXPECT().Description(OpponentDescription).Return(&models.DescriptionResponse{
+			client.EXPECT().Description().Return(&models.DescriptionResponse{
 				Desc:                "brytyjski admirał, urodzony w 1740 roku, zmarł w 1808 roku, dowódca sił morskich podczas wojen napoleońskich",
 				Nick:                "Robert_Menzies",
 				OpponentDescription: "Siejący trwogę, latający WP Bot. 999 walk wygranych przed czasem. Giń przeciwniku!",
 				Opponent:            "WP_Bot",
 			}, nil)
 
-			client.EXPECT().GameStatus(GameStatusEndpoint).Return(&models.StatusResponse{
+			client.EXPECT().GameStatus().Return(&models.StatusResponse{
 				GameStatus:     "game_in_porgress",
 				LastGameStatus: "no_game",
 				OpponentShots:  []string{"A6", "A8", "F5"},
 				ShouldFire:     true,
 				Timer:          36,
 			}, nil)
-			client.EXPECT().Board(BoardEndpoint).Return([]string{
+			client.EXPECT().Board().Return([]string{
 				"A6", "A8", "A9", "C3", "D6", "D9", "D10", "E3", "F3", "F6",
 				"G1", "G3", "G9", "G10", "H1", "H5", "I1", "J1", "J4", "J5"}, nil)
-			client.EXPECT().Fire(FireEndpoint, "A4").Return(&models.ShootResult{Result: "miss"}, nil)
-			client.EXPECT().Fire(FireEndpoint, "A5").Return(&models.ShootResult{Result: "hit"}, nil)
-			client.EXPECT().Fire(FireEndpoint, "A6").Return(&models.ShootResult{Result: "sunk"}, nil)
+			client.EXPECT().Fire("A4").Return(&models.ShootResult{Result: "miss"}, nil)
+			client.EXPECT().Fire("A5").Return(&models.ShootResult{Result: "hit"}, nil)
+			client.EXPECT().Fire("A6").Return(&models.ShootResult{Result: "sunk"}, nil)
 			return client
 		},
 	}
@@ -72,9 +72,9 @@ func TestRenderBoards(t *testing.T) {
 
 		client := testScenario.client(t)
 		app := New(client)
-		status, _ := client.GameStatus(GameStatusEndpoint)
-		board, _ := client.Board(BoardEndpoint)
-		app.Description, _ = client.Description(OpponentDescription)
+		status, _ := client.GameStatus()
+		board, _ := client.Board()
+		app.Description, _ = client.Description()
 
 		if err := app.setUpBoardsState(board); err != nil {
 			log.Fatal(err)
