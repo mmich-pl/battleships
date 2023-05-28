@@ -1,11 +1,12 @@
 package battleship_client
 
 import (
+	. "battleships/internal/error"
 	"battleships/internal/models"
+	// . "battleships/internal/utils"
 	"battleships/pkg/base_client"
 	"fmt"
 	"net/http"
-	"net/url"
 	"time"
 )
 
@@ -53,14 +54,12 @@ func NewBattleshipClient(baseURL string, responseTimeout, connectionTimeout time
 		"Content-Type": "application/json",
 	}
 
-	proxyUrl, _ := url.Parse("http://127.0.0.1:8900")
-	proxyClient := &http.Client{Transport: &http.Transport{Proxy: http.ProxyURL(proxyUrl), TLSClientConfig: base_client.CreateTLSConfig()}}
 	client := base_client.NewBuilder().
 		SetHeaderFromMap(headers).
 		SetConnectionTimeout(connectionTimeout).
 		SetResponseTimeout(responseTimeout).
 		SetBaseURL(baseURL).
-		SetHttpClient(proxyClient).
+		SetProxy("http://127.0.0.1:8900").
 		SetRetryWaitMinTime(defaultRetryWaitMin).
 		SetRetryWaitMaxTime(defaultRetryWaitMax).
 		SetRetryMaxAttempts(defaultRetryMax).
@@ -86,7 +85,6 @@ func (b *BattleshipHTTPClient) InitGame(nick, desc, targetNick string, coords []
 
 	b.token = resp.Headers.Get("X-Auth-Token")
 	b.client.Builder.AddHeader("X-Auth-token", b.token)
-	fmt.Println(b.token)
 	return nil
 }
 
@@ -108,7 +106,7 @@ func (b *BattleshipHTTPClient) GameStatus() (*models.StatusResponse, error) {
 		return nil, fmt.Errorf("failed to perform GET request: %w", err)
 	}
 	var status models.StatusResponse
-	if err := resp.UnmarshalJson(&status); err != nil {
+	if err = resp.UnmarshalJson(&status); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 	return &status, nil

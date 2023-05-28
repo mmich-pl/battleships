@@ -1,9 +1,42 @@
 package base_client
 
 import (
+	"crypto/tls"
+	"crypto/x509"
+	"flag"
+	"log"
+	"net"
 	"net/http"
+	"net/url"
+	"os"
 	"time"
 )
+
+func createTLSConfig() *tls.Config {
+	insecure := flag.Bool("insecure-ssl", false, "Accept/Ignore all server SSL certificates")
+	flag.Parse()
+
+	rootCAs, _ := x509.SystemCertPool()
+	if rootCAs == nil {
+		rootCAs = x509.NewCertPool()
+	}
+
+	cert := os.Getenv("CERTIFICATE_PATH")
+	certs, err := os.ReadFile(cert)
+	if err != nil {
+		log.Fatalf("Failed to append %q to RootCAs: %v", cert, err)
+	}
+
+	if ok := rootCAs.AppendCertsFromPEM(certs); !ok {
+		log.Println("No certs appended, using system certs only")
+	}
+
+	config := &tls.Config{
+		InsecureSkipVerify: *insecure,
+		RootCAs:            rootCAs,
+	}
+	return config
+}
 
 type ClientBuilder interface {
 	SetHeaderFromMap(headers map[string]string) ClientBuilder
@@ -11,6 +44,7 @@ type ClientBuilder interface {
 	SetConnectionTimeout(timeout time.Duration) ClientBuilder
 	SetResponseTimeout(timeout time.Duration) ClientBuilder
 	SetHttpClient(c *http.Client) ClientBuilder
+	SetProxy(address string) ClientBuilder
 	SetBaseURL(URL string) ClientBuilder
 	SetRetryWaitMaxTime(duration int) ClientBuilder
 	SetRetryWaitMinTime(duration int) ClientBuilder
@@ -54,6 +88,20 @@ func (c *clientBuilder) SetHeaderFromMap(headers map[string]string) ClientBuilde
 
 func (c *clientBuilder) SetBaseURL(URL string) ClientBuilder {
 	c.baseUrl = URL
+	return c
+}
+
+func (c *clientBuilder) SetProxy(address string) ClientBuilder {
+	proxyUrl, _ := url.Parse(address)
+	c.client = &http.Client{
+		Transport: &http.Transport{
+			ResponseHeaderTimeout: c.responseTimeout,
+			Proxy:                 http.ProxyURL(proxyUrl),
+			TLSClientConfig:       createTLSConfig(),
+			DialContext:           (&net.Dialer{Timeout: c.connectionTimeout}).DialContext,
+		},
+		Timeout: c.connectionTimeout + c.responseTimeout,
+	}
 	return c
 }
 
