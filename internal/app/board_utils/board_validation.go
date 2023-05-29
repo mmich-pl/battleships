@@ -24,7 +24,7 @@ const (
 	BoardSize  = 10
 )
 
-func countOccurrences(matrix [][]int) []int {
+func CountOccurrences(matrix [][]int) []int {
 	counts := make(map[int]int)
 	for _, row := range matrix {
 		for _, num := range row {
@@ -56,24 +56,32 @@ func ValidateShipPlacement(fleet []string) (bool, string) {
 	}
 	sort.Ints(shipList)
 
-	board := make([][]int, BoardSize)
-	for i := range board {
-		board[i] = make([]int, BoardSize)
-	}
-
-	for _, coords := range fleet {
-		x, y, err := utils.MapCoords(coords)
-		if err != nil {
-			return false, fmt.Sprintf("invalid coordinate: %s", err)
-		}
-		board[x][y] = 1
+	board, msg := MapCoordToBoard(fleet)
+	if msg != "" {
+		return false, msg
 	}
 
 	blobs := ConnectedComponentLabeling(board)
-	occurrences := countOccurrences(blobs)
+	occurrences := CountOccurrences(blobs)
 	if reflect.DeepEqual(shipList, occurrences) {
 		return true, "board_utils valid"
 	}
 
 	return false, "board_utils invalid"
+}
+
+func MapCoordToBoard(coordinates []string) ([][]int, string) {
+	board := make([][]int, BoardSize)
+	for i := range board {
+		board[i] = make([]int, BoardSize)
+	}
+
+	for _, coords := range coordinates {
+		x, y, err := utils.MapCoords(coords)
+		if err != nil {
+			return nil, fmt.Sprintf("invalid coordinate: %s", err)
+		}
+		board[x][y] = 1
+	}
+	return board, ""
 }

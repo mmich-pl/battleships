@@ -34,7 +34,6 @@ func main() {
 		panic(err)
 	}
 	defer f.Close()
-	// Output to stdout instead of the default stderr
 	log.SetOutput(f)
 
 	err = godotenv.Load()

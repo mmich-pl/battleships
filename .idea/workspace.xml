@@ -4,12 +4,14 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="implement Connected-component labeling algorithm">
-      <change afterPath="$PROJECT_DIR$/internal/app/board_validation.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/app/board_validation_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sample" afterDir="false" />
+    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="add boarder after ship sunk">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/ccl.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/ccl.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/main/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/board.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/board_utils/board_validation.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board_utils/board_validation.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/board_utils/input_board.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/input_board.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/border.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/border.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,33 +34,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultGoTemplateProperty": "Go File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "go.import.settings.migrated": "true",
-    "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/home/mmich",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "settings.editor.selected.configurable": "editing.templates"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/mmich&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editing.templates&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/internal/app" />
-      <recent name="$PROJECT_DIR$/internal/app/board" />
-      <recent name="$PROJECT_DIR$/internal/app/menu" />
+      <recent name="$PROJECT_DIR$/internal/board" />
       <recent name="$PROJECT_DIR$/internal" />
-      <recent name="$PROJECT_DIR$/pkg/base_client" />
+      <recent name="$PROJECT_DIR$/internal/app/board_validation" />
+      <recent name="$PROJECT_DIR$/internal/app/board" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Test.TestValidateShipPlacement in battleships/internal/app">
+  <component name="RunManager" selected="Go Build.go build battleships/cmd/main">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="battleships" />
       <working_directory value="$PROJECT_DIR$" />
@@ -67,43 +69,40 @@
       <filePath value="$PROJECT_DIR$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestTwoPassConnectedComponentLabeling in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="go build battleships/cmd/main" type="GoApplicationRunConfiguration" factoryName="Go Application" singleton="false" temporary="true" nameIsGenerated="true">
       <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$/internal/app" />
-      <root_directory value="$PROJECT_DIR$" />
+      <working_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="battleships/internal/app" />
+      <package value="battleships/cmd/main" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <pattern value="^\QTestTwoPassConnectedComponentLabeling\E$" />
+      <filePath value="$PROJECT_DIR$/cmd/main/main.go" />
       <method v="2" />
     </configuration>
-    <configuration name="TestValidateShipPlacement in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestMarkBorder in battleships/internal/app/board_utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$/internal/app" />
+      <working_directory value="$PROJECT_DIR$/internal/app/board_utils" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="battleships/internal/app" />
+      <package value="battleships/internal/app/board_utils" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestValidateShipPlacement\E$" />
+      <pattern value="^\QTestMarkBorder\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestValidateShipPlacement/L-shaped_battleship in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestMatch in battleships/internal/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$/internal/app" />
+      <working_directory value="$PROJECT_DIR$/internal/utils" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="battleships/internal/app" />
+      <package value="battleships/internal/utils" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestValidateShipPlacement\E$/^\QL-shaped_battleship\E$" />
+      <pattern value="^\QTestMatch\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestValidateShipPlacement/ValidPlacement#01 in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestRenderBoards in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="battleships" />
       <working_directory value="$PROJECT_DIR$/internal/app" />
       <root_directory value="$PROJECT_DIR$" />
@@ -112,19 +111,7 @@
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestValidateShipPlacement\E$/^\QValidPlacement#01\E$" />
-      <method v="2" />
-    </configuration>
-    <configuration name="TestValidateShipPlacement/ValidPlacement#02 in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$/internal/app" />
-      <root_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="battleships/internal/app" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <pattern value="^\QTestValidateShipPlacement\E$/^\QValidPlacement#02\E$" />
+      <pattern value="^\QTestRenderBoards\E$" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
@@ -136,20 +123,31 @@
       <framework value="gotest" />
       <method v="2" />
     </configuration>
+    <configuration name="go test battleships/internal/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="battleships" />
+      <working_directory value="$PROJECT_DIR$/internal/utils" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="battleships/internal/utils" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
     <list>
-      <item itemvalue="Go Test.TestValidateShipPlacement in battleships/internal/app" />
-      <item itemvalue="Go Test.TestValidateShipPlacement/L-shaped_battleship in battleships/internal/app" />
-      <item itemvalue="Go Test.TestValidateShipPlacement/ValidPlacement#01 in battleships/internal/app" />
-      <item itemvalue="Go Test.TestValidateShipPlacement/ValidPlacement#02 in battleships/internal/app" />
-      <item itemvalue="Go Test.TestTwoPassConnectedComponentLabeling in battleships/internal/app" />
+      <item itemvalue="Go Build.go build battleships/cmd/main" />
+      <item itemvalue="Go Test.TestMarkBorder in battleships/internal/app/board_utils" />
+      <item itemvalue="Go Test.TestRenderBoards in battleships/internal/app" />
+      <item itemvalue="Go Test.TestMatch in battleships/internal/utils" />
+      <item itemvalue="Go Test.go test battleships/internal/utils" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Test.TestValidateShipPlacement in battleships/internal/app" />
-        <item itemvalue="Go Test.TestTwoPassConnectedComponentLabeling in battleships/internal/app" />
-        <item itemvalue="Go Test.TestValidateShipPlacement/ValidPlacement#01 in battleships/internal/app" />
-        <item itemvalue="Go Test.TestValidateShipPlacement/ValidPlacement#02 in battleships/internal/app" />
-        <item itemvalue="Go Test.TestValidateShipPlacement/L-shaped_battleship in battleships/internal/app" />
+        <item itemvalue="Go Build.go build battleships/cmd/main" />
+        <item itemvalue="Go Test.TestMarkBorder in battleships/internal/app/board_utils" />
+        <item itemvalue="Go Test.TestRenderBoards in battleships/internal/app" />
+        <item itemvalue="Go Test.go test battleships/internal/utils" />
+        <item itemvalue="Go Test.TestMatch in battleships/internal/utils" />
       </list>
     </recent_temporary>
   </component>
@@ -169,9 +167,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="render boards" />
-    <MESSAGE value="create mocks for Battleship Client" />
-    <MESSAGE value="add opponent description to board" />
     <MESSAGE value="update ui library to new version" />
     <MESSAGE value="reformat ui" />
     <MESSAGE value="add function that generate post request with fire coordinate" />
@@ -194,7 +189,10 @@
     <MESSAGE value="now user can pass its own fleet configuration" />
     <MESSAGE value="update to new version of gui library" />
     <MESSAGE value="implement Connected-component labeling algorithm" />
-    <option name="LAST_COMMIT_MESSAGE" value="implement Connected-component labeling algorithm" />
+    <MESSAGE value="implement result type" />
+    <MESSAGE value="move proxy initialization to builder" />
+    <MESSAGE value="add boarder after ship sunk" />
+    <option name="LAST_COMMIT_MESSAGE" value="add boarder after ship sunk" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
@@ -202,42 +200,17 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/app/app.go</url>
-          <line>166</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/battleship_client/battleship_client.go</url>
-          <line>161</line>
-          <option name="timeStamp" value="25" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/cmd/main/main.go</url>
-          <line>60</line>
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/app/ccl.go</url>
-          <line>50</line>
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/app/ccl_test.go</url>
-          <line>79</line>
-          <option name="timeStamp" value="28" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/app/board_validation_test.go</url>
-          <line>155</line>
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/app/board_validation.go</url>
-          <line>48</line>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
+        <breakpoint enabled="true" log-message="true" log-stack="true" type="javascript-exception">
+          <dependency master-id="0" />
+          <properties name="runtime error: index out of range" uncaughtOnly="true" />
+          <option name="timeStamp" value="42" />
+        </breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint enabled="true" type="javascript-exception">
+          <dependency id="0" />
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
   </component>
 </project>

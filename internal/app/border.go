@@ -36,8 +36,13 @@ func checkNeighboringShip(board *[10][10]gui.State, row, col int, ship *[][2]int
 			neighborCol := col + j
 
 			if neighborRow >= 0 && neighborRow < len(board) && neighborCol >= 0 && neighborCol < len(board[0]) {
+				// arm using while bordering sunken enemy ship & counting player sunken ship
 				if board[neighborRow][neighborCol] == gui.Hit {
 					restOfShip = append(restOfShip, [2]int{neighborRow, neighborCol})
+				} else if board[neighborRow][neighborCol] == gui.Ship {
+					// if not whole ship sunk return empty array
+					ship = &[][2]int{}
+					return
 				}
 			}
 		}

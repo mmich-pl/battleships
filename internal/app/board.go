@@ -68,7 +68,7 @@ type BoardData struct {
 
 func InitBoardData(a *App) *BoardData {
 	opponentFleet := make(map[int]int)
-	playerFleet := make(map[int]int)
+	playerFleet = make(map[int]int)
 	for k, v := range board_utils.ShipQuantities {
 		opponentFleet[k] = v
 		playerFleet[k] = v
@@ -136,9 +136,10 @@ func (bd *BoardData) markPlayerMove(state gui.State, x, y int, result string) er
 }
 
 func (bd *BoardData) markOpponentMoves(status *models.StatusResponse) error {
-
+	var x, y int
+	var err error
 	for _, cords := range status.OpponentShots {
-		x, y, err := MapCoords(cords)
+		x, y, err = MapCoords(cords)
 		if err != nil {
 			log.Error(err)
 			return fmt.Errorf("failed to parse coords: %w", err)
@@ -152,14 +153,19 @@ func (bd *BoardData) markOpponentMoves(status *models.StatusResponse) error {
 		}
 	}
 	bd.playerBoard.SetStates(bd.app.PlayerBoardState)
+	var shipCoords [][2]int
+	checkNeighboringShip(&bd.app.PlayerBoardState, x, y, &shipCoords)
+	if len(shipCoords) != 0 {
+		bd.playerFleet[len(shipCoords)] -= 1
+	}
+	bd.printFleetInfo(bd.playerFleetTable, 2, 29)
 	return nil
 }
 
 func (bd *BoardData) printFleetInfo(table [5]*gui.Text, x, y int) {
-	cfg := &gui.TextConfig{FgColor: gui.Color{Red: 40, Green: 44, Blue: 52}, BgColor: gui.Color{Red: 255, Green: 255, Blue: 255}}
-	table[0] = gui.NewText(x, y-1, fmt.Sprintf("%12s |\t%6s |\t%16s |\t%12s", "Ship", "Size", "Initial amount", "Sunken ships"), cfg)
+	table[0] = gui.NewText(x, y-1, fmt.Sprintf("%12s |\t%6s |\t%16s |\t%12s", "Ship", "Size", "Initial amount", "Sunken ships"), nil)
 	for k, v := range bd.opponentFleet {
-		table[k] = gui.NewText(x, y+k, fmt.Sprintf("%12s |\t%6d |\t%16d |\t%12d", ShipNames[k-1], k, board_utils.ShipQuantities[k], board_utils.ShipQuantities[k]-v), cfg)
+		table[k] = gui.NewText(x, y+k, fmt.Sprintf("%12s |\t%6d |\t%16d |\t%12d", ShipNames[k-1], k, board_utils.ShipQuantities[k], board_utils.ShipQuantities[k]-v), nil)
 	}
 
 	for _, i := range table {
