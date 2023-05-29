@@ -1,16 +1,18 @@
-package board_utils
+package app
 
 import (
 	gui "github.com/grupawp/warships-gui/v2"
 )
 
-func MarkBorder(board *[10][10]gui.State, x, y int) {
+func (bd *BoardData) markBorder(x, y int) {
 	var shipCoords [][2]int
 
-	checkNeighboringShip(board, x, y, &shipCoords)
+	checkNeighboringShip(&bd.app.OpponentBoardState, x, y, &shipCoords)
 	for _, i := range shipCoords {
-		drawBoarder(board, i)
+		drawBoarder(&bd.app.OpponentBoardState, i)
 	}
+
+	bd.opponentFleet[len(shipCoords)] -= 1
 }
 
 func checkNeighboringShip(board *[10][10]gui.State, row, col int, ship *[][2]int) {

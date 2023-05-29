@@ -8,14 +8,16 @@ import (
 	"fmt"
 	gui "github.com/grupawp/warships-gui/v2"
 	"github.com/mitchellh/go-wordwrap"
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
 	"strings"
 	"time"
 )
 
 var (
-	playerDescPos     = [2]int{2, 29}
-	opponentDescPos   = [2]int{50, 29}
+	ShipNames         = []string{"Submarine", "Destroyer", "Cruiser", "Battleship"}
+	playerDescPos     = [2]int{115, 7}
+	opponentDescPos   = [2]int{170, 7}
 	playerBoardConfig = &gui.BoardConfig{
 		TextColor:  gui.Color{},
 		RulerColor: gui.Color{Red: 255, Green: 255, Blue: 255},
@@ -47,7 +49,11 @@ type BoardData struct {
 	playerBoardIndicator   *gui.Text
 	opponentBoardIndicator *gui.Text
 	playerBoard            *gui.Board
+	playerFleet            map[int]int
+	playerFleetTable       [5]*gui.Text
 	opponentBoard          *gui.Board
+	opponentFleet          map[int]int
+	opponentFleetTable     [5]*gui.Text
 	playerNick             *gui.Text
 	opponentNick           *gui.Text
 	playerTurn             *gui.Text
@@ -56,42 +62,45 @@ type BoardData struct {
 	statusAfterFire        *gui.Text
 	playerMove             *gui.Text
 	accuracy               *gui.Text
-	playerStatsHeader      *gui.Text
-	playerStats            *gui.Text
-	opponentStatsHeader    *gui.Text
-	opponentStats          *gui.Text
 	legend                 *gui.Text
 	instructions           *gui.Text
 }
 
 func InitBoardData(a *App) *BoardData {
+	opponentFleet := make(map[int]int)
+	playerFleet := make(map[int]int)
+	for k, v := range board_utils.ShipQuantities {
+		opponentFleet[k] = v
+		playerFleet[k] = v
+	}
+
 	return &BoardData{
 		app:                    a,
 		ui:                     gui.NewGUI(false),
 		playerBoardIndicator:   gui.NewText(2, 5, "Player board_utils", nil),
-		opponentBoardIndicator: gui.NewText(65, 5, "Opponent board_utils", nil),
+		opponentBoardIndicator: gui.NewText(72, 5, "Opponent board_utils", nil),
 		playerBoard:            gui.NewBoard(2, 6, playerBoardConfig),
-		opponentBoard:          gui.NewBoard(50, 6, opponentBoardConfig),
-		playerNick:             gui.NewText(2, 28, a.Description.Nick, nil),
-		opponentNick:           gui.NewText(50, 28, a.Description.Opponent, nil),
+		playerFleet:            playerFleet,
+		playerFleetTable:       [5]*gui.Text{},
+		opponentBoard:          gui.NewBoard(70, 6, opponentBoardConfig),
+		opponentFleet:          opponentFleet,
+		opponentFleetTable:     [5]*gui.Text{},
+		playerNick:             gui.NewText(115, 6, a.Description.Nick, nil),
+		opponentNick:           gui.NewText(170, 6, a.Description.Opponent, nil),
 		playerTurn:             gui.NewText(65, 3, "", nil),
 		timer:                  gui.NewText(50, 3, "", nil),
-		gameResult:             gui.NewText(2, 32, fmt.Sprintf("Game is running!"), nil),
-		statusAfterFire:        gui.NewText(2, 31, "", nil),
+		gameResult:             gui.NewText(115, 3, fmt.Sprintf("Game is running!"), nil),
+		statusAfterFire:        gui.NewText(135, 3, "", nil),
 		playerMove:             gui.NewText(2, 3, "Press on any coordinate to take a shot.", nil),
-		accuracy:               gui.NewText(2, 33, "", nil),
-		playerStatsHeader:      gui.NewText(97, 5, "", nil),
-		playerStats:            gui.NewText(97, 6, "", nil),
-		opponentStatsHeader:    gui.NewText(97, 8, "", nil),
-		opponentStats:          gui.NewText(97, 9, "", nil),
-		legend:                 gui.NewText(97, 12, "Symbols: S - indicate ship, M - indicate miss, H - indicate hit", nil),
-		instructions:           gui.NewText(97, 13, "To perform hit you have to click box on opponent board_utils. It will work only if it is your turn.", nil),
+		accuracy:               gui.NewText(150, 3, "", nil),
+		legend:                 gui.NewText(115, 20, "Symbols: S - indicate ship, M - indicate miss, H - indicate hit", nil),
+		instructions:           gui.NewText(115, 21, "To perform hit you have to click box on opponent board_utils. It will work only if it is your turn.", nil),
 	}
 }
 
 // Parses API response to [10][10] matrix format used by client
 func (a *App) setUpBoardsState(board []string) error {
-	for i := 0; i < len(a.PlayerBoardState); i++ {
+	for i := 0; i < board_utils.BoardSize; i++ {
 		a.PlayerBoardState[i] = [10]gui.State{}
 		a.OpponentBoardState[i] = [10]gui.State{}
 	}
@@ -119,7 +128,8 @@ func (a *App) setUpBoardsState(board []string) error {
 func (bd *BoardData) markPlayerMove(state gui.State, x, y int, result string) error {
 	bd.app.OpponentBoardState[x][y] = state
 	if result == "sunk" {
-		board_utils.MarkBorder(&bd.app.OpponentBoardState, x, y)
+		bd.markBorder(x, y)
+		bd.printFleetInfo(bd.opponentFleetTable, 70, 29)
 	}
 	bd.opponentBoard.SetStates(bd.app.OpponentBoardState)
 	return nil
@@ -130,6 +140,7 @@ func (bd *BoardData) markOpponentMoves(status *models.StatusResponse) error {
 	for _, cords := range status.OpponentShots {
 		x, y, err := MapCoords(cords)
 		if err != nil {
+			log.Error(err)
 			return fmt.Errorf("failed to parse coords: %w", err)
 		}
 
@@ -142,6 +153,40 @@ func (bd *BoardData) markOpponentMoves(status *models.StatusResponse) error {
 	}
 	bd.playerBoard.SetStates(bd.app.PlayerBoardState)
 	return nil
+}
+
+func (bd *BoardData) printFleetInfo(table [5]*gui.Text, x, y int) {
+	cfg := &gui.TextConfig{FgColor: gui.Color{Red: 40, Green: 44, Blue: 52}, BgColor: gui.Color{Red: 255, Green: 255, Blue: 255}}
+	table[0] = gui.NewText(x, y-1, fmt.Sprintf("%12s |\t%6s |\t%16s |\t%12s", "Ship", "Size", "Initial amount", "Sunken ships"), cfg)
+	for k, v := range bd.opponentFleet {
+		table[k] = gui.NewText(x, y+k, fmt.Sprintf("%12s |\t%6d |\t%16d |\t%12d", ShipNames[k-1], k, board_utils.ShipQuantities[k], board_utils.ShipQuantities[k]-v), cfg)
+	}
+
+	for _, i := range table {
+		bd.ui.Draw(i)
+	}
+}
+
+func (bd *BoardData) printStats(x, y int) {
+	opponent, err := bd.app.Client.GetPlayerStatistic(bd.app.Description.Opponent)
+	if err != nil {
+		log.Error(err)
+	}
+	player, err := bd.app.Client.GetPlayerStatistic(bd.app.Description.Nick)
+	if err != nil {
+		log.Error(err)
+	}
+	temp := []*gui.Text{
+		gui.NewText(x, y, fmt.Sprintf("|\t%10s|\t%20s|\t%20s|", "Statistic", player.Stats.Nick, opponent.Stats.Nick), nil),
+		gui.NewText(x, y+1, fmt.Sprintf("|\t%10s|\t%20d|\t%20d|", "Rank", player.Stats.Rank, opponent.Stats.Rank), nil),
+		gui.NewText(x, y+2, fmt.Sprintf("|\t%10s|\t%20d|\t%20d|", "Points", player.Stats.Points, opponent.Stats.Points), nil),
+		gui.NewText(x, y+3, fmt.Sprintf("|\t%10s|\t%20d|\t%20d|", "Games", player.Stats.Games, opponent.Stats.Games), nil),
+		gui.NewText(x, y+4, fmt.Sprintf("|\t%10s|\t%20d|\t%20d|", "Wins", player.Stats.Wins, opponent.Stats.Wins), nil),
+	}
+
+	for _, i := range temp {
+		bd.ui.Draw(i)
+	}
 }
 
 func (bd *BoardData) drawBoard() {
@@ -165,22 +210,11 @@ func (bd *BoardData) drawBoard() {
 	bd.ui.Draw(bd.playerMove)
 	bd.ui.Draw(bd.accuracy)
 
-	opponent, _ := bd.app.Client.GetPlayerStatistic(bd.app.Description.Opponent)
-	player, _ := bd.app.Client.GetPlayerStatistic(bd.app.Description.Nick)
-
-	bd.playerStatsHeader.SetText(fmt.Sprintf("%7s |\t%20s |\t%6s |\t%6s|\t%6s", "Rank", "Nick", "Points", "Games", "Wins"))
-	bd.opponentStatsHeader.SetText(fmt.Sprintf("%7s |\t%20s |\t%6s |\t%6s|\t%6s", "Rank", "Nick", "Points", "Games", "Wins"))
-	bd.playerStats.SetText(fmt.Sprintf("%7d |\t%20s |\t%6d |\t%6d|\t%6d",
-		player.Stats.Rank, player.Stats.Nick, player.Stats.Points, player.Stats.Games, player.Stats.Wins))
-	bd.opponentStats.SetText(fmt.Sprintf("%7d |\t%20s |\t%6d |\t%6d|\t%6d",
-		opponent.Stats.Rank, opponent.Stats.Nick, opponent.Stats.Points, opponent.Stats.Games, opponent.Stats.Wins))
-	bd.ui.Draw(bd.playerStatsHeader)
-	bd.ui.Draw(bd.playerStats)
-
-	bd.ui.Draw(bd.opponentStatsHeader)
-	bd.ui.Draw(bd.opponentStats)
 	bd.ui.Draw(bd.legend)
 	bd.ui.Draw(bd.instructions)
+	bd.printStats(120, 12)
+	bd.printFleetInfo(bd.opponentFleetTable, 70, 29)
+	bd.printFleetInfo(bd.opponentFleetTable, 2, 29)
 }
 
 func (bd *BoardData) renderDescription() {
@@ -209,7 +243,10 @@ func (bd *BoardData) renderDescription() {
 func (bd *BoardData) handleShot() string {
 	for {
 		coords := bd.opponentBoard.Listen(context.TODO())
-		x, y, _ := MapCoords(coords)
+		x, y, err := MapCoords(coords)
+		if err != nil {
+			log.Error(err)
+		}
 		if bd.app.OpponentBoardState[x][y] == gui.Hit || bd.app.OpponentBoardState[x][y] == gui.Miss {
 			bd.statusAfterFire.SetText("Invalid coordinates, try again!")
 		} else {
@@ -229,8 +266,12 @@ func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
 
 	bd.drawBoard()
 	go func() {
+		var err error
 		for status.GameStatus == "game_in_progress" {
-			status, _ = bd.app.Client.GameStatus()
+			status, err = bd.app.Client.GameStatus()
+			if err != nil {
+				log.Error(err)
+			}
 			bd.timer.SetText(fmt.Sprintf("Timer: %d", status.Timer))
 			time.Sleep(time.Second)
 		}
@@ -241,7 +282,10 @@ func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
 		for status.GameStatus == "game_in_progress" {
 
 			time.Sleep(time.Second)
-			_ = bd.markOpponentMoves(status)
+			err := bd.markOpponentMoves(status)
+			if err != nil {
+				log.Error(err)
+			}
 			bd.playerTurn.SetText(fmt.Sprintf(If(status.ShouldFire,
 				"It's your turn, fire at will", "It's your opponent turn, be patient")))
 
@@ -250,8 +294,16 @@ func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
 			for shouldContinue && status.ShouldFire && status.GameStatus != "ended" {
 				coords := bd.handleShot()
 				if len(coords) != 0 {
-					x, y, _ := MapCoords(coords)
-					shoot, _ := bd.app.Client.Fire(coords)
+					var x, y int
+					var shoot *models.ShootResult
+					x, y, err = MapCoords(coords)
+					if err != nil {
+						log.Error(err)
+					}
+					shoot, err = bd.app.Client.Fire(coords)
+					if err != nil {
+						log.Error(err)
+					}
 					var state gui.State
 
 					switch shoot.Result {
@@ -260,13 +312,16 @@ func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
 						state = gui.Hit
 						hit++
 					default:
-						bd.statusAfterFire.SetText("")
+						bd.statusAfterFire.SetText("You miss")
 						state = gui.Miss
 						shouldContinue = false
 						miss++
 					}
 
-					_ = bd.markPlayerMove(state, x, y, shoot.Result)
+					err = bd.markPlayerMove(state, x, y, shoot.Result)
+					if err != nil {
+						log.Error(err)
+					}
 				}
 			}
 
@@ -278,7 +333,8 @@ func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
 			if status.GameStatus == "ended" {
 				bd.gameResult.SetText(If(status.LastGameStatus == "win",
 					"Game ended, You win", "Game ended, You lost"))
-				bd.accuracy.SetText(fmt.Sprintf("%.2f", If(hit != 0 && miss != 0, float64(hit)/float64(miss+hit), 0)))
+				bd.accuracy.SetText(fmt.Sprintf("Your accuracy: %.2f%% (%d/%d)", If(hit != 0 && miss != 0,
+					(float64(hit)/float64(miss+hit))*100, 0), hit, miss+hit))
 				time.Sleep(5 * time.Second)
 				cancel()
 			}
@@ -290,6 +346,7 @@ func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
 	if status.GameStatus != "ended" {
 		err := bd.app.Client.AbandonGame()
 		if err != nil {
+			log.Error(err)
 			return err
 		}
 	}

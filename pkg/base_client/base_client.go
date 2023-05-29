@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io"
-	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -42,16 +42,19 @@ func (c *BaseHTTPClient) do(method, endpoint string, headers http.Header, body i
 	buffer, err := c.marshalRequestBody(body)
 	requestBody := bytes.NewReader(buffer)
 	if err != nil {
+		log.Error(err)
 		return nil, fmt.Errorf("failed to create resp body: %w", err)
 	}
 
 	fullURL, err := url.JoinPath(c.Builder.baseUrl, endpoint)
 	if err != nil {
+		log.Error(err)
 		return nil, fmt.Errorf("failed to create full URL: %w", err)
 	}
 
 	request, err := NewRequest(method, fullURL, requestBody)
 	if err != nil {
+		log.Error(err)
 		return nil, fmt.Errorf("failed to create request: %w", request)
 	}
 
@@ -71,6 +74,7 @@ func (c *BaseHTTPClient) do(method, endpoint string, headers http.Header, body i
 		checkOK, checkErr := c.Builder.checkForRetry(resp, err)
 
 		if err != nil {
+			log.Error(err)
 			return nil, fmt.Errorf("failed to do request %s %s: %w", method, fullURL, err)
 		}
 

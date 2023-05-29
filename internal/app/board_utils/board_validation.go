@@ -7,12 +7,21 @@ import (
 	"sort"
 )
 
+var (
+	ShipQuantities = map[int]int{
+		battleship: 1,
+		cruiser:    2,
+		destroyer:  3,
+		submarine:  4,
+	}
+)
+
 const (
 	battleship = 4
 	cruiser    = 3
 	destroyer  = 2
 	submarine  = 1
-	boardSize  = 10
+	BoardSize  = 10
 )
 
 func countOccurrences(matrix [][]int) []int {
@@ -39,24 +48,17 @@ func ValidateShipPlacement(fleet []string) (bool, string) {
 		return false, "ship overlap or missing"
 	}
 
-	shipQuantities := map[int]int{
-		battleship: 1,
-		cruiser:    2,
-		destroyer:  3,
-		submarine:  4,
-	}
-
 	var shipList []int
-	for ship, count := range shipQuantities {
+	for ship, count := range ShipQuantities {
 		for i := 0; i < count; i++ {
 			shipList = append(shipList, ship)
 		}
 	}
 	sort.Ints(shipList)
 
-	board := make([][]int, boardSize)
+	board := make([][]int, BoardSize)
 	for i := range board {
-		board[i] = make([]int, boardSize)
+		board[i] = make([]int, BoardSize)
 	}
 
 	for _, coords := range fleet {

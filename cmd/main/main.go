@@ -5,8 +5,11 @@ import (
 	. "battleships/internal/app/menu"
 	"battleships/internal/battleship_client"
 	. "battleships/internal/utils"
+	"fmt"
 	"github.com/joho/godotenv"
-	"log"
+	log "github.com/sirupsen/logrus"
+	"os"
+	"time"
 )
 
 var (
@@ -24,7 +27,17 @@ func startNewGame(app *App) error {
 }
 
 func main() {
-	err := godotenv.Load()
+	logFile := fmt.Sprintf("logs/log-%v.txt", time.Now().Format(time.RFC3339))
+	f, err := os.OpenFile(logFile, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		fmt.Println("Failed to create logfile" + logFile)
+		panic(err)
+	}
+	defer f.Close()
+	// Output to stdout instead of the default stderr
+	log.SetOutput(f)
+
+	err = godotenv.Load()
 	if err != nil {
 		return
 	}
