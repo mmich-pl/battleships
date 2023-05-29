@@ -2,7 +2,7 @@ package main
 
 import (
 	. "battleships/internal/app"
-	mainApp "battleships/internal/app/menu"
+	. "battleships/internal/app/menu"
 	"battleships/internal/battleship_client"
 	. "battleships/internal/utils"
 	"github.com/joho/godotenv"
@@ -30,29 +30,29 @@ func main() {
 	}
 	c := battleship_client.NewBattleshipClient(baseURL, 5, 5)
 	app := New(c)
-	menu := mainApp.InitializeMainMenu()
+	menu := InitializeMainMenu()
 
 	for {
 		playerChoide := menu.Display()
 		switch playerChoide {
 		case "Start game":
-			if err := startNewGame(app); err != nil {
+			if err = startNewGame(app); err != nil {
 				log.Print(err)
 				return
 			}
 			gameInitiated = true
 		case "List players":
-			if err := mainApp.ListPlayer(c); err != nil {
+			if err = ListPlayer(c); err != nil {
 				log.Println(err)
 				continue
 			}
 		case "Print stats":
-			if err := mainApp.PrintTopTenPlayerStatistics(c); err != nil {
+			if err = PrintTopTenPlayerStatistics(c); err != nil {
 				log.Println(err)
 				continue
 			}
 		case "Print stats of specific player":
-			if err := mainApp.PrintPlayerStatistics(c); err != nil {
+			if err = PrintPlayerStatistics(c); err != nil {
 				log.Println(err)
 				continue
 			}

@@ -1,6 +1,7 @@
 package app
 
 import (
+	. "battleships/internal/app/board_utils"
 	"battleships/internal/app/menu"
 	"battleships/internal/battleship_client"
 	"battleships/internal/models"

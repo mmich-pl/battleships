@@ -1,4 +1,4 @@
-package board_validation
+package board_utils
 
 import (
 	"battleships/internal/utils"
@@ -70,8 +70,8 @@ func ValidateShipPlacement(fleet []string) (bool, string) {
 	blobs := ConnectedComponentLabeling(board)
 	occurrences := countOccurrences(blobs)
 	if reflect.DeepEqual(shipList, occurrences) {
-		return true, "board valid"
+		return true, "board_utils valid"
 	}
 
-	return false, "board invalid"
+	return false, "board_utils invalid"
 }

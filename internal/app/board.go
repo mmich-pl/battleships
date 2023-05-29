@@ -1,6 +1,7 @@
 package app
 
 import (
+	"battleships/internal/app/board_utils"
 	"battleships/internal/models"
 	. "battleships/internal/utils"
 	"context"
@@ -13,8 +14,31 @@ import (
 )
 
 var (
-	playerDescPos   = [2]int{2, 29}
-	opponentDescPos = [2]int{50, 29}
+	playerDescPos     = [2]int{2, 29}
+	opponentDescPos   = [2]int{50, 29}
+	playerBoardConfig = &gui.BoardConfig{
+		TextColor:  gui.Color{},
+		RulerColor: gui.Color{Red: 255, Green: 255, Blue: 255},
+		EmptyColor: gui.Color{Red: 155, Green: 234, Blue: 236},
+		HitColor:   gui.Color{Red: 251, Green: 5, Blue: 74},
+		MissColor:  gui.Color{Red: 81, Green: 132, Blue: 237},
+		ShipColor:  gui.Color{Red: 133, Green: 133, Blue: 133},
+		EmptyChar:  '~',
+		HitChar:    'H',
+		MissChar:   'M',
+		ShipChar:   'S',
+	}
+	opponentBoardConfig = &gui.BoardConfig{
+		TextColor:  gui.Color{},
+		RulerColor: gui.Color{Red: 255, Green: 255, Blue: 255},
+		EmptyColor: gui.Color{Red: 202, Green: 202, Blue: 216},
+		HitColor:   gui.Color{Red: 251, Green: 5, Blue: 74},
+		MissColor:  gui.Color{Red: 133, Green: 133, Blue: 133},
+		EmptyChar:  '~',
+		HitChar:    'H',
+		MissChar:   'M',
+		ShipChar:   'S',
+	}
 )
 
 type BoardData struct {
@@ -44,10 +68,10 @@ func InitBoardData(a *App) *BoardData {
 	return &BoardData{
 		app:                    a,
 		ui:                     gui.NewGUI(false),
-		playerBoardIndicator:   gui.NewText(2, 5, "Player board", nil),
-		opponentBoardIndicator: gui.NewText(65, 5, "Opponent board", nil),
-		playerBoard:            gui.NewBoard(2, 6, nil),
-		opponentBoard:          gui.NewBoard(50, 6, nil),
+		playerBoardIndicator:   gui.NewText(2, 5, "Player board_utils", nil),
+		opponentBoardIndicator: gui.NewText(65, 5, "Opponent board_utils", nil),
+		playerBoard:            gui.NewBoard(2, 6, playerBoardConfig),
+		opponentBoard:          gui.NewBoard(50, 6, opponentBoardConfig),
 		playerNick:             gui.NewText(2, 28, a.Description.Nick, nil),
 		opponentNick:           gui.NewText(50, 28, a.Description.Opponent, nil),
 		playerTurn:             gui.NewText(65, 3, "", nil),
@@ -61,7 +85,7 @@ func InitBoardData(a *App) *BoardData {
 		opponentStatsHeader:    gui.NewText(97, 8, "", nil),
 		opponentStats:          gui.NewText(97, 9, "", nil),
 		legend:                 gui.NewText(97, 12, "Symbols: S - indicate ship, M - indicate miss, H - indicate hit", nil),
-		instructions:           gui.NewText(97, 13, "To perform hit you have to click box on opponent board. It will work only if it is your turn.", nil),
+		instructions:           gui.NewText(97, 13, "To perform hit you have to click box on opponent board_utils. It will work only if it is your turn.", nil),
 	}
 }
 
@@ -92,13 +116,11 @@ func (a *App) setUpBoardsState(board []string) error {
 	return nil
 }
 
-func (bd *BoardData) markPlayerMove(state gui.State, coord string) error {
-	x, y, err := MapCoords(coord)
-	if err != nil {
-		return fmt.Errorf("failed to parse coord: %w", err)
-	}
-
+func (bd *BoardData) markPlayerMove(state gui.State, x, y int, result string) error {
 	bd.app.OpponentBoardState[x][y] = state
+	if result == "sunk" {
+		board_utils.MarkBorder(&bd.app.OpponentBoardState, x, y)
+	}
 	bd.opponentBoard.SetStates(bd.app.OpponentBoardState)
 	return nil
 }
@@ -228,21 +250,23 @@ func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
 			for shouldContinue && status.ShouldFire && status.GameStatus != "ended" {
 				coords := bd.handleShot()
 				if len(coords) != 0 {
+					x, y, _ := MapCoords(coords)
 					shoot, _ := bd.app.Client.Fire(coords)
-
 					var state gui.State
-					if shoot.Result == "hit" || shoot.Result == "sunk" {
-						bd.statusAfterFire.SetText(If(shoot.Result == "sunk", "Ship sunk", "Ship hit"))
+
+					switch shoot.Result {
+					case "hit", "sunk":
+						bd.statusAfterFire.SetText("Ship hit")
 						state = gui.Hit
 						hit++
-					} else {
+					default:
 						bd.statusAfterFire.SetText("")
 						state = gui.Miss
 						shouldContinue = false
 						miss++
 					}
 
-					_ = bd.markPlayerMove(state, coords)
+					_ = bd.markPlayerMove(state, x, y, shoot.Result)
 				}
 			}
 
@@ -263,9 +287,11 @@ func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
 	}()
 
 	bd.ui.Start(boardCtx, nil)
-	err := bd.app.Client.AbandonGame()
-	if err != nil {
-		return err
+	if status.GameStatus != "ended" {
+		err := bd.app.Client.AbandonGame()
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

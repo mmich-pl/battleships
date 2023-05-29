@@ -1,4 +1,4 @@
-package board_validation
+package board_utils
 
 import (
 	"reflect"

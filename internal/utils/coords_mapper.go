@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-// Parses coordinates to two integers that represents board square in matrix
+// MapCoords parses coordinates to two integers that represents board_utils square in matrix
 func MapCoords(coordinate string) (int, int, error) {
 	if len(coordinate) == 0 {
 		return -1, -1, fmt.Errorf("coordinate is empty")

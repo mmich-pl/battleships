@@ -1,7 +1,6 @@
-package app
+package board_utils
 
 import (
-	. "battleships/internal/app/board_validation"
 	"battleships/internal/utils"
 	"context"
 	"fmt"

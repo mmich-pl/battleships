@@ -1,9 +1,7 @@
 package battleship_client
 
 import (
-	. "battleships/internal/error"
 	"battleships/internal/models"
-	// . "battleships/internal/utils"
 	"battleships/pkg/base_client"
 	"fmt"
 	"net/http"
