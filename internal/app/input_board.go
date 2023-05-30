@@ -60,15 +60,9 @@ func getPlayerFleet(stop chan struct{}, states [10][10]gui.State, board gui.Boar
 }
 
 func updatePlayerFleet(playerFleetCoords []string) {
-	b, _ := board_utils.MapCoordToBoard(playerFleetCoords)
+	b, _ := board_utils.MapCoordsToBoard(playerFleetCoords)
 	blobs := board_utils.ConnectedComponentLabeling(b)
-	occurrences := board_utils.CountOccurrences(blobs)
-	for k, _ := range playerFleet {
-		playerFleet[k] = 0
-	}
-	for _, num := range occurrences {
-		playerFleet[num]++
-	}
+	playerFleet = board_utils.CountOccurrences(blobs)
 	printFleetInstruction()
 }
 

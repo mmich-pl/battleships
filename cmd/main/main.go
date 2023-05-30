@@ -45,8 +45,8 @@ func main() {
 	menu := InitializeMainMenu()
 
 	for {
-		playerChoide := menu.Display()
-		switch playerChoide {
+		playerChoice := menu.Display()
+		switch playerChoice {
 		case "Start game":
 			if err = startNewGame(app); err != nil {
 				log.Print(err)
