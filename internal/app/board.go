@@ -66,7 +66,6 @@ type BoardData struct {
 
 func InitBoardData(a *App) *BoardData {
 	opponentFleet := make(map[int]int)
-	playerFleet = make(map[int]int)
 	opponentTable := make([]*gui.Text, 5)
 
 	opponentTable[0] = gui.NewText(70, 29, "", nil)
@@ -152,6 +151,7 @@ func (bd *BoardData) markOpponentMoves(status *models.StatusResponse) error {
 			*state = gui.Miss
 		}
 	}
+	bd.playerBoard.SetStates(bd.app.PlayerBoardState)
 	return nil
 }
 
