@@ -49,11 +49,9 @@ type BoardData struct {
 	playerBoardIndicator   *gui.Text
 	opponentBoardIndicator *gui.Text
 	playerBoard            *gui.Board
-	playerFleet            map[int]int
-	playerFleetTable       [5]*gui.Text
 	opponentBoard          *gui.Board
 	opponentFleet          map[int]int
-	opponentFleetTable     [5]*gui.Text
+	opponentFleetTable     []*gui.Text
 	playerNick             *gui.Text
 	opponentNick           *gui.Text
 	playerTurn             *gui.Text
@@ -69,9 +67,14 @@ type BoardData struct {
 func InitBoardData(a *App) *BoardData {
 	opponentFleet := make(map[int]int)
 	playerFleet = make(map[int]int)
+	opponentTable := make([]*gui.Text, 5)
+
+	opponentTable[0] = gui.NewText(70, 29, "", nil)
+
 	for k, v := range board_utils.ShipQuantities {
 		opponentFleet[k] = v
 		playerFleet[k] = v
+		opponentTable[k] = gui.NewText(70, 29+k, "", nil)
 	}
 
 	return &BoardData{
@@ -80,11 +83,9 @@ func InitBoardData(a *App) *BoardData {
 		playerBoardIndicator:   gui.NewText(2, 5, "Player board_utils", nil),
 		opponentBoardIndicator: gui.NewText(72, 5, "Opponent board_utils", nil),
 		playerBoard:            gui.NewBoard(2, 6, playerBoardConfig),
-		playerFleet:            playerFleet,
-		playerFleetTable:       [5]*gui.Text{},
 		opponentBoard:          gui.NewBoard(70, 6, opponentBoardConfig),
 		opponentFleet:          opponentFleet,
-		opponentFleetTable:     [5]*gui.Text{},
+		opponentFleetTable:     opponentTable,
 		playerNick:             gui.NewText(115, 6, a.Description.Nick, nil),
 		opponentNick:           gui.NewText(170, 6, a.Description.Opponent, nil),
 		playerTurn:             gui.NewText(65, 3, "", nil),
@@ -129,7 +130,6 @@ func (bd *BoardData) markPlayerMove(state gui.State, x, y int, result string) er
 	bd.app.OpponentBoardState[x][y] = state
 	if result == "sunk" {
 		bd.markBorder(x, y)
-		bd.printFleetInfo(bd.opponentFleetTable, 70, 29)
 	}
 	bd.opponentBoard.SetStates(bd.app.OpponentBoardState)
 	return nil
@@ -152,24 +152,15 @@ func (bd *BoardData) markOpponentMoves(status *models.StatusResponse) error {
 			*state = gui.Miss
 		}
 	}
-	bd.playerBoard.SetStates(bd.app.PlayerBoardState)
-	var shipCoords [][2]int
-	checkNeighboringShip(&bd.app.PlayerBoardState, x, y, &shipCoords)
-	if len(shipCoords) != 0 {
-		bd.playerFleet[len(shipCoords)] -= 1
-	}
-	bd.printFleetInfo(bd.playerFleetTable, 2, 29)
 	return nil
 }
 
-func (bd *BoardData) printFleetInfo(table [5]*gui.Text, x, y int) {
-	table[0] = gui.NewText(x, y-1, fmt.Sprintf("%12s |\t%6s |\t%16s |\t%12s", "Ship", "Size", "Initial amount", "Sunken ships"), nil)
+func (bd *BoardData) printFleetInfo(table []*gui.Text) {
+	table[0].SetText(fmt.Sprintf("%12s |\t%6s |\t%16s |\t%15s", "Ship", "Size", "Initial amount", "Survived ships"))
+	bd.ui.Draw(table[0])
 	for k, v := range bd.opponentFleet {
-		table[k] = gui.NewText(x, y+k, fmt.Sprintf("%12s |\t%6d |\t%16d |\t%12d", ShipNames[k-1], k, board_utils.ShipQuantities[k], board_utils.ShipQuantities[k]-v), nil)
-	}
-
-	for _, i := range table {
-		bd.ui.Draw(i)
+		table[k].SetText(fmt.Sprintf("%12s |\t%6d |\t%16d |\t%15d", ShipNames[k-1], k, board_utils.ShipQuantities[k], v))
+		bd.ui.Draw(table[k])
 	}
 }
 
@@ -219,8 +210,7 @@ func (bd *BoardData) drawBoard() {
 	bd.ui.Draw(bd.legend)
 	bd.ui.Draw(bd.instructions)
 	bd.printStats(120, 12)
-	bd.printFleetInfo(bd.opponentFleetTable, 70, 29)
-	bd.printFleetInfo(bd.opponentFleetTable, 2, 29)
+	bd.printFleetInfo(bd.opponentFleetTable)
 }
 
 func (bd *BoardData) renderDescription() {

@@ -1,6 +1,8 @@
 package app
 
 import (
+	"battleships/internal/app/board_utils"
+	"fmt"
 	gui "github.com/grupawp/warships-gui/v2"
 )
 
@@ -12,7 +14,11 @@ func (bd *BoardData) markBorder(x, y int) {
 		drawBoarder(&bd.app.OpponentBoardState, i)
 	}
 
-	bd.opponentFleet[len(shipCoords)] -= 1
+	key := len(shipCoords)
+	bd.opponentFleet[key] -= 1
+
+	bd.opponentFleetTable[key].SetText(fmt.Sprintf("%12s |\t%6d |\t%16d |\t%12d",
+		ShipNames[key-1], key, board_utils.ShipQuantities[key], bd.opponentFleet[key]))
 }
 
 func checkNeighboringShip(board *[10][10]gui.State, row, col int, ship *[][2]int) {
