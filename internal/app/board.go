@@ -236,7 +236,7 @@ func (bd *BoardData) renderDescription() {
 
 }
 
-func (bd *BoardData) handleShot() string {
+func (bd *BoardData) validateShootCoordinates() string {
 	for {
 		coords := bd.opponentBoard.Listen(context.TODO())
 		x, y, err := MapCoords(coords)
@@ -251,6 +251,40 @@ func (bd *BoardData) handleShot() string {
 			return coords
 		}
 	}
+}
+
+func (bd *BoardData) handleShoot(coords string, err error, hit int, shouldContinue bool, miss int) (int, int, bool) {
+	if len(coords) != 0 {
+		var x, y int
+		var shoot *models.ShootResult
+		x, y, err = MapCoords(coords)
+		if err != nil {
+			log.Error(err)
+		}
+		shoot, err = bd.app.Client.Fire(coords)
+		if err != nil {
+			log.Error(err)
+		}
+		var state gui.State
+
+		switch shoot.Result {
+		case "hit", "sunk":
+			bd.statusAfterFire.SetText("Ship hit")
+			state = gui.Hit
+			hit++
+		default:
+			bd.statusAfterFire.SetText("You miss")
+			state = gui.Miss
+			shouldContinue = false
+			miss++
+		}
+
+		err = bd.markPlayerMove(state, x, y, shoot.Result)
+		if err != nil {
+			log.Error(err)
+		}
+	}
+	return hit, miss, shouldContinue
 }
 
 func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
@@ -288,37 +322,8 @@ func (bd *BoardData) RenderGameBoards(status *models.StatusResponse) error {
 			shouldContinue := true
 
 			for shouldContinue && status.ShouldFire && status.GameStatus != "ended" {
-				coords := bd.handleShot()
-				if len(coords) != 0 {
-					var x, y int
-					var shoot *models.ShootResult
-					x, y, err = MapCoords(coords)
-					if err != nil {
-						log.Error(err)
-					}
-					shoot, err = bd.app.Client.Fire(coords)
-					if err != nil {
-						log.Error(err)
-					}
-					var state gui.State
-
-					switch shoot.Result {
-					case "hit", "sunk":
-						bd.statusAfterFire.SetText("Ship hit")
-						state = gui.Hit
-						hit++
-					default:
-						bd.statusAfterFire.SetText("You miss")
-						state = gui.Miss
-						shouldContinue = false
-						miss++
-					}
-
-					err = bd.markPlayerMove(state, x, y, shoot.Result)
-					if err != nil {
-						log.Error(err)
-					}
-				}
+				coords := bd.validateShootCoordinates()
+				hit, miss, shouldContinue = bd.handleShoot(coords, err, hit, shouldContinue, miss)
 			}
 
 		}

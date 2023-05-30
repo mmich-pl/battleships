@@ -17,7 +17,7 @@ func (bd *BoardData) markBorder(x, y int) {
 	key := len(shipCoords)
 	bd.opponentFleet[key] -= 1
 
-	bd.opponentFleetTable[key].SetText(fmt.Sprintf("%12s |\t%6d |\t%16d |\t%12d",
+	bd.opponentFleetTable[key].SetText(fmt.Sprintf("%12s |\t%6d |\t%16d |\t%15d",
 		ShipNames[key-1], key, board_utils.ShipQuantities[key], bd.opponentFleet[key]))
 }
 

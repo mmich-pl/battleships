@@ -4,7 +4,6 @@ import (
 	"battleships/internal/utils"
 	"fmt"
 	"reflect"
-	"sort"
 )
 
 var (
@@ -24,7 +23,7 @@ const (
 	BoardSize  = 10
 )
 
-func CountOccurrences(matrix [][]int) []int {
+func CountOccurrences(matrix [][]int) map[int]int {
 	counts := make(map[int]int)
 	for _, row := range matrix {
 		for _, num := range row {
@@ -34,43 +33,15 @@ func CountOccurrences(matrix [][]int) []int {
 			counts[num]++
 		}
 	}
-	v := make([]int, 0, len(counts))
 
+	playerFleet := make(map[int]int)
 	for _, value := range counts {
-		v = append(v, value)
+		playerFleet[value]++
 	}
-	sort.Ints(v)
-	return v
+	return playerFleet
 }
 
-func ValidateShipPlacement(fleet []string) (bool, string) {
-	if len(fleet) != 20 {
-		return false, "ship overlap or missing"
-	}
-
-	var shipList []int
-	for ship, count := range ShipQuantities {
-		for i := 0; i < count; i++ {
-			shipList = append(shipList, ship)
-		}
-	}
-	sort.Ints(shipList)
-
-	board, msg := MapCoordToBoard(fleet)
-	if msg != "" {
-		return false, msg
-	}
-
-	blobs := ConnectedComponentLabeling(board)
-	occurrences := CountOccurrences(blobs)
-	if reflect.DeepEqual(shipList, occurrences) {
-		return true, "board_utils valid"
-	}
-
-	return false, "board_utils invalid"
-}
-
-func MapCoordToBoard(coordinates []string) ([][]int, string) {
+func MapCoordsToBoard(coordinates []string) ([][]int, string) {
 	board := make([][]int, BoardSize)
 	for i := range board {
 		board[i] = make([]int, BoardSize)
@@ -84,4 +55,23 @@ func MapCoordToBoard(coordinates []string) ([][]int, string) {
 		board[x][y] = 1
 	}
 	return board, ""
+}
+
+func ValidateShipPlacement(fleet []string) (bool, string) {
+	if len(fleet) != 20 {
+		return false, "ship overlap or missing"
+	}
+
+	board, msg := MapCoordsToBoard(fleet)
+	if msg != "" {
+		return false, msg
+	}
+
+	blobs := ConnectedComponentLabeling(board)
+	playerFleet := CountOccurrences(blobs)
+	if reflect.DeepEqual(ShipQuantities, playerFleet) {
+		return true, "board_utils valid"
+	}
+
+	return false, "board_utils invalid"
 }
