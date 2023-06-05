@@ -4,14 +4,13 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="add boarder after ship sunk">
+    <list default="true" id="7737db33-1fa1-46d8-83bb-7db1ae52e24d" name="Changes" comment="refactor board validation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/main/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/board.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/board_utils/board_validation.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/board_utils/board_validation.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/board_utils/input_board.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/input_board.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/border.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/border.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/battleship_client/battleship_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/battleship_client/battleship_client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/base_client/base_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/base_client/base_client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/base_client/base_client_builder.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/base_client/communication_structs.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/base_client/wrappers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/base_client/headers.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/base_client/headers.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +25,20 @@
     </option>
   </component>
   <component name="GOROOT" url="file:///usr/lib/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$USER_HOME$/go/pkg/mod/github.com/grupawp/termloop@v0.0.0-20230516071741-9af5ae3e8663/screen.go" root0="SKIP_INSPECTION" />
+    <setting file="file://$USER_HOME$/go/pkg/mod/github.com/grupawp/warships-gui/v2@v2.1.4/gui.go" root0="SKIP_INSPECTION" />
+    <setting file="file://$USER_HOME$/go/pkg/mod/github.com/grupawp/warships-gui/v2@v2.1.4/text.go" root0="SKIP_INSPECTION" />
+    <setting file="file:///usr/lib/go/src/runtime/panic.go" root0="SKIP_INSPECTION" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -43,12 +56,13 @@
     &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;v2&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
     &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/home/mmich&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editing.templates&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
 }</component>
   <component name="RecentsManager">
@@ -61,14 +75,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Go Build.go build battleships/cmd/main">
-    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
-      <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="FILE" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <method v="2" />
-    </configuration>
     <configuration name="go build battleships/cmd/main" type="GoApplicationRunConfiguration" factoryName="Go Application" singleton="false" temporary="true" nameIsGenerated="true">
       <module name="battleships" />
       <working_directory value="$PROJECT_DIR$" />
@@ -78,28 +84,28 @@
       <filePath value="$PROJECT_DIR$/cmd/main/main.go" />
       <method v="2" />
     </configuration>
-    <configuration name="TestMarkBorder in battleships/internal/app/board_utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestMenu_Display in battleships/internal/app/menu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$/internal/app/board_utils" />
+      <working_directory value="$PROJECT_DIR$/internal/app/menu" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="battleships/internal/app/board_utils" />
+      <package value="battleships/internal/app/menu" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestMarkBorder\E$" />
+      <pattern value="^\QTestMenu_Display\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestMatch in battleships/internal/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestNewMenu in battleships/internal/app/menu" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$/internal/utils" />
+      <working_directory value="$PROJECT_DIR$/internal/app/menu" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="battleships/internal/utils" />
+      <package value="battleships/internal/app/menu" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestMatch\E$" />
+      <pattern value="^\QTestNewMenu\E$" />
       <method v="2" />
     </configuration>
     <configuration name="TestRenderBoards in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -114,40 +120,32 @@
       <pattern value="^\QTestRenderBoards\E$" />
       <method v="2" />
     </configuration>
-    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
+    <configuration name="TestValidateShipPlacement in battleships/internal/app" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="DIRECTORY" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <method v="2" />
-    </configuration>
-    <configuration name="go test battleships/internal/utils" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="battleships" />
-      <working_directory value="$PROJECT_DIR$/internal/utils" />
+      <working_directory value="$PROJECT_DIR$/internal/app" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="battleships/internal/utils" />
+      <package value="battleships/internal/app" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
+      <pattern value="^\QTestValidateShipPlacement\E$" />
       <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Go Build.go build battleships/cmd/main" />
-      <item itemvalue="Go Test.TestMarkBorder in battleships/internal/app/board_utils" />
+      <item itemvalue="Go Test.TestMenu_Display in battleships/internal/app/menu" />
+      <item itemvalue="Go Test.TestNewMenu in battleships/internal/app/menu" />
+      <item itemvalue="Go Test.TestValidateShipPlacement in battleships/internal/app" />
       <item itemvalue="Go Test.TestRenderBoards in battleships/internal/app" />
-      <item itemvalue="Go Test.TestMatch in battleships/internal/utils" />
-      <item itemvalue="Go Test.go test battleships/internal/utils" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build battleships/cmd/main" />
-        <item itemvalue="Go Test.TestMarkBorder in battleships/internal/app/board_utils" />
+        <item itemvalue="Go Test.TestValidateShipPlacement in battleships/internal/app" />
+        <item itemvalue="Go Test.TestNewMenu in battleships/internal/app/menu" />
+        <item itemvalue="Go Test.TestMenu_Display in battleships/internal/app/menu" />
         <item itemvalue="Go Test.TestRenderBoards in battleships/internal/app" />
-        <item itemvalue="Go Test.go test battleships/internal/utils" />
-        <item itemvalue="Go Test.TestMatch in battleships/internal/utils" />
       </list>
     </recent_temporary>
   </component>
@@ -167,8 +165,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="update ui library to new version" />
-    <MESSAGE value="reformat ui" />
     <MESSAGE value="add function that generate post request with fire coordinate" />
     <MESSAGE value="regenerate mocks" />
     <MESSAGE value="update BattleshipClient to match new endpoints response" />
@@ -192,7 +188,9 @@
     <MESSAGE value="implement result type" />
     <MESSAGE value="move proxy initialization to builder" />
     <MESSAGE value="add boarder after ship sunk" />
-    <option name="LAST_COMMIT_MESSAGE" value="add boarder after ship sunk" />
+    <MESSAGE value="stable v 1.0" />
+    <MESSAGE value="refactor board validation" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor board validation" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
@@ -200,17 +198,12 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <breakpoint enabled="true" log-message="true" log-stack="true" type="javascript-exception">
-          <dependency master-id="0" />
-          <properties name="runtime error: index out of range" uncaughtOnly="true" />
-          <option name="timeStamp" value="42" />
-        </breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/app/app.go</url>
+          <line>132</line>
+          <option name="timeStamp" value="45" />
+        </line-breakpoint>
       </breakpoints>
-      <default-breakpoints>
-        <breakpoint enabled="true" type="javascript-exception">
-          <dependency id="0" />
-        </breakpoint>
-      </default-breakpoints>
     </breakpoint-manager>
   </component>
 </project>

@@ -2,19 +2,38 @@ package base_client
 
 import (
 	"bytes"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
+	"flag"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"net"
 	"net/http"
 	"net/url"
+	"os"
 	"sync"
 	"time"
 )
 
+type HTTPClientConfig struct {
+	BaseUrl           string
+	ConnectionTimeout time.Duration
+	ResponseTimeout   time.Duration
+	Headers           http.Header
+
+	ProxyAddress string
+
+	RetryWaitMin  int
+	RetryWaitMax  int
+	RetryMax      int
+	CheckForRetry CheckForRetry
+	Backoff       Backoff
+}
+
 type BaseHTTPClient struct {
-	Builder    *clientBuilder
+	Config     HTTPClientConfig
 	clientOnce sync.Once // make sure that BaseHTTPClient will be created only once
 	client     *http.Client
 }
@@ -23,6 +42,10 @@ type BaseClient interface {
 	Get(endpoint string, headers ...http.Header) (*InternalResponse, error)
 	Post(endpoint string, payload interface{}, headers ...http.Header) (*InternalResponse, error)
 	Delete(url string, headers ...http.Header) (*InternalResponse, error)
+}
+
+func New(cfg HTTPClientConfig) *BaseHTTPClient {
+	return &BaseHTTPClient{Config: cfg}
 }
 
 func (c *BaseHTTPClient) Get(endpoint string, headers ...http.Header) (*InternalResponse, error) {
@@ -37,8 +60,15 @@ func (c *BaseHTTPClient) Delete(url string, headers ...http.Header) (*InternalRe
 	return c.do(http.MethodDelete, url, getHeaders(headers...), nil)
 }
 
+func (c *BaseHTTPClient) AddHeader(headerName, headerValue string) {
+	if old := c.Config.Headers.Get(headerName); old != "" {
+		c.Config.Headers.Del(headerName)
+	}
+
+	c.Config.Headers.Add(headerName, headerValue)
+}
+
 func (c *BaseHTTPClient) do(method, endpoint string, headers http.Header, body interface{}) (*InternalResponse, error) {
-	// request setup
 	buffer, err := c.marshalRequestBody(body)
 	requestBody := bytes.NewReader(buffer)
 	if err != nil {
@@ -46,7 +76,7 @@ func (c *BaseHTTPClient) do(method, endpoint string, headers http.Header, body i
 		return nil, fmt.Errorf("failed to create resp body: %w", err)
 	}
 
-	fullURL, err := url.JoinPath(c.Builder.baseUrl, endpoint)
+	fullURL, err := url.JoinPath(c.Config.BaseUrl, endpoint)
 	if err != nil {
 		log.Error(err)
 		return nil, fmt.Errorf("failed to create full URL: %w", err)
@@ -59,8 +89,7 @@ func (c *BaseHTTPClient) do(method, endpoint string, headers http.Header, body i
 	}
 
 	request.request.Header = c.getRequestHeaders(headers)
-	var i int
-	for {
+	for i := 0; ; i++ {
 		var responseCode int
 
 		if request.body != nil {
@@ -71,7 +100,8 @@ func (c *BaseHTTPClient) do(method, endpoint string, headers http.Header, body i
 
 		//	attempt to make request
 		resp, err := c.getHttpClient().Do(request.request)
-		checkOK, checkErr := c.Builder.checkForRetry(resp, err)
+		log.Error(err)
+		checkOK, checkErr := c.Config.CheckForRetry(resp, err)
 
 		if err != nil {
 			log.Error(err)
@@ -86,19 +116,20 @@ func (c *BaseHTTPClient) do(method, endpoint string, headers http.Header, body i
 		case nil:
 			err = c.drainBody(resp.Body)
 			if err != nil {
+				log.Error(err)
 				return nil, err
 			}
 		default:
 			return nil, err
 		}
 
-		remain := c.Builder.retryMax - 1
+		remain := c.Config.RetryMax - i
 		i++
 		if remain == 0 {
 			break
 		}
 
-		wait := c.Builder.backoff(c.Builder.retryWaitMin, c.Builder.retryWaitMax, i)
+		wait := c.Config.Backoff(c.Config.RetryWaitMin, c.Config.RetryMax, i)
 		desc := fmt.Sprintf("%s %s", method, fullURL)
 		if responseCode > 0 {
 			desc = fmt.Sprintf("%s (status: %d)", desc, responseCode)
@@ -106,7 +137,7 @@ func (c *BaseHTTPClient) do(method, endpoint string, headers http.Header, body i
 		log.Printf("%s, retrying in %s, (%d left)\n", desc, wait, remain)
 		time.Sleep(wait)
 	}
-	return nil, fmt.Errorf("%s %s giving up after %d attempts", method, fullURL, c.Builder.retryMax+1)
+	return nil, fmt.Errorf("%s %s giving up after %d attempts", method, fullURL, c.Config.RetryMax+1)
 
 }
 
@@ -119,18 +150,48 @@ func (c *BaseHTTPClient) drainBody(body io.ReadCloser) error {
 	return nil
 }
 
+func createTLSConfig() *tls.Config {
+	insecure := flag.Bool("insecure-ssl", false, "Accept/Ignore all server SSL certificates")
+	flag.Parse()
+
+	rootCAs, _ := x509.SystemCertPool()
+	if rootCAs == nil {
+		rootCAs = x509.NewCertPool()
+	}
+
+	cert := os.Getenv("CERTIFICATE_PATH")
+	certs, err := os.ReadFile(cert)
+	if err != nil {
+		log.Fatalf("Failed to append %q to RootCAs: %v", cert, err)
+	}
+
+	if ok := rootCAs.AppendCertsFromPEM(certs); !ok {
+		log.Error("No certs appended, using system certs only")
+	}
+
+	config := &tls.Config{
+		InsecureSkipVerify: *insecure,
+		RootCAs:            rootCAs,
+	}
+	return config
+}
+
 func (c *BaseHTTPClient) getHttpClient() *http.Client {
+	transportConfig := http.Transport{
+		ResponseHeaderTimeout: c.Config.ResponseTimeout,
+		DialContext:           (&net.Dialer{Timeout: c.Config.ConnectionTimeout}).DialContext,
+	}
+
+	if c.Config.ProxyAddress != "" {
+		proxyUrl, _ := url.Parse(c.Config.ProxyAddress)
+		transportConfig.Proxy = http.ProxyURL(proxyUrl)
+		transportConfig.TLSClientConfig = createTLSConfig()
+	}
+
 	c.clientOnce.Do(func() {
-		if c.Builder.client != nil {
-			c.client = c.Builder.client
-			return
-		}
 		c.client = &http.Client{
-			Transport: &http.Transport{
-				ResponseHeaderTimeout: c.Builder.responseTimeout,
-				DialContext:           (&net.Dialer{Timeout: c.Builder.connectionTimeout}).DialContext,
-			},
-			Timeout: c.Builder.connectionTimeout + c.Builder.responseTimeout,
+			Transport: &transportConfig,
+			Timeout:   c.Config.ConnectionTimeout + c.Config.ConnectionTimeout,
 		}
 	})
 	return c.client

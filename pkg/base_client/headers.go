@@ -13,7 +13,7 @@ func (c *BaseHTTPClient) getRequestHeaders(requestHeaders http.Header) http.Head
 	result := make(http.Header)
 
 	// Add headers from the HTTP client instance
-	for header, value := range c.Builder.Headers {
+	for header, value := range c.Config.Headers {
 		if len(value) > 0 {
 			result.Set(header, value[0])
 		}
