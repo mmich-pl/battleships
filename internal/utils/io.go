@@ -8,10 +8,27 @@ import (
 	"strings"
 )
 
-func GetPlayerInput(mess string) (string, error) {
-	reader := bufio.NewReader(os.Stdin)
+func contains(a []string, x string) bool {
+	for _, n := range a {
+		if x == n {
+			return true
+		}
+	}
+	return false
+}
 
-	fmt.Print(mess)
+func GetConditionalPlayerInput(expectedAnswers []string, msg string) string {
+	var playerInput string
+
+	for !contains(expectedAnswers, playerInput) {
+		playerInput, _ = GetPlayerInput(msg)
+	}
+	return playerInput
+}
+
+func GetPlayerInput(msg string) (string, error) {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print(msg)
 
 	input, err := reader.ReadString('\n')
 	if err != nil {

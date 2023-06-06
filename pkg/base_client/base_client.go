@@ -5,11 +5,9 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
-	"flag"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"io"
-	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -151,9 +149,6 @@ func (c *BaseHTTPClient) drainBody(body io.ReadCloser) error {
 }
 
 func createTLSConfig() *tls.Config {
-	insecure := flag.Bool("insecure-ssl", false, "Accept/Ignore all server SSL certificates")
-	flag.Parse()
-
 	rootCAs, _ := x509.SystemCertPool()
 	if rootCAs == nil {
 		rootCAs = x509.NewCertPool()
@@ -170,22 +165,19 @@ func createTLSConfig() *tls.Config {
 	}
 
 	config := &tls.Config{
-		InsecureSkipVerify: *insecure,
-		RootCAs:            rootCAs,
+		RootCAs: rootCAs,
 	}
 	return config
 }
 
 func (c *BaseHTTPClient) getHttpClient() *http.Client {
-	transportConfig := http.Transport{
-		ResponseHeaderTimeout: c.Config.ResponseTimeout,
-		DialContext:           (&net.Dialer{Timeout: c.Config.ConnectionTimeout}).DialContext,
-	}
+	var transportConfig http.Transport
 
 	if c.Config.ProxyAddress != "" {
+		config := createTLSConfig()
 		proxyUrl, _ := url.Parse(c.Config.ProxyAddress)
 		transportConfig.Proxy = http.ProxyURL(proxyUrl)
-		transportConfig.TLSClientConfig = createTLSConfig()
+		transportConfig.TLSClientConfig = config
 	}
 
 	c.clientOnce.Do(func() {

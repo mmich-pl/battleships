@@ -20,7 +20,6 @@ var (
 func startNewGame(app *App) error {
 	err := app.Run()
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 	return nil
@@ -50,7 +49,8 @@ func main() {
 		case "Start game":
 			if err = startNewGame(app); err != nil {
 				log.Print(err)
-				return
+				fmt.Println(fmt.Sprintf("failed to initialize game, start one again: %v", err))
+				continue
 			}
 			gameInitiated = true
 		case "List players":
