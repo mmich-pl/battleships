@@ -68,12 +68,12 @@ func InitBoardData(a *App) *BoardData {
 	opponentFleet := make(map[int]int)
 	opponentTable := make([]*gui.Text, 5)
 
-	opponentTable[0] = gui.NewText(70, 29, "", nil)
+	opponentTable[0] = gui.NewText(70, 30, "", nil)
 
 	for k, v := range board_utils.ShipQuantities {
 		opponentFleet[k] = v
 		playerFleet[k] = v
-		opponentTable[k] = gui.NewText(70, 29+k, "", nil)
+		opponentTable[k] = gui.NewText(70, 30+k, "", nil)
 	}
 
 	return &BoardData{
@@ -81,8 +81,8 @@ func InitBoardData(a *App) *BoardData {
 		ui:                     gui.NewGUI(false),
 		playerBoardIndicator:   gui.NewText(2, 5, "Player board_utils", nil),
 		opponentBoardIndicator: gui.NewText(72, 5, "Opponent board_utils", nil),
-		playerBoard:            gui.NewBoard(2, 6, playerBoardConfig),
-		opponentBoard:          gui.NewBoard(70, 6, opponentBoardConfig),
+		playerBoard:            gui.NewBoard(2, 7, playerBoardConfig),
+		opponentBoard:          gui.NewBoard(70, 7, opponentBoardConfig),
 		opponentFleet:          opponentFleet,
 		opponentFleetTable:     opponentTable,
 		playerNick:             gui.NewText(115, 6, a.Description.Nick, nil),

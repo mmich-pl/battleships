@@ -35,7 +35,9 @@ func (a *App) Run() error {
 		return fmt.Errorf("failed to init game: %w", err)
 	}
 
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	fmt.Println("the game has been initiated, waiting for opponent")
 	go func(ctx context.Context) {
 		for {
@@ -52,6 +54,10 @@ func (a *App) Run() error {
 	status, err := a.setUpGame()
 	if err != nil {
 		return err
+	}
+
+	if status.GameStatus == "game_in_progress" {
+		cancel()
 	}
 
 	bd := InitBoardData(a)
@@ -149,7 +155,7 @@ func (a *App) setUpGame() (*models.StatusResponse, error) {
 }
 
 func (a *App) waitForGameStart() (*models.StatusResponse, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
 	defer cancel()
 
 	type channelResponse struct {
