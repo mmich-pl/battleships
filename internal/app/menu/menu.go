@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/buger/goterm"
 	"github.com/pkg/term"
-	"log"
+	log "github.com/sirupsen/logrus"
 )
 
 const (

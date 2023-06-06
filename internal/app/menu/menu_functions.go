@@ -4,7 +4,7 @@ import (
 	"battleships/internal/battleship_client"
 	. "battleships/internal/utils"
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"os"
 	"strings"
 	"text/tabwriter"

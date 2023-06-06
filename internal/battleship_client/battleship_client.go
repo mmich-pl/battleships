@@ -57,12 +57,12 @@ func NewBattleshipClient(baseURL string, responseTimeout, connectionTimeout time
 		ConnectionTimeout: connectionTimeout * time.Second,
 		ResponseTimeout:   responseTimeout * time.Second,
 		Headers:           headers,
-		ProxyAddress:      "http://127.0.0.1:8900",
-		RetryWaitMin:      defaultRetryWaitMin,
-		RetryWaitMax:      defaultRetryWaitMax,
-		RetryMax:          defaultRetryMax,
-		CheckForRetry:     base_client.DefaultRetryPolicy,
-		Backoff:           base_client.DefaultBackoff,
+		//ProxyAddress:      "http://127.0.0.1:8900",
+		RetryWaitMin:  defaultRetryWaitMin,
+		RetryWaitMax:  defaultRetryWaitMax,
+		RetryMax:      defaultRetryMax,
+		CheckForRetry: base_client.DefaultRetryPolicy,
+		Backoff:       base_client.DefaultBackoff,
 	}
 
 	return &BattleshipHTTPClient{client: base_client.New(clientConfig)}
